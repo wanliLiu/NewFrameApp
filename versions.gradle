@@ -1,0 +1,124 @@
+/**
+ * Shared file between builds so that they can all use the same dependencies and
+ * maven repositories.
+ **/
+ext.deps = [:]
+
+def versions = [:]
+versions.android_gradle_plugin = "3.1.2"
+versions.kotlin = "1.2.41"
+versions.support = "27.1.1"
+versions.multidex = "1.0.2"
+versions.constraint_layout = "1.1.0"
+versions.rxjava2 = "2.+"
+versions.rx_android = "2.+"
+versions.rxBinding = "2.+"
+versions.rxLifeCycle = "2.+"
+versions.retrofit = "2.+"
+versions.event_bus = "3.+"
+versions.okhttp = "3.+"
+versions.gson = "2.+"
+versions.fresco = "1.+"
+versions.stetho = "1.5.0"
+versions.scaleImageView = "3.+"
+versions.mterialprogress = "1.7"
+//Arouter
+versions.arouter_compiler = "1.+"
+versions.arouter_api = "1.+"
+
+
+def deps = [:]
+
+def support = [:]
+support.app_compat = "com.android.support:appcompat-v7:$versions.support"
+support.percent = "com.android.support:percent:$versions.support"
+support.recyclerview = "com.android.support:recyclerview-v7:$versions.support"
+support.cardview = "com.android.support:cardview-v7:$versions.support"
+support.design = "com.android.support:design:$versions.support"
+support.gridlayout = "com.android.support:gridlayout-v7:$versions.support"
+support.media = "com.android.support:support-media-compat:$versions.support"
+support.multidex = "com.android.support:multidex:$versions.multidex"
+deps.support = support
+
+
+def retrofit = [:]
+retrofit.runtime = "com.squareup.retrofit2:retrofit:$versions.retrofit"
+retrofit.adapter = "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofi"
+retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
+deps.retrofit = retrofit
+
+
+def kotlin = [:]
+kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jre7:$versions.kotlin"
+kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
+kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+deps.kotlin = kotlin
+
+//view
+deps.constraint_layout = "com.android.support.constraint:constraint-layout:$versions.constraint_layout"
+deps.corektx = "androidx.core:core-ktx:0.3"
+
+deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
+//rxjava
+deps.rxjava2 = "io.reactivex.rxjava2:rxjava:$versions.rxjava2"
+deps.rx_android = "io.reactivex.rxjava2:rxandroid:$versions.rx_android"
+//RxBinding
+deps.rxbinding = "com.jakewharton.rxbinding2:rxbinding:$versions.rxBinding"
+deps.rxbindingSupportV4 = "com.jakewharton.rxbinding2:rxbinding-support-v4:$versions.rxBinding"
+deps.rxbindingAppCompat = "com.jakewharton.rxbinding2:rxbinding-appcompat-v7:$versions.rxBinding"
+deps.rxbindingDesign = "com.jakewharton.rxbinding2:rxbinding-design:$versions.rxBinding"
+deps.rxbindingReycyle = "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$versions.rxBinding"
+//Rxlife
+deps.rxlifecycle = "com.trello.rxlifecycle2:rxlifecycle:$versions.rxLifeCycle"
+deps.rxlifecycleAndroid = "com.trello.rxlifecycle2:rxlifecycle-android:$versions.rxLifeCycle"
+deps.rxlifecycleComponents = "com.trello.rxlifecycle2:rxlifecycle-components:$versions.rxLifeCycle"
+
+//okhttp
+deps.loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
+deps.okhttp = "com.squareup.okhttp3:okhttp:$versions.okhttp"
+
+//fresco
+deps.fresco = "com.facebook.fresco:fresco:$versions.fresco"
+// For animated GIF support
+deps.animatedgif = "com.facebook.fresco:animated-gif:$versions.fresco"
+// For WebP support including animated WebP
+deps.animatedwebp = "com.facebook.fresco:animated-webp:$versions.fresco"
+deps.webpsupport = "com.facebook.fresco:webpsupport:$versions.fresco"
+
+deps.subsamplingScaleImage = "com.davemorrissey.labs:subsampling-scale-image-view:$versions.scaleImageView"
+
+//stetho
+deps.stetho = "com.facebook.stetho:stetho:$versions.stetho"
+deps.stethoOkhttp3 = "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
+
+//other
+deps.event_bus = "org.greenrobot:eventbus:$versions.event_bus"
+deps.gson = "com.google.code.gson:gson:$versions.gson"
+deps.arouter_api = "com.alibaba:arouter-api:$versions.arouter_api"
+deps.arouter_compiler = "com.alibaba:arouter-compiler:$versions.arouter_compiler"
+deps.materialishPro = "com.pnikosis:materialish-progress:$versions.mterialprogress"
+//---------------------------------------------和业务相关的第三方东西，比如友盟 统计，支付，登录啥的  放到下面
+
+ext.deps = deps
+
+//编译版本
+def build_versions = [:]
+build_versions.min_sdk = 16
+build_versions.target_sdk = 27
+build_versions.build_tools = "27.0.3"
+ext.build_versions = build_versions
+//运用版本
+def app_versions = [:]
+app_versions.versionName = "1.0.0"
+app_versions.versionCode = 20180515
+ext.app_versions = app_versions
+
+
+def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+    handler.mavenCentral()
+    //Add the JitPack repository
+}
+
+ext.addRepos = this.&addRepos
