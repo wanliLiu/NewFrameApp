@@ -11,66 +11,62 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
-import android.widget.FrameLayout
 import com.soli.lib_common.R
 
 /**
  * @author Soli
  * @Time 2017/8/8
  */
-class RootView {
+class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean = false) {
     //内容根视图
-    /**
-     * 不包含toolbar
-     *
-     * @return
-     */
-    private lateinit var content: FrameLayout
     //视图窗根视图
-    private lateinit var contentView: View
+    private var contentView: ViewGroup
+
+    private var content: ViewGroup? = null
+    private var toolbar: Toolbar? = null
+    private var justyContent: ViewGroup? = null
+
     //显示的视图即，getContentView视图
     private var viewDisplay: View? = null
-    private lateinit var toolbar: Toolbar
-    private lateinit var mInflater: LayoutInflater
-    private lateinit var ctx: Context
-
     private var errorview: View? = null
     private var progressView: View? = null
 
-    /**
-     * @param mctx
-     * @param showView
-     */
-    constructor(mctx: Activity, showView: Int) {
-        val view = (mctx.window.decorView.findViewById<View>(android.R.id.content) as ViewGroup).getChildAt(0)
-        if (view != null) {
-            ctx = mctx
-            mInflater = LayoutInflater.from(ctx)
-            contentView = view
-            initView(showView)
-        }
-    }
+    private var mInflater: LayoutInflater
+    private var ctx: Context = mctx
 
-    /**
-     * @param mctx
-     * @param rooContent
-     * @param showView
-     */
-    constructor(mctx: Context, rooContent: View, showView: Int) {
-        ctx = mctx
+    init {
         mInflater = LayoutInflater.from(ctx)
-        contentView = rooContent
-        initView(showView)
+        contentView = rooContent as ViewGroup
+        initView(showView, isClear)
     }
 
+    /**
+     * @param mctx
+     * @param showView
+     * @param isClear
+     */
+    constructor(mctx: Activity, showView: Int, isClear: Boolean = false) : this(mctx, mctx.findViewById<View>(R.id.viewRoot) as ViewGroup, showView, isClear)
+
+    /**
+     * 进度加载的视图
+     */
+    fun justyProgressAreaContentTo(view: ViewGroup) {
+        justyContent = view
+        viewDisplay = if (justyContent!!.childCount > 0) justyContent!!.getChildAt(0) else null
+    }
 
     /**
      *
      */
-    private fun initView(showView: Int) {
-        contentView.apply {
-            content = findViewById(R.id.root_content)
-            toolbar = findViewById(R.id.tool_bar)
+    private fun initView(showView: Int, isClear: Boolean) {
+        if (isClear) {
+            contentView.removeAllViews()
+            content = contentView
+        } else {
+            contentView.apply {
+                content = findViewById(R.id.root_content)
+                toolbar = findViewById(R.id.tool_bar)
+            }
         }
 
         //add content
@@ -81,7 +77,7 @@ class RootView {
      * 隐藏顶部视图
      */
     fun hideToolBar() {
-        toolbar.visibility = View.GONE
+        toolbar?.visibility = View.GONE
         offsetContentToStatusBar()
     }
 
@@ -89,7 +85,7 @@ class RootView {
      *
      */
     private fun offsetContentToStatusBar() {
-        content.apply {
+        content?.apply {
             val params = layoutParams as ViewGroup.MarginLayoutParams
             params.topMargin = 0
             layoutParams = params
@@ -100,14 +96,20 @@ class RootView {
      * @param view
      */
     private fun removeView(view: View?) {
-        content.removeView(view)
+        if (justyContent != null && view != viewDisplay) {
+            justyContent!!.removeView(view)
+        } else
+            content!!.removeView(view)
     }
 
     /**
      * @param view
      */
     private fun setContentView(view: View?): View? {
-        content.addView(view)
+        if (justyContent != null && view != viewDisplay) {
+            justyContent!!.addView(view)
+        } else
+            content!!.addView(view)
         return view
     }
 
@@ -127,10 +129,10 @@ class RootView {
      * @param layout   显示的视图
      * @param id       需要操作的资源id
      */
-    private fun setContentView(listener: DataErrorCallBack?, layout: Int, vararg id: Int): View {
+    private fun setContentView(listener: () -> Unit, layout: Int, vararg id: Int): View {
         val view = mInflater.inflate(layout, null)
         for (index in id) {
-            view.findViewById<View>(index).setOnClickListener { listener?.onRetry() }
+            view.findViewById<View>(index).setOnClickListener { listener.invoke() }
         }
 
         return view
@@ -143,9 +145,9 @@ class RootView {
      */
     fun setTitle(title: Any) {
         if (title is Int) {
-            toolbar.title = ctx.resources.getString(title)
+            toolbar?.title = ctx.resources.getString(title)
         } else {
-            toolbar.title = title as CharSequence
+            toolbar?.title = title as CharSequence
         }
     }
 
@@ -158,7 +160,7 @@ class RootView {
         progressView = null
         errorview = progressView
 
-        viewDisplay!!.visibility = View.INVISIBLE
+        viewDisplay?.visibility = View.INVISIBLE
 
         progressView = setContentView(layout)
     }
@@ -170,11 +172,11 @@ class RootView {
      * @param layout
      * @param id
      */
-    fun errorHappen(listener: DataErrorCallBack?, layout: Int, vararg id: Int) {
+    fun errorHappen(listener: () -> Unit, layout: Int, vararg id: Int) {
         removeView(errorview)
         errorview = null
 
-        viewDisplay!!.visibility = View.INVISIBLE
+        viewDisplay?.visibility = View.INVISIBLE
 
         errorview = setContentView(listener, layout, *id)
 
@@ -199,8 +201,11 @@ class RootView {
     private fun viewAnimation(showView: View?, dissMissView: View?) {
         if (dissMissView == null) return
 
-        if (showView === viewDisplay && showView!!.visibility != View.VISIBLE)
-            showView.visibility = View.VISIBLE
+        showView?.apply {
+            if (this === viewDisplay && visibility != View.VISIBLE)
+                visibility = View.VISIBLE
+        }
+
 
         if (viewDisplay != null && showView != viewDisplay)
             setContentView(showView)

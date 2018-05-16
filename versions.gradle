@@ -22,6 +22,7 @@ versions.fresco = "1.+"
 versions.stetho = "1.5.0"
 versions.scaleImageView = "3.+"
 versions.mterialprogress = "1.7"
+versions.flexbox = "0.3.2"
 //Arouter
 versions.arouter_compiler = "1.+"
 versions.arouter_api = "1.+"
@@ -97,6 +98,7 @@ deps.gson = "com.google.code.gson:gson:$versions.gson"
 deps.arouter_api = "com.alibaba:arouter-api:$versions.arouter_api"
 deps.arouter_compiler = "com.alibaba:arouter-compiler:$versions.arouter_compiler"
 deps.materialishPro = "com.pnikosis:materialish-progress:$versions.mterialprogress"
+deps.flexbox = "com.google.android:flexbox:$versions.flexbox"
 //---------------------------------------------和业务相关的第三方东西，比如友盟 统计，支付，登录啥的  放到下面
 
 ext.deps = deps

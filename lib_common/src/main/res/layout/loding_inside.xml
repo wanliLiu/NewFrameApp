@@ -13,5 +13,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:matProg_barColor="?attr/colorAccent"
+        app:matProg_circleRadius="50dp"
         app:matProg_progressIndeterminate="true" />
 </android.support.constraint.ConstraintLayout>

@@ -1,26 +1,33 @@
 package com.soli.lib_common.base
 
+import android.app.Activity
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import com.soli.lib_common.R
 import com.soli.lib_common.view.root.LoadingType
 import com.soli.lib_common.view.root.RootView
 
 /**
  * @author Soli
- * @Time 18-5-15 下午3:25
+ * @Time 18-5-16 上午11:10
  */
-open abstract class BaseActivity : BaseFunctionActivity() {
+open abstract class BaseFragment : BaseFunctionFragment() {
 
     protected var defaultLoadingType = LoadingType.TypeInside
     private var loadingType = defaultLoadingType
     protected lateinit var rootView: RootView
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return inflater.inflate(R.layout.activity_root_view, container,false)
+    }
 
-        setContentViews()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        setContentViews(view)
         initView()
-        initDefaultBack()
         initListener()
         initData()
     }
@@ -28,35 +35,8 @@ open abstract class BaseActivity : BaseFunctionActivity() {
     /**
      *
      */
-    private fun initDefaultBack() {
-        //是否要显示返回的icon
-        if (needShowBackIcon()) {
-            //默认显示，点击关闭
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            rootView.getToolbar()?.setNavigationOnClickListener { onBackPressed() }
-        } else {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(false)
-        }
-    }
-
-    /**
-     * 是否要显示返回的按钮
-     *
-     * @return 默认要显示
-     */
-    open fun needShowBackIcon(): Boolean {
-        return true
-    }
-
-    /**
-     *
-     */
-    private fun setContentViews() {
-        setContentView(R.layout.activity_root_view)
-        rootView = RootView(this, getContentView())
-
-        setSupportActionBar(rootView.getToolbar())
-        supportActionBar?.title = null
+    private fun setContentViews(view: View) {
+        rootView = RootView(ctx as Activity, view, getContentView(), true)
     }
 
     /**
@@ -102,20 +82,4 @@ open abstract class BaseActivity : BaseFunctionActivity() {
         return R.layout.loding_inside
     }
 
-
-    override fun setTitle(title: CharSequence) {
-        rootView.setTitle(title)
-    }
-
-    override fun setTitle(titleId: Int) {
-        rootView.setTitle(titleId)
-    }
-
-    /**
-     *
-     */
-    fun errorHappen(listener: () -> Unit) {
-        rootView.errorHappen(listener, R.layout.error_trouble_layout, R.id.btnRetry)
-//        TODO("可以根据情况实际做相应的调整，这里只是case")
-    }
 }

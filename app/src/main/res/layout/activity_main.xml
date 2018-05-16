@@ -1,19 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    app:alignContent="flex_start"
+    app:alignItems="flex_start"
+    app:flexDirection="row"
+    app:flexWrap="wrap"
+    app:justifyContent="flex_start"
     tools:context=".MainActivity">
 
-    <TextView
-        android:id="@+id/java"
+    <Button
+        android:id="@+id/LauchActivity"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="JavaActivity"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:text="JavaActivity" />
 
-</android.support.constraint.ConstraintLayout>
+    <Button
+        android:id="@+id/progressInTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="内部加载" />
+
+    <Button
+        android:id="@+id/progressDialogTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Dialog加载" />
+
+    <Button
+        android:id="@+id/loaddingErroTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="加载出错" />
+
+
+    <Button
+        android:id="@+id/fragmentTest"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fragment测试" />
+</com.google.android.flexbox.FlexboxLayout>

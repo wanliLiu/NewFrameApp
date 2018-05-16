@@ -1,33 +1,20 @@
 package com.soli.lib_common.base
 
 import android.app.ProgressDialog
-import android.content.pm.ActivityInfo
-import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import android.support.v4.app.Fragment
 
 /**
  * @author Soli
- * @Time 18-5-15 下午3:07
+ * @Time 18-5-16 上午11:10
  */
-open abstract class BaseFunctionActivity : AppCompatActivity() , BaseInterface {
-
-    /**
-     * 默认竖屏，不支持横竖自定转换
-     */
-    protected val isScreenOnlyPORTRAIT = true
-
+open abstract class BaseFunctionFragment : Fragment(), BaseInterface {
     /**
      * 上下午context
      */
-    protected val ctx by lazy { this }
+    protected val ctx by lazy { this.activity }
 
     private var dialog: ProgressDialog? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        requestedOrientation = if (isScreenOnlyPORTRAIT) ActivityInfo.SCREEN_ORIENTATION_PORTRAIT else ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-    }
 
     /**
      *

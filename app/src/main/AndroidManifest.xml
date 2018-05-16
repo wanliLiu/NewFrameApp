@@ -18,6 +18,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".SecondAcitivity" />
+        <activity android:name=".FragmentTestActivity" />
     </application>
 
 </manifest>
