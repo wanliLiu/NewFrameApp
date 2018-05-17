@@ -48,7 +48,7 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
     constructor(mctx: Activity, showView: Int, isClear: Boolean = false) : this(mctx, mctx.findViewById<View>(R.id.viewRoot) as ViewGroup, showView, isClear)
 
     /**
-     * 进度加载的视图
+     * 调整进度加载的视图 的容器
      */
     fun justyProgressAreaContentTo(view: ViewGroup) {
         justyContent = view

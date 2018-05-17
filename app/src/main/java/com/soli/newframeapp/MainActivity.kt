@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), View.OnClickListener {
 
-    private val retryIndex: Int = 2
+    private val retryIndex: Int = 1
     private var retry: Int = 0
 
     override fun needShowBackIcon() = false
