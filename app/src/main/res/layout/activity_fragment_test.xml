@@ -17,13 +17,23 @@
 
 
     <Button
-        android:id="@+id/fragementTest"
+        android:id="@+id/fragementTest1"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Frament里面"
+        android:text="Frament里面_tab1"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/fragementTest2"
         app:layout_constraintTop_toBottomOf="@id/activityTest" />
+
+    <Button
+        android:id="@+id/fragementTest2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Frament里面_tab2"
+        app:layout_constraintBottom_toBottomOf="@id/fragementTest1"
+        app:layout_constraintLeft_toRightOf="@id/fragementTest1"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="@id/fragementTest1" />
 
     <FrameLayout
         android:id="@+id/container"
@@ -32,13 +42,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/fragementTest">
+        app:layout_constraintTop_toBottomOf="@id/fragementTest1">
 
         <!--<TextView-->
-            <!--android:id="@+id/textContent"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_gravity="center"-->
-            <!--android:text="内容是在Activity里面" />-->
+        <!--android:id="@+id/textContent"-->
+        <!--android:layout_width="wrap_content"-->
+        <!--android:layout_height="wrap_content"-->
+        <!--android:layout_gravity="center"-->
+        <!--android:text="内容是在Activity里面" />-->
     </FrameLayout>
 </android.support.constraint.ConstraintLayout>

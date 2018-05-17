@@ -3,6 +3,8 @@ package com.soli.newframeapp;
 import android.os.Handler;
 
 import com.soli.lib_common.base.BaseActivity;
+import com.soli.lib_common.util.NetworkUtil;
+import com.soli.lib_common.util.TabFragmentManager;
 import com.soli.lib_common.view.root.LoadingType;
 
 /**
@@ -29,6 +31,7 @@ public class SecondAcitivity extends BaseActivity {
     protected void initData() {
 
         loadingErrorTest();
+        NetworkUtil.INSTANCE.isAvailableByPing();
     }
 
     /**
@@ -36,6 +39,16 @@ public class SecondAcitivity extends BaseActivity {
      */
     private void addFragment() {
         getSupportFragmentManager().beginTransaction().add(R.id.topView, TestFragment.Companion.getInstance("我事来自java过来的哦")).commit();
+    }
+
+    /**
+     *
+     */
+    private void pageFragmentManager() {
+        TabFragmentManager manager = new TabFragmentManager(this, R.id.root_content);
+        manager.addTab(1, TestFragment.Companion.getInstance("dksld").getClass(), null);
+        manager.addTab(2, TestFragment.Companion.getInstance("dksl2332d").getClass(), null);
+        manager.setCurrentTab(1);
     }
 
     private void loadingErrorTest() {

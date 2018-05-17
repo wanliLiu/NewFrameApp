@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Handler
 import android.view.View
 import com.soli.lib_common.base.BaseActivity
+import com.soli.lib_common.util.NetworkUtil
 import com.soli.lib_common.view.root.LoadingType
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -18,6 +19,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun initView() {
         title = "New Frame"
+
     }
 
     override fun initListener() {
@@ -46,6 +48,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun initData() {
+        NetworkUtil.isAvailableByPing()
     }
 
     private fun loadingErrorTest() {

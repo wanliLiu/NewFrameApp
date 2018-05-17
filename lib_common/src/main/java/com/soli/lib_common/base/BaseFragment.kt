@@ -20,7 +20,7 @@ open abstract class BaseFragment : BaseFunctionFragment() {
     protected lateinit var rootView: RootView
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.activity_root_view, container,false)
+        return inflater.inflate(R.layout.activity_root_view, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -82,4 +82,9 @@ open abstract class BaseFragment : BaseFunctionFragment() {
         return R.layout.loding_inside
     }
 
+    /**
+     * tab 切换
+     */
+    open fun Resume() {
+    }
 }
