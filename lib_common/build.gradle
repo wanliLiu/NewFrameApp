@@ -39,8 +39,10 @@ dependencies {
     api deps.corektx
 
     api deps.rx_android
+    api deps.rxbinding
     api deps.rxjava2
-    api deps.retrofit.runtime
+    implementation deps.loggingInterceptor
+    implementation deps.retrofit.runtime
     api deps.retrofit.gson
 
     api deps.event_bus

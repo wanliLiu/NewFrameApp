@@ -3,6 +3,7 @@ package com.soli.lib_common
 import android.support.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.soli.lib_common.base.Constant
+import com.soli.lib_common.util.FrescoUtil
 
 /**
  * @author Soli
@@ -21,5 +22,7 @@ open abstract class BaseApplication : MultiDexApplication() {
 
         if (Constant.Debug)
             Stetho.initializeWithDefaults(this)
+
+        FrescoUtil.Init(this)
     }
 }
