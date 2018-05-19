@@ -10,6 +10,11 @@ public class Constant {
 
     public static boolean Debug;
 
+    /**
+     * 服务器地址
+     */
+    public static String webServer = "";
+
     private static Context ctx;
 
     /**

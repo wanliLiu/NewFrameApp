@@ -43,8 +43,8 @@ dependencies {
     api deps.rxjava2
     implementation deps.loggingInterceptor
     implementation deps.retrofit.runtime
-    api deps.retrofit.gson
-
+//    api deps.retrofit.gson
+    api deps.fastjson
     api deps.event_bus
 
     api deps.fresco
