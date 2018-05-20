@@ -34,4 +34,5 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':lib_common')
     implementation deps.flexbox
+    implementation 'com.android.support.constraint:constraint-layout:1.1.0'
 }

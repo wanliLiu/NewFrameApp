@@ -27,6 +27,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         fragmentTest.setOnClickListener(this)
         LauchActivity.setOnClickListener(this)
 
+        netWorkTest.setOnClickListener(this)
+
         progressInTest.setOnClickListener {
             showProgress()
             Handler().postDelayed({
@@ -67,6 +69,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         when (v?.id) {
             R.id.LauchActivity -> startActivity(Intent(ctx, SecondAcitivity::class.java))
             R.id.fragmentTest -> startActivity(Intent(ctx, FragmentTestActivity::class.java))
+            R.id.netWorkTest -> startActivity(Intent(ctx, NetWorkTestActivity::class.java))
         }
     }
 }

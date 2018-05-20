@@ -3,6 +3,9 @@ package com.soli.newframeapp;
 import android.os.Handler;
 
 import com.soli.lib_common.base.BaseActivity;
+import com.soli.lib_common.net.ApiCallBack;
+import com.soli.lib_common.net.ApiHelper;
+import com.soli.lib_common.net.ApiResult;
 import com.soli.lib_common.util.NetworkUtil;
 import com.soli.lib_common.util.TabFragmentManager;
 import com.soli.lib_common.view.root.LoadingType;
@@ -49,6 +52,21 @@ public class SecondAcitivity extends BaseActivity {
         manager.addTab(1, TestFragment.Companion.getInstance("dksld").getClass(), null);
         manager.addTab(2, TestFragment.Companion.getInstance("dksl2332d").getClass(), null);
         manager.setCurrentTab(1);
+
+        ApiHelper api = new ApiHelper.Builder()
+                .baseUrl("http://news.at.zhihu.com/api/4/news/before/")
+                .url("20180510")
+                .build();
+        api.get(new ApiCallBack() {
+            @Override
+            public void receive(ApiResult result) {
+                dismissProgress();
+                if (result.isSuccess()) {
+
+                } else {
+                }
+            }
+        });
     }
 
     private void loadingErrorTest() {

@@ -6,7 +6,12 @@ package com.soli.lib_common.net;
  * @author Soli
  * @Time 18-5-17 下午3:52
  */
-public enum ErrorType {
+public enum ResultCode {
+
+    /**
+     * 请求成功
+     */
+    RESULT_OK(0x00),
 
     /**
      * 失败 false
@@ -20,7 +25,7 @@ public enum ErrorType {
 
     private int mIntValue;
 
-    ErrorType(int intValue) {
+    ResultCode(int intValue) {
         mIntValue = intValue;
     }
 

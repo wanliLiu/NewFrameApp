@@ -9,7 +9,6 @@ import com.soli.lib_common.net.cookie.PersistentCookieJar;
 import com.soli.lib_common.net.cookie.cache.SetCookieCache;
 import com.soli.lib_common.net.cookie.https.HttpsUtils;
 import com.soli.lib_common.net.cookie.persistence.SharedPrefsCookiePersistor;
-import com.soli.lib_common.util.MLog;
 import com.soli.lib_common.util.NetworkUtil;
 
 import java.util.ArrayList;
@@ -45,6 +44,7 @@ public class ApiHelper {
 
     /**
      * 获取单例
+     *
      * @return
      */
     private static ApiHelper getInstance() {
@@ -127,25 +127,30 @@ public class ApiHelper {
     private void startRequest(final Builder builder, final ApiCallBack callBack) {
         if (!NetworkUtil.INSTANCE.isConnected()) {
             if (callBack != null)
-                callBack.failure(ErrorType.NETWORK_TROBLE, "没有网络啊！！！");
+                callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));
             return;
         }
         mCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
                 // TODO: 2018/5/19 这里可以根据实际情况做相应的调整 比如
+                ApiResult result = null;
                 if (200 == response.code()) {
                     try {
-                        String result = response.body().string();
-                        parseData(result, builder.clazz, builder.bodyType, callBack);
+                        String re = response.body().string();
+                        result = new ApiResult(ResultCode.RESULT_OK, parseData(re, builder.clazz, builder.bodyType), re);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                 }
                 if (callBack != null && !response.isSuccessful() || 200 != response.code()) {
                     // TODO: 2018/5/19  这里可以根据实际情况，对返回的错误msg，通过接口的msg来拿
-                    callBack.failure(ErrorType.RESULT_FAILED, response.message());
+                    result = new ApiResult(ResultCode.RESULT_FAILED, response.message());
                 }
+
+                if (callBack != null)
+                    callBack.receive(result);
+
                 if (null != builder.tag) {
                     removeCall(builder.url);
                 }
@@ -155,7 +160,7 @@ public class ApiHelper {
             public void onFailure(Call<ResponseBody> call, Throwable t) {
                 t.printStackTrace();
                 if (callBack != null)
-                    callBack.failure(ErrorType.RESULT_FAILED, t.getMessage());
+                    callBack.receive(new ApiResult(ResultCode.RESULT_FAILED, t.getMessage()));
                 if (null != builder.tag) {
                     removeCall(builder.url);
                 }
@@ -167,27 +172,28 @@ public class ApiHelper {
     /**
      * 数据解析方法
      *
-     * @param data             要解析的数据
-     * @param clazz            解析类
-     * @param bodyType         解析数据类型
-     * @param onResultListener 回调方数据接口
+     * @param data     要解析的数据
+     * @param clazz    解析类
+     * @param bodyType 解析数据类型
      */
     @SuppressWarnings("unchecked")
-    private void parseData(String data, Class clazz, @DataType.Type int bodyType, ApiCallBack onResultListener) {
+    private Object parseData(String data, Class clazz, @DataType.Type int bodyType) {
+        Object object = null;
         switch (bodyType) {
             case DataType.STRING:
-                onResultListener.onSuccess(data, data);
+                object = data;
                 break;
             case DataType.JSON_OBJECT:
-                onResultListener.onSuccess(DataParseUtil.parseObject(data, clazz), data);
+                object = DataParseUtil.parseObject(data, clazz);
                 break;
             case DataType.JSON_ARRAY:
-                onResultListener.onSuccess(DataParseUtil.parseToList(data, clazz), data);
+                object = DataParseUtil.parseToList(data, clazz);
                 break;
             default:
-                MLog.e("http parse tip:", "if you want return object, please use bodyType() set data type");
+                new IllegalArgumentException("if you want return object, please use bodyType() set data type");
                 break;
         }
+        return object;
     }
 
     /**

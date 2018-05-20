@@ -19,6 +19,10 @@
         </activity>
         <activity android:name=".SecondAcitivity" />
         <activity android:name=".FragmentTestActivity" />
+        <activity
+            android:name=".NetWorkTestActivity"
+            android:label="@string/title_activity_net_work_test"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
