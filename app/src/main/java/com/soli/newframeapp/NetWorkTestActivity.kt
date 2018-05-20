@@ -12,6 +12,7 @@ class NetWorkTestActivity : BaseActivity() {
     override fun getContentView() = R.layout.activity_net_work_test
 
     override fun initView() {
+        title = "网络测试"
 
     }
 
