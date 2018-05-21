@@ -13,7 +13,7 @@ import com.soli.lib_common.view.root.RootView
  * @author Soli
  * @Time 18-5-16 上午11:10
  */
-open abstract class BaseFragment : BaseFunctionFragment() {
+abstract class BaseFragment : BaseFunctionFragment() {
 
     protected var defaultLoadingType = LoadingType.TypeInside
     private var loadingType = defaultLoadingType
@@ -61,6 +61,7 @@ open abstract class BaseFragment : BaseFunctionFragment() {
         when (loadingType) {
             LoadingType.TypeDialog -> showProgressDialog()
             LoadingType.TypeInside -> rootView.showProgressInside(getProgressView())
+            else->{}
         }
     }
 

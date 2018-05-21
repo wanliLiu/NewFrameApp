@@ -177,8 +177,7 @@ object NetworkUtil {
      */
     fun isWifiConnected(): Boolean {
         val cm = Constant.getContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return (cm != null && cm.activeNetworkInfo != null
-                && cm.activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI)
+        return (cm.activeNetworkInfo != null && cm.activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI)
     }
 
     /**

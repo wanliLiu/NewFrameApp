@@ -9,7 +9,7 @@ import android.support.v7.app.AppCompatActivity
  * @author Soli
  * @Time 18-5-15 下午3:07
  */
-open abstract class BaseFunctionActivity : AppCompatActivity() , BaseInterface {
+abstract class BaseFunctionActivity : AppCompatActivity() , BaseInterface {
 
     /**
      * 默认竖屏，不支持横竖自定转换

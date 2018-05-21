@@ -6,7 +6,7 @@ import com.soli.lib_common.view.root.LoadingType
  * @author Soli
  * @Time 18-5-15 上午11:37
  */
-open interface BaseInterface {
+interface BaseInterface {
 
     fun showProgress(show: Boolean)
     /**

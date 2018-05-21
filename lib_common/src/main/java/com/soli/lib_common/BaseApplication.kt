@@ -9,7 +9,7 @@ import com.soli.lib_common.util.FrescoUtil
  * @author Soli
  * @Time 18-5-15 上午11:07
  */
-open abstract class BaseApplication : MultiDexApplication() {
+abstract class BaseApplication : MultiDexApplication() {
 
     protected abstract fun beforeLaunch()
 
