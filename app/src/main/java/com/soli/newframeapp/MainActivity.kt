@@ -6,6 +6,7 @@ import android.view.View
 import com.soli.lib_common.base.BaseActivity
 import com.soli.lib_common.util.NetworkUtil
 import com.soli.lib_common.view.root.LoadingType
+import com.soli.newframeapp.net.NetWorkTestActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), View.OnClickListener {

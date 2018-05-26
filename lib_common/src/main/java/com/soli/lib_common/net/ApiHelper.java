@@ -141,9 +141,10 @@ public class ApiHelper {
                         result = new ApiResult(ResultCode.RESULT_OK, parseData(re, builder.clazz, builder.bodyType), re);
                     } catch (Exception e) {
                         e.printStackTrace();
+                        result = new ApiResult(ResultCode.RESULT_FAILED, e.getMessage());
                     }
                 }
-                if (callBack != null && !response.isSuccessful() || 200 != response.code()) {
+                if (!response.isSuccessful() || 200 != response.code()) {
                     // TODO: 2018/5/19  这里可以根据实际情况，对返回的错误msg，通过接口的msg来拿
                     result = new ApiResult(ResultCode.RESULT_FAILED, response.message());
                 }
