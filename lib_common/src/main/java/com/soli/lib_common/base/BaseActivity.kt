@@ -79,7 +79,7 @@ abstract class BaseActivity : BaseFunctionActivity() {
 
     override fun showProgress() {
         when (loadingType) {
-            LoadingType.TypeDialog -> showProgressDialog()
+            LoadingType.TypeDialog -> rootView.showProgressInside(getProgressLikeDialog()) // showProgressDialog()
             LoadingType.TypeInside -> rootView.showProgressInside(getProgressView())
             else -> {
             }
@@ -102,6 +102,13 @@ abstract class BaseActivity : BaseFunctionActivity() {
      */
     open fun getProgressView(): Int {
         return R.layout.loding_inside
+    }
+
+    /**
+     * 类似在里面的加载效果
+     */
+    open fun getProgressLikeDialog(): Int {
+        return R.layout.loding_inside_dialog
     }
 
 

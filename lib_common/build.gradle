@@ -35,6 +35,7 @@ dependencies {
     api deps.support.app_compat
     api deps.support.recyclerview
     api deps.support.design
+    api deps.support.cardview
     api deps.constraint_layout
     api deps.corektx
 
