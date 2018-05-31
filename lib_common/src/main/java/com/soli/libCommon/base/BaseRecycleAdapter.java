@@ -143,6 +143,11 @@ public class BaseRecycleAdapter<T> extends RecyclerView.Adapter<RecyclerView.Vie
         }
     }
 
+    public void clear() {
+        if (mList != null)
+            mList.clear();
+    }
+
     public void removeAll() {
         if (mList != null) {
             mList.removeAll(mList);

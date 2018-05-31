@@ -7,7 +7,7 @@ import com.facebook.imagepipeline.cache.DefaultCacheKeyFactory;
 /**
  * Created by Soli on 2016/8/24.
  */
-public class MyCacheKeyFactory extends DefaultCacheKeyFactory {
+class MyCacheKeyFactory extends DefaultCacheKeyFactory {
 
     private static MyCacheKeyFactory sInstance = null;
 

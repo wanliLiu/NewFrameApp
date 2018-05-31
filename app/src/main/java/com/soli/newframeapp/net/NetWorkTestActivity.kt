@@ -4,6 +4,7 @@ import android.support.v7.widget.LinearLayoutManager
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.net.ApiHelper
 import com.soli.libCommon.net.DataType
+import com.soli.libCommon.util.ViewUtil
 import com.soli.newframeapp.R
 import com.soli.newframeapp.model.StoryList
 import com.soli.pullupdownrefresh.PullRefreshLayout
@@ -16,7 +17,7 @@ class NetWorkTestActivity : BaseActivity() {
 
     private val adapter: NewsAdapter by lazy { NewsAdapter(ctx) }
     private val mAdapter: LoadMoreRecyclerAdapter by lazy { LoadMoreRecyclerAdapter(adapter) }
-
+    private var index = 0
     override fun getContentView() = R.layout.activity_net_work_test
 
     override fun initView() {
@@ -35,11 +36,13 @@ class NetWorkTestActivity : BaseActivity() {
 
         refreshLayout.setRefreshListener(object : PullRefreshLayout.onRefrshListener {
             override fun onPullupRefresh(actionFromClick: Boolean) {
+                index++
                 getNewsDate(false)
             }
 
             override fun onPullDownRefresh() {
-                adapter.removeAll()
+                adapter.clear()
+                index = 0
                 getNewsDate(false)
             }
 
@@ -47,7 +50,6 @@ class NetWorkTestActivity : BaseActivity() {
     }
 
     override fun initData() {
-
         getNewsDate(true)
     }
 
@@ -57,6 +59,7 @@ class NetWorkTestActivity : BaseActivity() {
     private fun getNewsDate(show: Boolean = false) {
         val calendar = Calendar.getInstance()
         val simpleDateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+        calendar.add(Calendar.DAY_OF_MONTH, -index)
 
         showProgress(show)
 
@@ -66,11 +69,15 @@ class NetWorkTestActivity : BaseActivity() {
                 .url(simpleDateFormat.format(calendar.time))
                 .build()
                 .get { result ->
+                    ViewUtil.setNoDataEmptyView(ctx, itemList, 0, "测试过来的数据哦!", null)
                     dismissProgress()
                     refreshLayout.onRefreshComplete()
                     if (result.isSuccess) {
                         if (result.result is StoryList) {
                             adapter.addAll((result.result as StoryList).stories)
+                            if (index == 5) {
+                                adapter.clear()
+                            }
                             mAdapter.notifyDataSetChangedHF()
                         }
                     } else {

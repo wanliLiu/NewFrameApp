@@ -67,4 +67,5 @@ dependencies {
     api deps.event_bus
     api deps.rxpermissions
     api deps.materialishPro
+    api deps.pullupdown
 }

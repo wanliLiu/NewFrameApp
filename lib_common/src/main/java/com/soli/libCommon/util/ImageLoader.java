@@ -14,7 +14,10 @@ import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.soli.libCommon.base.Constant;
 
 /**
+ * 利用Fresco 加载图片
  *
+ * @author Soli
+ * @Time 18-5-31 下午4:53
  */
 public class ImageLoader {
 
