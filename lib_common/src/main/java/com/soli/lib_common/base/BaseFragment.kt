@@ -88,4 +88,19 @@ abstract class BaseFragment : BaseFunctionFragment() {
      */
     open fun Resume() {
     }
+
+    /**
+     *
+     */
+    fun errorHappen(listener: () -> Unit) {
+        rootView.errorHappen(listener, R.layout.error_trouble_layout, R.id.btnRetry)
+//        TODO("可以根据情况实际做相应的调整，这里只是case")
+    }
+
+    /**
+     * 没有视图的时候显示的视图,然后这里是需要手动添加
+     */
+    fun hasNoResult(layoutId: Int = R.layout.has_no_content_layout) {
+        rootView.errorHappen({}, layoutId, null)
+    }
 }

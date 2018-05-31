@@ -37,7 +37,10 @@ class TestFragment : BaseFragment() {
 
     override fun initListener() {
         tigger.setOnClickListener {
-            initData()
+            if ("java" in desc.text.toString()) {
+                hasNoResult()
+            } else
+                initData()
         }
     }
 

@@ -33,6 +33,7 @@ public class SecondAcitivity extends BaseActivity {
     @Override
     protected void initListener() {
 
+        findViewById(R.id.button).setOnClickListener(v -> hasNoResult(R.layout.has_no_content_layout));
     }
 
     @Override
@@ -92,7 +93,7 @@ public class SecondAcitivity extends BaseActivity {
         api.get(result -> {
 //            dismissProgress();
             if (result.isSuccess()) {
-                Log.e("result",result.getFullData());
+                Log.e("result", result.getFullData());
             } else {
             }
         });

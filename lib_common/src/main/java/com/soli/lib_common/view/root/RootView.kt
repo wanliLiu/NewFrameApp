@@ -129,10 +129,13 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
      * @param layout   显示的视图
      * @param id       需要操作的资源id
      */
-    private fun setContentView(listener: () -> Unit, layout: Int, vararg id: Int): View {
+    private fun setContentView(listener: () -> Unit, layout: Int, vararg id: Int?): View {
         val view = mInflater.inflate(layout, null)
+
         for (index in id) {
-            view.findViewById<View>(index).setOnClickListener { listener.invoke() }
+            index?.let {
+                view.findViewById<View>(it).setOnClickListener { listener.invoke() }
+            }
         }
 
         return view
@@ -172,7 +175,7 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
      * @param layout
      * @param id
      */
-    fun errorHappen(listener: () -> Unit, layout: Int, vararg id: Int) {
+    fun errorHappen(listener: () -> Unit, layout: Int, vararg id: Int?) {
         removeView(errorview)
         errorview = null
 
