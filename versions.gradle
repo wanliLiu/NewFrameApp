@@ -8,8 +8,8 @@ def versions = [:]
 versions.android_gradle_plugin = "3.1.2"
 versions.kotlin = "1.2.41"
 versions.support = "27.1.1"
-versions.multidex = "1.0.2"
-versions.constraint_layout = "1.1.0"
+versions.multidex = "1.+"
+versions.constraint_layout = "1.+"
 versions.rxjava2 = "2.+"
 versions.rx_android = "2.+"
 versions.rxBinding = "2.+"
@@ -101,6 +101,7 @@ deps.arouter_api = "com.alibaba:arouter-api:$versions.arouter_api"
 deps.arouter_compiler = "com.alibaba:arouter-compiler:$versions.arouter_compiler"
 deps.materialishPro = "com.pnikosis:materialish-progress:$versions.mterialprogress"
 deps.flexbox = "com.google.android:flexbox:$versions.flexbox"
+deps.rxpermissions = "com.soli.lib:rxpermissions:1.+"
 //---------------------------------------------和业务相关的第三方东西，比如友盟 统计，支付，登录啥的  放到下面
 
 ext.deps = deps

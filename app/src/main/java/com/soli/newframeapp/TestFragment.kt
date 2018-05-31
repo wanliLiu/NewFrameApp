@@ -31,7 +31,7 @@ class TestFragment : BaseFragment() {
 
     override fun initView() {
         arguments?.apply {
-            desc.text = getString(com.soli.newframeapp.TestFragment.Companion.inputStr, "没有数据传入")
+            desc.text = getString(inputStr, "没有数据传入")
         }
     }
 

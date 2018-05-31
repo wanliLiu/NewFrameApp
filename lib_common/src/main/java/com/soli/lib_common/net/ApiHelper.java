@@ -190,9 +190,6 @@ public class ApiHelper {
             case DataType.JSON_ARRAY:
                 object = DataParseUtil.parseToList(data, clazz);
                 break;
-            default:
-                new IllegalArgumentException("if you want return object, please use bodyType() set data type");
-                break;
         }
         return object;
     }

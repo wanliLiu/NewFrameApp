@@ -29,9 +29,11 @@ android {
 
 dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
-    api deps.support.multidex
+    //kotlin support
     api deps.kotlin.stdlib
 
+    //android support
+    api deps.support.multidex
     api deps.support.app_compat
     api deps.support.recyclerview
     api deps.support.design
@@ -39,23 +41,30 @@ dependencies {
     api deps.constraint_layout
     api deps.corektx
 
+    //Rxjava
     api deps.rx_android
     api deps.rxbinding
     api deps.rxjava2
+
+    //network
     implementation deps.loggingInterceptor
     implementation deps.retrofit.runtime
 //    api deps.retrofit.gson
-    api deps.fastjson
-    api deps.gson
-    api deps.event_bus
 
+    //picture
     api deps.fresco
 //    api deps.animatedgif
 //    api deps.animatedwebp
 //    api deps.webpsupport
 
+    //debug tools
     api deps.stetho
     api deps.stethoOkhttp3
 
+    //third lib support
+    api deps.fastjson
+    api deps.gson
+    api deps.event_bus
+    api deps.rxpermissions
     api deps.materialishPro
 }

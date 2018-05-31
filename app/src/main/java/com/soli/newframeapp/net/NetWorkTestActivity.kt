@@ -68,7 +68,7 @@ class NetWorkTestActivity : BaseActivity() {
                 .get { result ->
                     dismissProgress()
                     refreshLayout.onRefreshComplete()
-                    if (result!!.isSuccess) {
+                    if (result.isSuccess) {
                         if (result.result is StoryList) {
                             adapter.addAll((result.result as StoryList).stories)
                             mAdapter.notifyDataSetChangedHF()
