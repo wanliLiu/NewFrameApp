@@ -1,9 +1,9 @@
 package com.soli.newframeapp.net
 
 import android.support.v7.widget.LinearLayoutManager
-import com.soli.lib_common.base.BaseActivity
-import com.soli.lib_common.net.ApiHelper
-import com.soli.lib_common.net.DataType
+import com.soli.libCommon.base.BaseActivity
+import com.soli.libCommon.net.ApiHelper
+import com.soli.libCommon.net.DataType
 import com.soli.newframeapp.R
 import com.soli.newframeapp.model.StoryList
 import com.soli.pullupdownrefresh.PullRefreshLayout

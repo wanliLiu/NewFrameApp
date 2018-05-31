@@ -1,7 +1,7 @@
 package com.soli.newframeapp
 
-import com.soli.lib_common.BaseApplication
-import com.soli.lib_common.base.Constant
+import com.soli.libCommon.BaseApplication
+import com.soli.libCommon.base.Constant
 
 /**
  * @author Soli

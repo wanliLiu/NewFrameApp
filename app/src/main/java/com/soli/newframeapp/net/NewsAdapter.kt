@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.facebook.drawee.view.SimpleDraweeView
-import com.soli.lib_common.base.BaseRecycleAdapter
-import com.soli.lib_common.util.ImageLoader
+import com.soli.libCommon.base.BaseRecycleAdapter
+import com.soli.libCommon.util.ImageLoader
 import com.soli.newframeapp.R
 import com.soli.newframeapp.model.Story
 

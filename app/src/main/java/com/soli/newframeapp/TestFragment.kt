@@ -2,7 +2,7 @@ package com.soli.newframeapp
 
 import android.os.Bundle
 import android.os.Handler
-import com.soli.lib_common.base.BaseFragment
+import com.soli.libCommon.base.BaseFragment
 import kotlinx.android.synthetic.main.layout_framgent.*
 
 /**

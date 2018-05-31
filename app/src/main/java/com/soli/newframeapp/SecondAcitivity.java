@@ -3,12 +3,12 @@ package com.soli.newframeapp;
 import android.os.Handler;
 import android.util.Log;
 
-import com.soli.lib_common.base.BaseActivity;
-import com.soli.lib_common.net.ApiHelper;
-import com.soli.lib_common.net.DataType;
-import com.soli.lib_common.util.NetworkUtil;
-import com.soli.lib_common.util.TabFragmentManager;
-import com.soli.lib_common.view.root.LoadingType;
+import com.soli.libCommon.base.BaseActivity;
+import com.soli.libCommon.net.ApiHelper;
+import com.soli.libCommon.net.DataType;
+import com.soli.libCommon.util.NetworkUtil;
+import com.soli.libCommon.util.TabFragmentManager;
+import com.soli.libCommon.view.root.LoadingType;
 import com.soli.newframeapp.model.StoryList;
 
 import java.text.SimpleDateFormat;
