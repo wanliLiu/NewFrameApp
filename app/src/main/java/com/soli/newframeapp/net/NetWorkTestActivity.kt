@@ -1,6 +1,7 @@
 package com.soli.newframeapp.net
 
 import android.support.v7.widget.LinearLayoutManager
+import android.view.View
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.net.ApiHelper
 import com.soli.libCommon.net.DataType
@@ -69,7 +70,12 @@ class NetWorkTestActivity : BaseActivity() {
                 .url(simpleDateFormat.format(calendar.time))
                 .build()
                 .get { result ->
-                    ViewUtil.setNoDataEmptyView(ctx, itemList, 0, "测试过来的数据哦!", null)
+
+                    ViewUtil.setNoDataEmptyView(ctx, itemList, 0, "没有数据哦,测试RecyclerView加载没有数据的空视图显示!", View.OnClickListener {
+                        index = 0
+                        getNewsDate(true)
+                    })
+
                     dismissProgress()
                     refreshLayout.onRefreshComplete()
                     if (result.isSuccess) {
