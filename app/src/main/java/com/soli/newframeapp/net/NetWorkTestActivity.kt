@@ -38,13 +38,13 @@ class NetWorkTestActivity : BaseActivity() {
         refreshLayout.setRefreshListener(object : PullRefreshLayout.onRefrshListener {
             override fun onPullupRefresh(actionFromClick: Boolean) {
                 index++
-                getNewsDate(false)
+                getNewsDate()
             }
 
             override fun onPullDownRefresh() {
                 adapter.clear()
                 index = 0
-                getNewsDate(false)
+                getNewsDate()
             }
 
         })
