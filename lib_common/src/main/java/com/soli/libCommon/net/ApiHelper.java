@@ -305,6 +305,17 @@ public class ApiHelper {
         }
 
         /**
+         * 直接传对象
+         *
+         * @param params
+         * @return
+         */
+        public Builder params(ApiParams params) {
+            this.params = params;
+            return this;
+        }
+
+        /**
          * 添加请求参数
          *
          * @param key   键
