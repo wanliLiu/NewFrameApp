@@ -1,7 +1,6 @@
 package com.soli.libCommon.net;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.soli.libCommon.base.Constant;
@@ -270,6 +269,7 @@ public class ApiHelper {
 
         public Builder() {
             params = new ApiParams();
+            builderBaseUrl = Constant.webServer;
             tag = null;
         }
 
@@ -343,7 +343,7 @@ public class ApiHelper {
          * @return
          */
         public ApiHelper build() {
-            if (!TextUtils.isEmpty(builderBaseUrl)) {
+            if (!builderBaseUrl.equals(BASE_URL)) {
                 BASE_URL = builderBaseUrl;
             }
             ApiHelper client = getInstance();
