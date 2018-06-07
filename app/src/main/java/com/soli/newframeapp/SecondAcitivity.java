@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.soli.libCommon.base.BaseActivity;
+import com.soli.libCommon.net.ApiCallBack;
 import com.soli.libCommon.net.ApiHelper;
 import com.soli.libCommon.net.DataType;
 import com.soli.libCommon.util.NetworkUtil;
@@ -90,7 +91,8 @@ public class SecondAcitivity extends BaseActivity {
                 .bodyType(DataType.JSON_OBJECT, StoryList.class)
                 .url(simpleDateFormat.format(calendar.getTime()))
                 .build();
-        api.get(result -> {
+
+        api.get((ApiCallBack<StoryList>) result -> {
 //            dismissProgress();
             if (result.isSuccess()) {
                 Log.e("result", result.getFullData());

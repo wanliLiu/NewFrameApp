@@ -2,7 +2,10 @@ package com.soli.libCommon.util
 
 import android.content.Context
 import android.os.Environment
+import java.io.BufferedOutputStream
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
 import java.math.BigDecimal
 
 /**
@@ -130,5 +133,34 @@ object FileUtil {
         }
         val result4 = BigDecimal(teraBytes)
         return result4.setScale(2, BigDecimal.ROUND_HALF_UP).toPlainString() + "TB"
+    }
+
+    /**
+     * @param b
+     * @param ret
+     * @return
+     */
+    fun getFileFromBytes(b: ByteArray?, ret: File): File {
+
+        if (b == null) return ret
+
+        var stream: BufferedOutputStream? = null
+        try {
+            val fstream = FileOutputStream(ret)
+            stream = BufferedOutputStream(fstream)
+            stream.write(b)
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            if (stream != null) {
+                try {
+                    stream.close()
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                }
+
+            }
+        }
+        return ret
     }
 }

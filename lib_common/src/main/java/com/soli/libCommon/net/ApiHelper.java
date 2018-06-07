@@ -8,14 +8,20 @@ import com.soli.libCommon.net.cookie.PersistentCookieJar;
 import com.soli.libCommon.net.cookie.cache.SetCookieCache;
 import com.soli.libCommon.net.cookie.https.HttpsUtils;
 import com.soli.libCommon.net.cookie.persistence.SharedPrefsCookiePersistor;
+import com.soli.libCommon.net.download.ProgressInterceptor;
+import com.soli.libCommon.net.download.downloadProgressListener;
+import com.soli.libCommon.util.FileUtil;
 import com.soli.libCommon.util.NetworkUtil;
+import com.soli.libCommon.util.RxJavaUtil;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -40,6 +46,9 @@ public class ApiHelper {
     private static final Map<String, Call> CALL_MAP = new HashMap<>();
     private Builder mBuilder;
     private static ApiHelper client;
+
+    //文件下载进度回调
+    private downloadProgressListener progressListener;
 
     /**
      * 获取单例
@@ -68,6 +77,9 @@ public class ApiHelper {
         okHttpClient.retryOnConnectionFailure(true);
         okHttpClient.cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(Constant.getContext())));
 
+        addProgress(okHttpClient);
+        netWorkCacheSet(okHttpClient);
+
         if (Constant.Debug) {
             okHttpClient.addInterceptor((new HttpLoggingInterceptor()).setLevel(HttpLoggingInterceptor.Level.BODY));
             okHttpClient.addNetworkInterceptor(new StethoInterceptor());
@@ -76,6 +88,34 @@ public class ApiHelper {
         //支持https访问
         HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
         okHttpClient.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
+    }
+
+    /**
+     * 网络缓存设置
+     *
+     * @param builder
+     */
+    private void netWorkCacheSet(OkHttpClient.Builder builder) {
+        File mFile = new File(Constant.getContext().getCacheDir() + "http");//储存目录
+        long maxSize = 10 * 1024 * 1024; // 10 MB 最大缓存数
+        builder.cache(new Cache(mFile, maxSize));
+
+        builder.interceptors().add(new CacheInterceptor());
+        builder.networkInterceptors().add(new CacheInterceptor());
+    }
+
+    /**
+     * 添加对网络数据获取的进度添加
+     *
+     * @param builder
+     */
+    private void addProgress(OkHttpClient.Builder builder) {
+        builder.addNetworkInterceptor(new ProgressInterceptor((progress, bytesRead, fileSize, done) -> {
+            if (progressListener != null) {
+                RxJavaUtil.runOnUiThread(() -> progressListener.progress(progress, bytesRead, fileSize, done));
+            }
+            return null;
+        }));
     }
 
     /**
@@ -115,6 +155,66 @@ public class ApiHelper {
         mCall = retrofit.create(ApiService.class).executePost(builder.url, builder.params);
         putCall(builder, mCall);
         startRequest(builder, callBack);
+    }
+
+    /**
+     * 文件下载
+     *
+     * @param callBack
+     * @param listener
+     */
+    public void downloadFile(final ApiCallBack<File> callBack, final downloadProgressListener listener) {
+        Builder builder = mBuilder;
+
+        if (builder.saveFile == null) throw new IllegalArgumentException("下载保存的文件地址不能为空");
+
+        progressListener = listener;
+
+        mCall = retrofit.create(ApiService.class).executeDownloadFile(builder.fileUrl);
+        putCall(builder, mCall);
+        startFileRequest(builder, callBack);
+    }
+
+    /**
+     * @param builder
+     * @param callBack
+     */
+    private void startFileRequest(final Builder builder, final ApiCallBack callBack) {
+        if (!NetworkUtil.INSTANCE.isConnected()) {
+            if (callBack != null)
+                callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));
+            return;
+        }
+        mCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                try {
+                    final File file = builder.saveFile;
+                    if (!file.exists()) {
+                        file.createNewFile();
+                    }
+                    FileUtil.INSTANCE.getFileFromBytes(response.body().bytes(), file);
+
+                    if (callBack != null)
+                        callBack.receive(new ApiResult(ResultCode.RESULT_OK, file, file.getAbsolutePath()));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    onFailure(null, e);
+                }
+                progressListener = null;
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                if (callBack != null)
+                    callBack.receive(new ApiResult(ResultCode.RESULT_FAILED, t.getMessage()));
+                if (null != builder.tag) {
+                    removeCall(builder.url);
+                }
+                progressListener = null;
+            }
+        });
     }
 
     /**
@@ -267,6 +367,9 @@ public class ApiHelper {
         /*解析类*/
         private Class clazz;
 
+        private String fileUrl;
+        private File saveFile;
+
         public Builder() {
             params = new ApiParams();
             builderBaseUrl = Constant.webServer;
@@ -280,6 +383,24 @@ public class ApiHelper {
          */
         public Builder baseUrl(String baseUrl) {
             this.builderBaseUrl = baseUrl;
+            return this;
+        }
+
+        /**
+         * @param fileUrl
+         * @return
+         */
+        public Builder fileUrl(String fileUrl) {
+            this.fileUrl = fileUrl;
+            return this;
+        }
+
+        /**
+         * @param saveFile
+         * @return
+         */
+        public Builder saveFile(File saveFile) {
+            this.saveFile = saveFile;
             return this;
         }
 

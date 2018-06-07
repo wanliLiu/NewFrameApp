@@ -64,32 +64,37 @@ class NetWorkTestActivity : BaseActivity() {
 
         showProgress(show)
 
-        ApiHelper.Builder()
+        val apiHelper = ApiHelper.Builder()
                 .baseUrl("http://news.at.zhihu.com/api/4/news/before/")
                 .bodyType(DataType.JSON_OBJECT, StoryList::class.java)
                 .url(simpleDateFormat.format(calendar.time))
                 .build()
-                .get { result ->
 
-                    ViewUtil.setNoDataEmptyView(ctx, itemList, 0, "没有数据哦,测试RecyclerView加载没有数据的空视图显示!", View.OnClickListener {
+
+        apiHelper.get { result ->
+
+            ViewUtil.setNoDataEmptyView(context = ctx,
+                    listview = itemList,
+                    message = "没有数据哦,测试RecyclerView加载没有数据的空视图显示!",
+                    listener = View.OnClickListener {
                         index = 0
                         getNewsDate(true)
                     })
 
-                    dismissProgress()
-                    refreshLayout.onRefreshComplete()
-                    if (result.isSuccess) {
-                        if (result.result is StoryList) {
-                            adapter.addAll((result.result as StoryList).stories)
-                            if (index == 5) {
-                                adapter.clear()
-                            }
-                            mAdapter.notifyDataSetChangedHF()
-                        }
-                    } else {
-                        errorHappen { getNewsDate(show) }
+            dismissProgress()
+            refreshLayout.onRefreshComplete()
+            if (result.isSuccess) {
+                if (result.result is StoryList) {
+                    adapter.addAll((result.result as StoryList).stories)
+                    if (index == 5) {
+                        adapter.clear()
                     }
+                    mAdapter.notifyDataSetChangedHF()
                 }
+            } else {
+                errorHappen { getNewsDate(show) }
+            }
+        }
     }
 
 }

@@ -35,7 +35,7 @@ object ViewUtil {
      * @param message
      * @param listener
      */
-    fun setNoDataEmptyView(context: Context, listview: RecyclerViewEmpty, resourceId: Int = 0, message: String, paddingTop: Int = 0, listener: View.OnClickListener?) {
+    fun setNoDataEmptyView(context: Context, listview: RecyclerViewEmpty, resourceId: Int = 0, message: String = "", paddingTop: Int = 0, listener: View.OnClickListener? = null) {
         var parentView = listview.parent as ViewGroup
 
         if (parentView is PullRefreshLayout && parentView.childCount > 0) {
@@ -83,7 +83,7 @@ object ViewUtil {
      * @param message
      * @param listener
      */
-    fun setNoDataEmptyView(context: Context, listview: RecyclerViewEmpty, resourceId: Int, message: String, listener: View.OnClickListener?) {
+    fun setNoDataEmptyView(context: Context, listview: RecyclerViewEmpty, resourceId: Int = 0, message: String = "", listener: View.OnClickListener? = null) {
         setNoDataEmptyView(context, listview, resourceId, message, 0, listener)
     }
 
@@ -143,7 +143,7 @@ object ViewUtil {
      * @param click
      * @return
      */
-    private fun getEmptyView(context: Context, resourceId: Int, str: String, click: View.OnClickListener?): View {
+    private fun getEmptyView(context: Context, resourceId: Int = 0, str: String = "", click: View.OnClickListener? = null): View {
 
         val emptyView = View.inflate(context, R.layout.layout_empty, null)
         val txt_emtpy = emptyView.findViewById<TextView>(R.id.txt_emtpy)

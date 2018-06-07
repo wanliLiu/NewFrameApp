@@ -79,7 +79,7 @@ abstract class BaseActivity : BaseFunctionActivity() {
 
     override fun showProgress() {
         when (loadingType) {
-            LoadingType.TypeDialog -> rootView.showProgressInside(getProgressLikeDialog()) // showProgressDialog()
+            LoadingType.TypeDialog -> showProgressDialog() //rootView.showProgressInside(getProgressLikeDialog())
             LoadingType.TypeInside -> rootView.showProgressInside(getProgressView())
             else -> {
             }
