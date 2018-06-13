@@ -102,7 +102,7 @@ deps.arouter_compiler = "com.alibaba:arouter-compiler:$versions.arouter_compiler
 deps.materialishPro = "com.pnikosis:materialish-progress:$versions.mterialprogress"
 deps.flexbox = "com.google.android:flexbox:$versions.flexbox"
 deps.rxpermissions = "com.soli.lib:rxpermissions:1.+"
-deps.pullupdown = 'com.soli.refresh:pull_up_down:0.0.7'
+deps.pullupdown = 'com.soli.refresh:pull_up_down:0.0.8'
 //---------------------------------------------和业务相关的第三方东西，比如友盟 统计，支付，登录啥的  放到下面
 
 ext.deps = deps
