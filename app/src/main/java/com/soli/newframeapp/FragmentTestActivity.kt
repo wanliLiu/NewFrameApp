@@ -42,7 +42,7 @@ class FragmentTestActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun FragemntTest() {
-        supportFragmentManager.beginTransaction()?.replace(R.id.container, TestFragment.getInstance(inputStr))?.commit()
+        supportFragmentManager.beginTransaction().replace(R.id.container, TestFragment.getInstance(inputStr)).commit()
         //just make difference
         Handler().postDelayed({ rootView.justyProgressAreaContentTo(container) }, 500)
     }

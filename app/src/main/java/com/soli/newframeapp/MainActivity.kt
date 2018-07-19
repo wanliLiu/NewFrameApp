@@ -14,6 +14,7 @@ import com.soli.libCommon.util.NetworkUtil
 import com.soli.libCommon.util.ToastUtils
 import com.soli.libCommon.view.root.LoadingType
 import com.soli.newframeapp.net.NetWorkTestActivity
+import com.soli.newframeapp.net.WebviewActivity
 import com.soli.permissions.RxPermissions
 import kotlinx.android.synthetic.main.activity_main.*
 import java.io.File
@@ -49,6 +50,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         netWorkTest.setOnClickListener(this)
         showStartnetWorkTest.setOnClickListener(this)
         fileDownload.setOnClickListener(this)
+        webViewTest.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -93,6 +95,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.netWorkTest -> startActivity(Intent(ctx, NetWorkTestActivity::class.java))
             R.id.showStartnetWorkTest -> showStartEventPost()
             R.id.fileDownload -> checkPermission()
+            R.id.webViewTest -> startActivity(Intent(ctx, WebviewActivity::class.java))
         }
     }
 

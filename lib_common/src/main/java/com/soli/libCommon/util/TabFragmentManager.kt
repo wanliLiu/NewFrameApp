@@ -27,7 +27,7 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
         val info = TabInfo(tag, clss, args)
         val fragment = mActivity.supportFragmentManager.findFragmentByTag(tag)
         fragment?.apply { info.fragment = this as BaseFragment }
-        mtabs.put(tag, info)
+        mtabs[tag] = info
     }
 
     /**
@@ -41,7 +41,7 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
             if (it.key != id.toString() && tabinfo.fragment != null) {
                 val ft = mActivity.supportFragmentManager.beginTransaction()
                 tabinfo.fragment!!.onPause()
-                ft.hide(tabinfo.fragment)
+                ft.hide(tabinfo.fragment!!)
                 ft.commitAllowingStateLoss()
             }
         }
@@ -55,14 +55,14 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
         if (mActivity.isFinishing)
             return
 
-        mtabs.get(id.toString())?.apply {
+        mtabs[id.toString()]?.apply {
             val ft = mActivity.supportFragmentManager.beginTransaction()
             if (fragment == null) {
                 fragment = Fragment.instantiate(mActivity, clss.name, args) as BaseFragment
-                ft.add(mContainerId, fragment, tag)
+                ft.add(mContainerId, fragment!!, tag)
                 fragment!!.Resume()
             } else {
-                ft.show(fragment)
+                ft.show(fragment!!)
                 fragment!!.Resume()
             }
             ft.commitAllowingStateLoss()

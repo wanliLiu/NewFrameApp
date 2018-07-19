@@ -44,7 +44,7 @@ private constructor(
                 private var totalBytesRead = 0L
 
                 override fun read(sink: Buffer?, byteCount: Long): Long {
-                    val bytesRead = super.read(sink, byteCount)
+                    val bytesRead = super.read(sink!!, byteCount)
                     val contentLength = contentLength()
 
                     if (contentLength > 0) {
