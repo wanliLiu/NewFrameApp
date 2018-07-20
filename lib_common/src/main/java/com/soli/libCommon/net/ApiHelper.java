@@ -1,12 +1,13 @@
 package com.soli.libCommon.net;
 
+import android.os.Build;
 import android.support.annotation.NonNull;
 
-import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.soli.libCommon.base.Constant;
 import com.soli.libCommon.net.cookie.PersistentCookieJar;
 import com.soli.libCommon.net.cookie.cache.SetCookieCache;
 import com.soli.libCommon.net.cookie.https.HttpsUtils;
+import com.soli.libCommon.net.cookie.https.Tls12SocketFactory;
 import com.soli.libCommon.net.cookie.persistence.SharedPrefsCookiePersistor;
 import com.soli.libCommon.net.download.ProgressInterceptor;
 import com.soli.libCommon.net.download.downloadProgressListener;
@@ -20,6 +21,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
 
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
@@ -51,6 +55,15 @@ public class ApiHelper {
     private downloadProgressListener progressListener;
 
     /**
+     * 获取httpClient供Fresco使用
+     *
+     * @return
+     */
+    public static OkHttpClient getHttpClient() {
+        return getInstance().getOkHttpClient();
+    }
+
+    /**
      * 获取单例
      *
      * @return
@@ -76,18 +89,36 @@ public class ApiHelper {
         okHttpClient.writeTimeout(30, TimeUnit.SECONDS);
         okHttpClient.retryOnConnectionFailure(true);
         okHttpClient.cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(Constant.getContext())));
+        okHttpClient.hostnameVerifier((hostname, session) -> true);
 
         addProgress(okHttpClient);
         netWorkCacheSet(okHttpClient);
 
         if (Constant.Debug) {
             okHttpClient.addInterceptor((new HttpLoggingInterceptor()).setLevel(HttpLoggingInterceptor.Level.BODY));
-            okHttpClient.addNetworkInterceptor(new StethoInterceptor());
+            //for stetho 在网页调试页看网络日志
+//            okHttpClient.addNetworkInterceptor(new StethoInterceptor());
         }
 
-        //支持https访问
-        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
-        okHttpClient.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
+        //支持https访问  Android 5.0以下 TLSV1.1和TLSV1.2是关闭的，要自己打开，Android 5.0以上是打开的
+        //这里就针对这两种情况，不同处理
+        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+            //Android 5.0以上
+            HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
+            okHttpClient.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
+        } else {
+            //Android 5.0 以下
+            SSLContext sslContext = null;
+            try {
+                sslContext = SSLContext.getInstance("TLS");
+                sslContext.init(null, null, null);
+
+                SSLSocketFactory socketFactory = new Tls12SocketFactory(sslContext.getSocketFactory());
+                okHttpClient.sslSocketFactory(socketFactory, new HttpsUtils.UnSafeTrustManager());
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     /**
@@ -130,6 +161,13 @@ public class ApiHelper {
                     .client(okHttpClient.build())
                     .build();
         }
+    }
+
+    /**
+     * @return
+     */
+    private OkHttpClient getOkHttpClient() {
+        return okHttpClient.build();
     }
 
     /**

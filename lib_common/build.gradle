@@ -53,13 +53,14 @@ dependencies {
 
     //picture
     api deps.fresco
+    implementation deps.frescoOkhttp
 //    api deps.animatedgif
 //    api deps.animatedwebp
 //    api deps.webpsupport
 
     //debug tools
     api deps.stetho
-    api deps.stethoOkhttp3
+//    api deps.stethoOkhttp3
 
     //third lib support
     api deps.fastjson

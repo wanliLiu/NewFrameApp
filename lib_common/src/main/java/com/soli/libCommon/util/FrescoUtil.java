@@ -17,6 +17,7 @@ import com.facebook.common.references.CloseableReference;
 import com.facebook.common.util.ByteConstants;
 import com.facebook.datasource.DataSource;
 import com.facebook.drawee.backends.pipeline.Fresco;
+import com.facebook.imagepipeline.backends.okhttp3.OkHttpImagePipelineConfigFactory;
 import com.facebook.imagepipeline.cache.MemoryCacheParams;
 import com.facebook.imagepipeline.common.ImageDecodeOptionsBuilder;
 import com.facebook.imagepipeline.core.ImagePipelineConfig;
@@ -27,6 +28,7 @@ import com.facebook.imagepipeline.listener.RequestListener;
 import com.facebook.imagepipeline.listener.RequestLoggingListener;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
+import com.soli.libCommon.net.ApiHelper;
 
 import java.io.File;
 import java.util.HashSet;
@@ -45,7 +47,7 @@ import static com.facebook.drawee.backends.pipeline.Fresco.getImagePipeline;
  */
 public class FrescoUtil {
 
-    private  static final int MAX_HEAP_SIZE = (int) Runtime.getRuntime().maxMemory();
+    private static final int MAX_HEAP_SIZE = (int) Runtime.getRuntime().maxMemory();
     private static final int MAX_DISK_CACHE_SIZE = 40 * ByteConstants.MB;
     private static final int MAX_MEMORY_CACHE_SIZE = MAX_HEAP_SIZE / 4;
 
@@ -65,7 +67,9 @@ public class FrescoUtil {
      */
     private static ImagePipelineConfig getImagePipelineConfig(Context context) {
         if (sImagePipelineConfig == null) {
-            ImagePipelineConfig.Builder configBuilder = ImagePipelineConfig.newBuilder(context);
+//            ImagePipelineConfig.Builder configBuilder = ImagePipelineConfig.newBuilder(context);
+            //网络层用 okhttp 做了相应的https兼容
+            ImagePipelineConfig.Builder configBuilder = OkHttpImagePipelineConfigFactory.newBuilder(context, ApiHelper.getHttpClient());
             configureCaches(configBuilder, context);
             configureLoggingListeners(configBuilder);
             configureOptions(configBuilder);

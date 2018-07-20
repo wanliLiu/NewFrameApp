@@ -71,7 +71,7 @@ public class HttpsUtils {
         }
     }
 
-    private static class UnSafeTrustManager implements X509TrustManager {
+    public static class UnSafeTrustManager implements X509TrustManager {
         @Override
         public void checkClientTrusted(X509Certificate[] chain, String authType)
                 throws CertificateException {
