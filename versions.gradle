@@ -105,6 +105,7 @@ deps.materialishPro = "com.pnikosis:materialish-progress:$versions.mterialprogre
 deps.flexbox = "com.google.android:flexbox:$versions.flexbox"
 deps.rxpermissions = "com.soli.lib:rxpermissions:1.+"
 deps.pullupdown = 'com.soli.refresh:pull_up_down:+'
+deps.nineOld = 'com.nineoldandroids:library:2.4.0'
 //---------------------------------------------和业务相关的第三方东西，比如友盟 统计，支付，登录啥的  放到下面
 
 ext.deps = deps
