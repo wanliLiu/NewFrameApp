@@ -1,7 +1,6 @@
 package com.soli.libCommon
 
-import android.app.Application
-//import android.support.multidex.MultiDexApplication
+import android.support.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.soli.libCommon.base.Constant
 import com.soli.libCommon.util.FrescoUtil
@@ -10,7 +9,7 @@ import com.soli.libCommon.util.FrescoUtil
  * @author Soli
  * @Time 18-5-15 上午11:07
  */
-abstract class BaseApplication : Application() {
+abstract class BaseApplication : MultiDexApplication() {
 
     protected abstract fun beforeLaunch()
 

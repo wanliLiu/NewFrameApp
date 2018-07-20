@@ -33,7 +33,7 @@ dependencies {
     api deps.kotlin.stdlib
 
     //android support
-//    api deps.support.multidex
+    api deps.support.multidex
     api deps.support.app_compat
     api deps.support.recyclerview
     api deps.support.design
