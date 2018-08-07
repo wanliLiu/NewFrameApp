@@ -96,9 +96,7 @@ object NetworkUtil {
         try {
             val tm = Constant.getContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             val getMobileDataEnabledMethod = tm.javaClass.getDeclaredMethod("getDataEnabled")
-            if (null != getMobileDataEnabledMethod) {
-                return getMobileDataEnabledMethod.invoke(tm) as Boolean
-            }
+            return getMobileDataEnabledMethod.invoke(tm) as Boolean
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -117,7 +115,7 @@ object NetworkUtil {
         try {
             val tm = Constant.getContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             val setMobileDataEnabledMethod = tm.javaClass.getDeclaredMethod("setDataEnabled", Boolean::class.javaPrimitiveType)
-            setMobileDataEnabledMethod?.invoke(tm, enabled)
+            setMobileDataEnabledMethod.invoke(tm, enabled)
         } catch (e: Exception) {
             e.printStackTrace()
         }
