@@ -65,4 +65,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="WebView 测试" />
+
+    <Button
+        android:id="@+id/_23Test"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Android 7.0 测试" />
 </com.google.android.flexbox.FlexboxLayout>

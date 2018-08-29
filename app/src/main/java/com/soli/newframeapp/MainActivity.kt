@@ -51,6 +51,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         showStartnetWorkTest.setOnClickListener(this)
         fileDownload.setOnClickListener(this)
         webViewTest.setOnClickListener(this)
+        _23Test.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -96,6 +97,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.showStartnetWorkTest -> showStartEventPost()
             R.id.fileDownload -> checkPermission()
             R.id.webViewTest -> startActivity(Intent(ctx, WebviewActivity::class.java))
+            R.id._23Test -> startActivity(Intent(ctx,Android7Activity::class.java))
         }
     }
 
