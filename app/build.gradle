@@ -23,6 +23,9 @@ android {
 
         //apk开头名称
         setProperty("archivesBaseName", "NewFrame")
+
+        //android 3.0  flavor
+        flavorDimensions "packageChannel"
     }
 
     buildTypes {
@@ -40,6 +43,14 @@ android {
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
+        }
+    }
+
+    productFlavors {
+        _28Target {}
+
+        _Target23 {
+            targetSdkVersion 23
         }
     }
 }

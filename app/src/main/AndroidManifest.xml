@@ -31,7 +31,8 @@
             android:label="@string/title_activity_net_work_test"
             android:theme="@style/AppTheme" />
         <activity android:name=".net.WebviewActivity" />
-        <activity android:name=".Android7Activity"></activity>
+        <activity android:name=".Android7Activity" />
+        <activity android:name=".download.DownloadTestActivity"></activity>
     </application>
 
 </manifest>

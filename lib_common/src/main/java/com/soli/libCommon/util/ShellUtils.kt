@@ -104,14 +104,12 @@ object ShellUtils {
             e.printStackTrace()
         } finally {
             CloseUtils.closeIO(os as Any, successResult as Any, errorResult as Any)
-            if (process != null) {
-                process.destroy()
-            }
+            process?.destroy()
         }
         return CommandResult(
                 result,
-                if (successMsg == null) null else successMsg.toString(),
-                if (errorMsg == null) null else errorMsg.toString()
+                successMsg?.toString(),
+                errorMsg?.toString()
         )
     }
 

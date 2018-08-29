@@ -16,8 +16,7 @@ object CloseUtils {
     fun closeIO(vararg closeables: Any) {
         for (closeable in closeables) {
             try {
-                if (closeable is Closeable)
-                    closeable.close()
+                (closeable as? Closeable)?.close()
             } catch (e: IOException) {
                 e.printStackTrace()
             }
@@ -32,8 +31,7 @@ object CloseUtils {
     fun closeIOQuietly(vararg closeables: Any) {
         for (closeable in closeables) {
             try {
-                if (closeable is Closeable)
-                    closeable.close()
+                (closeable as? Closeable)?.close()
             } catch (ignored: IOException) {
             }
         }

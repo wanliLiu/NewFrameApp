@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context=".download.DownloadTestActivity">
+
+    <Button
+        android:id="@+id/customDownload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="自定OKhttp下载" />
+
+    <Button
+        android:id="@+id/systDownload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="使用系统DownloadManager下载" />
+</LinearLayout>

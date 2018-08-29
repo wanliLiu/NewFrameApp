@@ -61,16 +61,14 @@ class Android7Activity : BaseActivity() {
     private fun takePicture() {
         imagePath = FileUtil.getFile(ctx, "capture", "${System.currentTimeMillis()}_picture.jpeg", false)
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            val contentUri = FileProvider.getUriForFile(ctx, "${BuildConfig.APPLICATION_ID}.fileProvider", imagePath!!)
-            //拍照结果输出到这个uri对应的file中
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri)
+        //拍照结果输出到这个uri对应的file中
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             //对这个uri进行授权
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+            FileProvider.getUriForFile(ctx, "${BuildConfig.APPLICATION_ID}.fileProvider", imagePath!!)
         } else {
-            //拍照结果输出到这个uri对应的file中
-            intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(imagePath))
-        }
+            Uri.fromFile(imagePath)
+        })
         // 打开Camera
         startActivityForResult(intent, 21)
     }
