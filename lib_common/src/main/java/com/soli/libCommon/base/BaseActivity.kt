@@ -1,5 +1,6 @@
 package com.soli.libCommon.base
 
+import android.content.res.Resources
 import android.os.Bundle
 import com.soli.libCommon.R
 import com.soli.libCommon.view.root.LoadingType
@@ -79,7 +80,7 @@ abstract class BaseActivity : BaseFunctionActivity() {
 
     override fun showProgress() {
         when (loadingType) {
-            LoadingType.TypeDialog -> showProgressDialog() //rootView.showProgressInside(getProgressLikeDialog())
+            LoadingType.TypeDialog -> showProgressDialog() //rootView.showProgressInside(getProgressLikeDialog()) showProgressDialog()
             LoadingType.TypeInside -> rootView.showProgressInside(getProgressView())
             else -> {
             }
@@ -133,5 +134,16 @@ abstract class BaseActivity : BaseFunctionActivity() {
      */
     fun hasNoResult(layoutId: Int = R.layout.has_no_content_layout) {
         rootView.errorHappen({}, layoutId, null)
+    }
+
+    /**
+     * 加载系统默认设置，字体不随用户设置变化
+     */
+    override fun getResources(): Resources {
+        val res = super.getResources()
+        val config = res.configuration
+        config.setToDefaults()
+        res.updateConfiguration(config, res.displayMetrics)
+        return res
     }
 }
