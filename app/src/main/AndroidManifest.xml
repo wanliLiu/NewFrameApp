@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.soli.newframeapp">
 
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+
     <!-- 适配全面屏手机 -->
     <meta-data
         android:name="android.max_aspect"
@@ -32,7 +34,9 @@
             android:theme="@style/AppTheme" />
         <activity android:name=".net.WebviewActivity" />
         <activity android:name=".Android7Activity" />
-        <activity android:name=".download.DownloadTestActivity"></activity>
+        <activity android:name=".download.DownloadTestActivity" />
+
+        <service android:name=".download.DownloadService" />
     </application>
 
 </manifest>

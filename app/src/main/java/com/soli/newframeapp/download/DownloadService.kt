@@ -63,6 +63,8 @@ class DownloadService : Service() {
             //点击下载
             //使用DownLoadManager来下载
             val request = DownloadManager.Request(Uri.parse(url))
+            request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+
             //将文件下载到自己的Download文件夹下,必须是External的
             request.setDestinationUri(Uri.fromFile(savePath))
             //添加请求 开始下载

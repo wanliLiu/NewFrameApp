@@ -2,6 +2,8 @@ package com.soli.libCommon.base
 
 import android.app.ProgressDialog
 import android.content.pm.ActivityInfo
+import android.content.res.Configuration
+import android.content.res.Resources
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 
@@ -55,5 +57,26 @@ abstract class BaseFunctionActivity : AppCompatActivity() , BaseInterface {
     override fun onPause() {
         super.onPause()
         dissProgressDialog()
+    }
+
+
+    /**
+     * 加载系统默认设置，字体不随用户设置变化
+     * FIXME 注意下这个加上了，ProgressDialog就显示不出来了
+     */
+    override fun onConfigurationChanged(newConfig: Configuration) {
+        if (newConfig.fontScale != 1f)//非默认值
+            resources
+        super.onConfigurationChanged(newConfig)
+    }
+
+    override fun getResources(): Resources {
+        val res = super.getResources()
+        if (res.configuration.fontScale != 1f) {//非默认值
+            val newConfig = res.configuration
+            newConfig.setToDefaults()//设置默认
+            res.updateConfiguration(newConfig, res.displayMetrics)
+        }
+        return res
     }
 }
