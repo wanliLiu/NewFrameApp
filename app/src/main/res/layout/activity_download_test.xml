@@ -7,6 +7,12 @@
     tools:context=".download.DownloadTestActivity">
 
     <Button
+        android:id="@+id/webViewDownload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="浏览器下载" />
+
+    <Button
         android:id="@+id/customDownload"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

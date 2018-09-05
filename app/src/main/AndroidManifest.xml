@@ -2,8 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.soli.newframeapp">
 
-    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
-
     <!-- 适配全面屏手机 -->
     <meta-data
         android:name="android.max_aspect"

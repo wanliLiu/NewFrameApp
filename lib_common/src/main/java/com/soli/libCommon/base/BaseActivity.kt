@@ -1,6 +1,7 @@
 package com.soli.libCommon.base
 
 import android.os.Bundle
+import com.soli.libCommon.R
 import com.soli.libCommon.view.root.LoadingType
 import com.soli.libCommon.view.root.RootView
 
