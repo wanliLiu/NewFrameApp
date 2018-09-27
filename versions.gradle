@@ -5,9 +5,9 @@
 ext.deps = [:]
 
 def versions = [:]
-versions.android_gradle_plugin = "3.1.4"
+versions.android_gradle_plugin = "3.2.0"
 versions.kotlin = "1.+"
-versions.support = "latest.release"//28.0.0-alpha3
+versions.support = "28.0.0"//28.0.0-alpha3
 versions.multidex = "1.0.3"
 versions.constraint_layout = "1.+"
 versions.rxjava2 = "2.+"
@@ -114,7 +114,7 @@ ext.deps = deps
 def build_versions = [:]
 build_versions.min_sdk = 16
 build_versions.target_sdk = 28
-build_versions.build_tools = "28.0.2"
+build_versions.build_tools = "28.0.3"
 ext.build_versions = build_versions
 //运用版本
 def app_versions = [:]
