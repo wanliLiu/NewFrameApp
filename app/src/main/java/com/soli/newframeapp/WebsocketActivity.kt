@@ -2,6 +2,7 @@ package com.soli.newframeapp
 
 import android.text.TextUtils
 import android.util.Log
+import android.widget.ScrollView
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.net.websocket.RxWebSocket
 import com.soli.libCommon.util.RxJavaUtil
@@ -71,7 +72,7 @@ class WebsocketActivity : BaseActivity() {
                         if (string != null) {
                             Log.e("MainActivity", string)
                             msgBack.append("$string\n")
-
+                            scrollToBottom()
                         }
 
                         val byteString = webSocketInfo.byteString
@@ -82,6 +83,15 @@ class WebsocketActivity : BaseActivity() {
                     }
 
                 }
+    }
+
+    /**
+     *
+     */
+    private fun scrollToBottom(){
+        msgBack.post {
+            scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+        }
     }
 
     /**
