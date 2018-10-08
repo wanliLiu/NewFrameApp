@@ -3,6 +3,7 @@ package com.soli.libCommon
 import android.support.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.soli.libCommon.base.Constant
+import com.soli.libCommon.net.websocket.RxWebSocket
 import com.soli.libCommon.util.FrescoUtil
 
 /**
@@ -24,5 +25,8 @@ abstract class BaseApplication : MultiDexApplication() {
             Stetho.initializeWithDefaults(this)
 
         FrescoUtil.Init(this)
+
+        //设置websocket httpclient
+        RxWebSocket.initWebsocket()
     }
 }

@@ -41,6 +41,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         fileDownload.setOnClickListener(this)
         webViewTest.setOnClickListener(this)
         _23Test.setOnClickListener(this)
+        websocket.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -87,6 +88,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.fileDownload -> checkPermission()
             R.id.webViewTest -> startActivity(Intent(ctx, WebviewActivity::class.java))
             R.id._23Test -> startActivity(Intent(ctx, Android7Activity::class.java))
+            R.id.websocket -> startActivity(Intent(ctx, WebsocketActivity::class.java))
         }
     }
 

@@ -73,11 +73,14 @@ deps.rxbindingReycyle = "com.jakewharton.rxbinding2:rxbinding-recyclerview-v7:$v
 //Rxlife
 deps.rxlifecycle = "com.trello.rxlifecycle2:rxlifecycle:$versions.rxLifeCycle"
 deps.rxlifecycleAndroid = "com.trello.rxlifecycle2:rxlifecycle-android:$versions.rxLifeCycle"
+deps.rxlifecycle_kotlin = "com.trello.rxlifecycle2:rxlifecycle-kotlin:$versions.rxLifeCycle"
+deps.rxlifecycleAndroid_kotlin = "com.trello.rxlifecycle2:rxlifecycle-android-lifecycle-kotlin:$versions.rxLifeCycle"
 deps.rxlifecycleComponents = "com.trello.rxlifecycle2:rxlifecycle-components:$versions.rxLifeCycle"
 
 //okhttp
 deps.loggingInterceptor = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
 deps.okhttp = "com.squareup.okhttp3:okhttp:$versions.okhttp"
+deps.okhttp_mockwebserver = "com.squareup.okhttp3:mockwebserver:$versions.okhttp"
 
 //fresco
 deps.fresco = "com.facebook.fresco:fresco:$versions.fresco"
