@@ -39,7 +39,7 @@ public class RxWebSocketUtil {
     private Map<String, Observable<WebSocketInfo>> observableMap;
     private Map<String, WebSocket> webSocketMap;
     private String logTag = "RxWebSocket";
-    private long interval = 1;
+    private long interval = 2;
     private TimeUnit reconnectIntervalTimeUnit = TimeUnit.SECONDS;
 
     private RxWebSocketUtil() {
@@ -91,7 +91,11 @@ public class RxWebSocketUtil {
         this.client = client;
     }
 
-
+    /**
+     * 设置出错的时候重连时间
+     * @param interval
+     * @param timeUnit
+     */
     public void setReconnectInterval(long interval, TimeUnit timeUnit) {
         this.interval = interval;
         this.reconnectIntervalTimeUnit = timeUnit;
@@ -110,7 +114,7 @@ public class RxWebSocketUtil {
         Observable<WebSocketInfo> observable = observableMap.get(url);
         if (observable == null) {
             observable = Observable.create(new WebSocketOnSubscribe(url))
-                    //自动重连
+                    //一定时间没有onext就自动断开了，然后重新链接
                     .timeout(timeout, timeUnit)
                     .retry(throwable -> throwable instanceof IOException || throwable instanceof TimeoutException)
                     //共享
@@ -237,6 +241,9 @@ public class RxWebSocketUtil {
         return new Request.Builder().get().url(url).build();
     }
 
+    /**
+     *
+     */
     private final class WebSocketOnSubscribe implements ObservableOnSubscribe<WebSocketInfo> {
         private String url;
 
@@ -302,7 +309,7 @@ public class RxWebSocketUtil {
 
                 @Override
                 public void onClosed(WebSocket webSocket, int code, String reason) {
-                    MLog.d(logTag, url + " --> onClosed:code= " + code);
+                    MLog.d(logTag, url + " --> onClosed:code= " + code + " --> reason:" + reason);
                 }
             });
             emitter.setCancellable(() -> {

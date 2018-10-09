@@ -3,6 +3,8 @@ package com.soli.newframeapp
 import android.text.TextUtils
 import android.util.Log
 import android.widget.ScrollView
+import com.dhh.rxlifecycle2.RxLifecycle
+import com.jakewharton.rxbinding2.view.RxView
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.net.websocket.RxWebSocket
 import com.soli.libCommon.util.RxJavaUtil
@@ -34,14 +36,25 @@ class WebsocketActivity : BaseActivity() {
     }
 
     override fun initListener() {
-        btnSend.setOnClickListener {
-            val str = msgSend.text.toString()
-            if (mWebSocket != null && !TextUtils.isEmpty(str)) {
-                mWebSocket!!.send(str)
-            } else {
-                send()
-            }
-        }
+//        btnSend.setOnClickListener {
+//            val str = msgSend.text.toString()
+//            if (mWebSocket != null && !TextUtils.isEmpty(str)) {
+//                mWebSocket!!.send(str)
+//            } else {
+//                send()
+//            }
+//        }
+
+        val disposable = RxView.clicks(btnSend)
+                .compose(RxLifecycle.with(this).bindToLifecycle())
+                .subscribe {
+                    val str = msgSend.text.toString()
+                    if (mWebSocket != null && !TextUtils.isEmpty(str)) {
+                        mWebSocket!!.send(str)
+                    } else {
+                        send()
+                    }
+                }
     }
 
     override fun initData() {
@@ -60,35 +73,34 @@ class WebsocketActivity : BaseActivity() {
         //注意取消订阅,有多种方式,比如 rxlifecycle
         mDisposable = RxWebSocket.get(url)
                 // RxLifeCycle: https://github.com/dhhAndroid/RxLifecycle
-                //todo RxLifecycyle
-//                .compose(RxLifecycle.with(this).bindOnDestroy())
+                .compose(RxLifecycle.with(this).bindOnDestroy())
                 .subscribe { webSocketInfo ->
                     mWebSocket = webSocketInfo.webSocket
                     if (webSocketInfo.isOnOpen) {
                         msgBack.append("链接服务器:${url}成功\n")
                         Log.e("MainActivity", " on WebSocket open")
+                    } else if (webSocketInfo.isOnReconnect) {
+                        msgBack.append("---主动断开，然后重新链接服务器\n")
                     } else {
                         val string = webSocketInfo.string
                         if (string != null) {
                             Log.e("MainActivity", string)
                             msgBack.append("$string\n")
-                            scrollToBottom()
                         }
 
                         val byteString = webSocketInfo.byteString
                         if (byteString != null) {
                             Log.e("MainActivity", "webSocketInfo.getByteString():$byteString")
-
                         }
                     }
-
+                    scrollToBottom()
                 }
     }
 
     /**
      *
      */
-    private fun scrollToBottom(){
+    private fun scrollToBottom() {
         msgBack.post {
             scrollView.fullScroll(ScrollView.FOCUS_DOWN)
         }
@@ -248,6 +260,6 @@ class WebsocketActivity : BaseActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        mDisposable?.dispose()
+//        mDisposable?.dispose()
     }
 }

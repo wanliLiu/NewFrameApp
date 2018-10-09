@@ -21,18 +21,20 @@ public class MLog {
      * @return
      */
     private static String getMessage(String msg) {
-        StackTraceElement[] sElements = new Throwable().getStackTrace();
-        String className = sElements[1].getFileName();
-        String methodName = sElements[1].getMethodName();
-        int lineNumber = sElements[1].getLineNumber();
+//        StackTraceElement[] sElements = new Throwable().getStackTrace();
+//        String className = sElements[1].getFileName();
+//        String methodName = sElements[1].getMethodName();
+//        int lineNumber = sElements[1].getLineNumber();
+//
+//        StringBuffer buffer = new StringBuffer();
+//        buffer.append(className + "---");
+//        buffer.append(methodName + "---");
+//        buffer.append(lineNumber + "---");
+//        buffer.append(msg);
+//
+//        return buffer.toString();
 
-        StringBuffer buffer = new StringBuffer();
-        buffer.append(className + "---");
-        buffer.append(methodName + "---");
-        buffer.append(lineNumber + "---");
-        buffer.append(msg);
-
-        return buffer.toString();
+        return msg;
     }
 
     public static void i(String TAG, String msg) {

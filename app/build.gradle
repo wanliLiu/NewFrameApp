@@ -62,5 +62,7 @@ dependencies {
 
     implementation deps.okhttp_mockwebserver
     implementation deps.rxbinding
-    implementation deps.rxlifecycle_kotlin
+    implementation deps.rxlifecycleAndroid_kotlin
+//    implementation deps.rxlifecycle_kotlin
+    implementation 'com.dhh:rxlifecycle2:1.5'
 }
