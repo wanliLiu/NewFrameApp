@@ -148,7 +148,7 @@ public class RxWebSocketUtil {
      * </p>
      */
     public Observable<WebSocketInfo> getWebSocketInfo(String url) {
-        return getWebSocketInfo(url, 30, TimeUnit.DAYS);
+        return getWebSocketInfo(url, 5, TimeUnit.HOURS);
     }
 
     /**

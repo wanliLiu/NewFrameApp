@@ -1,18 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
 
     <!--这个地方 只是因为使用Toolbar才放到这个地方,具体视情况而定,不一定放大这里-->
 
-    <!-- toolbar菜单样式 -->
-    <style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">
-        <!--<item name="actionMenuTextColor">@android:color/white</item>-->
-        <item name="android:textColorPrimary">#ffffff</item>
-    </style>
-    <!-- toolbar弹出菜单样式 -->
-    <style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat">
-        <item name="android:textColorPrimary">#212121</item>
-        <item name="android:textColorSecondary">#757575</item>
-    </style>
-    <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
-    <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
+    <!--&lt;!&ndash; toolbar菜单样式 &ndash;&gt;-->
+    <!--<style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">-->
+        <!--&lt;!&ndash;<item name="actionMenuTextColor">@android:color/white</item>&ndash;&gt;-->
+        <!--<item name="android:textColorPrimary">#ffffff</item>-->
+    <!--</style>-->
+    <!--&lt;!&ndash; toolbar弹出菜单样式 &ndash;&gt;-->
+    <!--<style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat">-->
+        <!--<item name="android:textColorPrimary">#212121</item>-->
+        <!--<item name="android:textColorSecondary">#757575</item>-->
+    <!--</style>-->
+    <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
+    <!--<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
+
 </resources>

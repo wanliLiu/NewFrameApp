@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <declare-styleable name="toolbar_attr">
+        <attr name="setTitle" format="string" />
+        <attr name="commitText" format="string" />
+        <attr name="commitTextColor" format="color|reference" />
+        <attr name="right_image" format="reference" />
+    </declare-styleable>
+
+</resources>

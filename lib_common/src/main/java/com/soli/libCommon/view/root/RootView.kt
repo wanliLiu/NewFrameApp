@@ -6,7 +6,6 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.app.Activity
 import android.content.Context
-import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -148,9 +147,9 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
      */
     fun setTitle(title: Any) {
         if (title is Int) {
-            toolbar?.title = ctx.resources.getString(title)
+            toolbar?.setTitle(ctx.resources.getString(title))
         } else {
-            toolbar?.title = title as CharSequence
+            toolbar?.setTitle(title as String)
         }
     }
 

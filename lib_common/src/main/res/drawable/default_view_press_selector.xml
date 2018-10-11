@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<inset xmlns:android="http://schemas.android.com/apk/res/android">
+    <selector>
+        <!--<item android:state_enabled="false">-->
+            <!--<shape>-->
+                <!--<solid android:color="@color/color_view_disable_default" />-->
+            <!--</shape>-->
+        <!--</item>-->
+        <item
+            android:state_enabled="true"
+            android:state_pressed="true">
+            <shape>
+                <solid android:color="@color/color_view_enable_press" />
+            </shape>
+        </item>
+        <item>
+            <shape>
+                <solid android:color="@color/color_view_enable_default" />
+            </shape>
+        </item>
+    </selector>
+
+</inset>

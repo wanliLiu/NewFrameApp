@@ -45,6 +45,7 @@ dependencies {
     api deps.rx_android
     api deps.rxbinding
     api deps.rxjava2
+    api deps.rxlifecycle
 
     //network
     implementation deps.loggingInterceptor
@@ -70,4 +71,5 @@ dependencies {
     api deps.materialishPro
     api deps.pullupdown
 //    api deps.nineOld
+    api deps.silder
 }

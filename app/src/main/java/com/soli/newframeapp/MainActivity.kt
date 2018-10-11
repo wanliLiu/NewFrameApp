@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.os.Handler
 import android.view.View
+import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.net.ApiHelper
 import com.soli.libCommon.net.ApiParams
@@ -22,6 +23,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private var retry: Int = 0
     private val rxPermissions by lazy { RxPermissions(ctx) }
 
+    override fun isNeedSliderActivity() = false
 
     override fun needShowBackIcon() = false
 
@@ -29,7 +31,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun initView() {
         title = "New Frame"
-
+        hideBackFunc()
     }
 
     override fun initListener() {
@@ -96,7 +98,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
      *
      */
     private fun checkPermission() {
-        rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+       val diapose =  rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+                .compose(RxLifecycle.with(this).bindToLifecycle())
                 .subscribe { pass ->
                     if (pass)
                         startActivity(Intent(ctx, DownloadTestActivity::class.java))

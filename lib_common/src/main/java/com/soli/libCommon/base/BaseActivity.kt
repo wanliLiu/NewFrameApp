@@ -4,6 +4,7 @@ import android.os.Bundle
 import com.soli.libCommon.R
 import com.soli.libCommon.view.root.LoadingType
 import com.soli.libCommon.view.root.RootView
+import kotlinx.android.synthetic.main.activity_root_view.*
 
 /**
  * @author Soli
@@ -32,11 +33,15 @@ abstract class BaseActivity : BaseFunctionActivity() {
         //是否要显示返回的icon
         if (needShowBackIcon()) {
             //默认显示，点击关闭
-            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-            rootView.getToolbar()?.setNavigationOnClickListener { onBackPressed() }
-        } else {
-            supportActionBar!!.setDisplayHomeAsUpEnabled(false)
+//            rootView.getToolbar()?.setNavigationOnClickListener { onBackPressed() }
         }
+    }
+
+    /**
+     *
+     */
+    open fun hideBackFunc() {
+        tool_bar?.hideBackFunction()
     }
 
     /**
@@ -54,9 +59,6 @@ abstract class BaseActivity : BaseFunctionActivity() {
     private fun setContentViews() {
         setContentView(R.layout.activity_root_view)
         rootView = RootView(this, getContentView())
-
-        setSupportActionBar(rootView.getToolbar())
-        supportActionBar?.title = null
     }
 
     /**

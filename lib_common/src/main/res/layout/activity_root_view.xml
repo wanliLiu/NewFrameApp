@@ -1,21 +1,20 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/viewRoot"
+    android:background="@color/color_bg"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <android.support.v7.widget.Toolbar
+    <com.soli.libCommon.view.root.Toolbar
         android:id="@+id/tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorPrimary"
-        app:popupTheme="@style/ToolbarPopupTheme"
-        app:theme="@style/ToolbarTheme" />
+        android:layout_height="wrap_content"
+        app:setTitle="薛之谦" />
 
     <FrameLayout
         android:id="@+id/root_content"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize" />
+        android:layout_marginTop="@dimen/toolbar_height" />
 
 </FrameLayout>

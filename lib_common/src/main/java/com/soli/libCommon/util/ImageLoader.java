@@ -9,6 +9,7 @@ import com.facebook.drawee.interfaces.DraweeController;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.facebook.imagepipeline.common.ResizeOptions;
 import com.facebook.imagepipeline.common.RotationOptions;
+import com.facebook.imagepipeline.request.BasePostprocessor;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.soli.libCommon.base.Constant;
@@ -53,6 +54,17 @@ public class ImageLoader {
      * @param height
      */
     public static void loadImage(SimpleDraweeView image, String url, int width, int height) {
+        loadImage(image, url, width, height, null);
+    }
+
+    /**
+     * @param image
+     * @param url
+     * @param width
+     * @param height
+     * @param processor
+     */
+    public static void loadImage(SimpleDraweeView image, String url, int width, int height, BasePostprocessor processor) {
 
         if (TextUtils.isEmpty(url)) {
             return;
@@ -67,13 +79,17 @@ public class ImageLoader {
             height = defaultSize;
         }
 
-        ImageRequest imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
+        ImageRequestBuilder imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
                 .setLocalThumbnailPreviewsEnabled(true)
                 .setResizeOptions(new ResizeOptions(width, height))
-                .setRotationOptions(RotationOptions.autoRotate())
-                .build();
+                .setRotationOptions(RotationOptions.autoRotate());
+
+        if (processor != null) {
+            imageRequest.setPostprocessor(processor);
+        }
+
         DraweeController draweeController = Fresco.newDraweeControllerBuilder()
-                .setImageRequest(imageRequest)
+                .setImageRequest(imageRequest.build())
                 .build();
         image.setController(draweeController);
 
