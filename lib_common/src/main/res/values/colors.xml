@@ -5,7 +5,7 @@
     <color name="toolbar_title_color">#666666</color>
     <color name="actionbar_color">#6CA5FF</color>
 
-    <color name="color_view_enable_default">#FFFFFF</color>
+    <!--<color name="color_view_enable_default">#FFFFFF</color>-->
     <color name="color_view_enable_press">#f8f8f8</color>
     <color name="color_view_disable_default">#ACB0B5</color>
 

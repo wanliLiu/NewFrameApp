@@ -13,11 +13,11 @@
                 <solid android:color="@color/color_view_enable_press" />
             </shape>
         </item>
-        <item>
-            <shape>
-                <solid android:color="@color/color_view_enable_default" />
-            </shape>
-        </item>
+        <!--<item>-->
+            <!--<shape>-->
+                <!--<solid android:color="@color/color_view_enable_default" />-->
+            <!--</shape>-->
+        <!--</item>-->
     </selector>
 
 </inset>

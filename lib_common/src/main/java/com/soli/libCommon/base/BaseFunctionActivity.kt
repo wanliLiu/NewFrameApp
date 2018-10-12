@@ -1,10 +1,8 @@
 package com.soli.libCommon.base
 
 import android.app.ProgressDialog
-import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.content.res.Resources
-import android.os.Build
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import com.r0adkll.slidr.Slidr
@@ -31,20 +29,17 @@ abstract class BaseFunctionActivity : AppCompatActivity(), BaseInterface {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setStatusBarColor()
-        requestedOrientation = if (isScreenOnlyPORTRAIT) ActivityInfo.SCREEN_ORIENTATION_PORTRAIT else ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+//        requestedOrientation = if (isScreenOnlyPORTRAIT) ActivityInfo.SCREEN_ORIENTATION_PORTRAIT else ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
 
     /**
      *
      */
-    private fun setStatusBarColor() {
-        val alpha = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) 0 else 13
+    protected fun setStatusBarColor() {
         if (isNeedSliderActivity()) {
             Slidr.attach(this)
         }
-        StatusBarUtil.setColorForSwipeBack(this, ctx.resources.getColor(R.color.toolbar_background), alpha)
-        StatusBarUtil.setLightMode(ctx)
+        StatusBarUtil.setStatusBarColor(this, ctx.resources.getColor(R.color.toolbar_background), if (StatusBarUtil.setLightMode(ctx)) 0 else 38)
     }
 
     open fun isNeedSliderActivity() = true

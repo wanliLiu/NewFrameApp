@@ -59,6 +59,7 @@ abstract class BaseActivity : BaseFunctionActivity() {
     private fun setContentViews() {
         setContentView(R.layout.activity_root_view)
         rootView = RootView(this, getContentView())
+        setStatusBarColor()
     }
 
     /**

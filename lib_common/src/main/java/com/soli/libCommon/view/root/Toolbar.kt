@@ -72,7 +72,7 @@ class Toolbar(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int =
         }
 
         back_layout.setOnClickListener {
-            (context as Activity).finish()
+            (context as Activity).onBackPressed()
         }
     }
 
