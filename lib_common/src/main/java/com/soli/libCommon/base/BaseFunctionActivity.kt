@@ -39,7 +39,7 @@ abstract class BaseFunctionActivity : AppCompatActivity(), BaseInterface {
         if (isNeedSliderActivity()) {
             Slidr.attach(this)
         }
-        StatusBarUtil.setStatusBarColor(this, ctx.resources.getColor(R.color.toolbar_background), if (StatusBarUtil.setLightMode(ctx)) 0 else 38)
+        StatusBarUtil.setColorForSwipe(this, ctx.resources.getColor(R.color.toolbar_background), if (StatusBarUtil.setLightMode(ctx)) 0 else 38)
     }
 
     open fun isNeedSliderActivity() = true
