@@ -14,6 +14,7 @@ import com.soli.libCommon.view.root.LoadingType
 import com.soli.newframeapp.download.DownloadTestActivity
 import com.soli.newframeapp.net.NetWorkTestActivity
 import com.soli.newframeapp.net.WebviewActivity
+import com.soli.newframeapp.pic.PicDealActivity
 import com.soli.permissions.RxPermissions
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -44,6 +45,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         webViewTest.setOnClickListener(this)
         _23Test.setOnClickListener(this)
         websocket.setOnClickListener(this)
+        btnColorMatrix.setOnClickListener(this)
+        btnBottomSheet.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -91,6 +94,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.webViewTest -> startActivity(Intent(ctx, WebviewActivity::class.java))
             R.id._23Test -> startActivity(Intent(ctx, Android7Activity::class.java))
             R.id.websocket -> startActivity(Intent(ctx, WebsocketActivity::class.java))
+            R.id.btnColorMatrix -> startActivity(Intent(ctx, PicDealActivity::class.java))
+            R.id.btnBottomSheet -> startActivity(Intent(ctx, BottomSheetTestDialog::class.java))
         }
     }
 
@@ -98,7 +103,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
      *
      */
     private fun checkPermission() {
-       val diapose =  rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+        val diapose =
+            rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
                 .compose(RxLifecycle.with(this).bindToLifecycle())
                 .subscribe { pass ->
                     if (pass)
@@ -117,7 +123,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
         params.apply {
             put("title", "哦www用")
-            put("remark", "急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民急急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急急竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急毕竟估")
+            put(
+                "remark",
+                "急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民急急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急急竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急毕竟估"
+            )
             put("startTime", "1528178400662")
             put("endTime", "1528182000662")
             put("repeatRule", "")
@@ -125,15 +134,15 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
 
         ApiHelper.Builder()
-                .url("event/addOrUpdate.json")
-                .params(params)
-                .build()
-                .post { result ->
+            .url("event/addOrUpdate.json")
+            .params(params)
+            .build()
+            .post { result ->
 
-                    if (result.isSuccess)
-                        ToastUtils.showShortToast("添加成功")
-                    else
-                        ToastUtils.showShortToast(".......,失败了哦")
-                }
+                if (result.isSuccess)
+                    ToastUtils.showShortToast("添加成功")
+                else
+                    ToastUtils.showShortToast(".......,失败了哦")
+            }
     }
 }

@@ -37,6 +37,7 @@
         <activity android:name=".Android7Activity" />
         <activity android:name=".download.DownloadTestActivity" />
         <activity android:name=".WebsocketActivity" />
+        <activity android:name=".pic.PicDealActivity"/>
 
         <service android:name=".download.DownloadService" />
     </application>
