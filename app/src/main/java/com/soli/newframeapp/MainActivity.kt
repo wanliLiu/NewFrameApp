@@ -11,6 +11,7 @@ import com.soli.libCommon.net.ApiParams
 import com.soli.libCommon.util.NetworkUtil
 import com.soli.libCommon.util.ToastUtils
 import com.soli.libCommon.view.root.LoadingType
+import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.download.DownloadTestActivity
 import com.soli.newframeapp.net.NetWorkTestActivity
 import com.soli.newframeapp.net.WebviewActivity
@@ -95,7 +96,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id._23Test -> startActivity(Intent(ctx, Android7Activity::class.java))
             R.id.websocket -> startActivity(Intent(ctx, WebsocketActivity::class.java))
             R.id.btnColorMatrix -> startActivity(Intent(ctx, PicDealActivity::class.java))
-            R.id.btnBottomSheet -> startActivity(Intent(ctx, BottomSheetTestDialog::class.java))
+            R.id.btnBottomSheet -> startActivity(Intent(ctx, BottomSheetTestActivity::class.java))
         }
     }
 
