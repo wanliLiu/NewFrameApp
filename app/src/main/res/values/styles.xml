@@ -42,9 +42,9 @@
 
     <style name="bottomSheetStyle" parent="android:Widget">
         <item name="android:background">@color/transparent</item>
-        <item name="behavior_peekHeight">auto</item>
+        <item name="behavior_peekHeight">0dp</item>
         <item name="behavior_hideable">true</item>
-        <item name="behavior_skipCollapsed">false</item>
+        <item name="behavior_skipCollapsed">true</item>
     </style>
 
 </resources>

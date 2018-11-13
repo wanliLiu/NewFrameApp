@@ -12,6 +12,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
+import com.soli.libCommon.util.ViewUtil
 import com.soli.newframeapp.R
 
 
@@ -49,8 +50,13 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
             val layoutParams = bottomSheet.layoutParams as CoordinatorLayout.LayoutParams
             layoutParams.height = getHeight()
             behavior = BottomSheetBehavior.from(bottomSheet)
-            // 初始为展开状态
-            behavior!!.state = BottomSheetBehavior.STATE_EXPANDED
+                .apply {
+                    peekHeight = 0
+                    isHideable = true
+                    skipCollapsed = true
+                    // 初始为展开状态
+                    state = BottomSheetBehavior.STATE_EXPANDED
+                }
         }
     }
 
@@ -74,7 +80,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     fun getTopOffset(): Int {
-        return topOffset
+        return ViewUtil.dip2px(100, activity as Context)
     }
 
     fun setTopOffset(topOffset: Int) {
