@@ -23,7 +23,7 @@ versions.fresco = "1.+"
 versions.stetho = "1.5.0"
 versions.scaleImageView = "3.+"
 versions.mterialprogress = "1.7"
-versions.flexbox = "1.0.0"
+versions.flexbox = "1.+"
 //Arouter
 versions.arouter_compiler = "1.+"
 versions.arouter_api = "1.+"
