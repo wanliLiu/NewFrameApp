@@ -22,7 +22,6 @@
                     android:id="@+id/wrapLayout"
                     android:layout_width="match_parent"
                     app:showDivider="beginning|end|middle"
-                    app:justifyContent="center"
                     app:dividerDrawable="@drawable/listdivider_5dp"
                     android:layout_height="wrap_content"/>
 

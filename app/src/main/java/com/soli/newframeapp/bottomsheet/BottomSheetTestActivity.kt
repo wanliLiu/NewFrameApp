@@ -1,10 +1,10 @@
 package com.soli.newframeapp.bottomsheet
 
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.view.View
+import android.content.Context
 import android.widget.FrameLayout
+import android.widget.TextView
 import com.soli.libCommon.base.BaseActivity
+import com.soli.libCommon.bottomSheet.BottomDialog
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.activity_bottom_sheet.*
 
@@ -15,6 +15,18 @@ import kotlinx.android.synthetic.main.activity_bottom_sheet.*
  */
 class BottomSheetTestActivity : BaseActivity() {
 
+    private val vomView by lazy {
+        layoutInflater.inflate(R.layout.view_bottomsheet, null)
+    }
+    private val inputDialog by lazy {
+        BottomDialog(ctx as Context).apply {
+            val view = layoutInflater.inflate(R.layout.view_bottomsheet, null)
+            val te = view.findViewById<TextView>(R.id.bNewtn)
+            te.text = "输入评论"
+            setContentView(view)
+        }
+    }
+
     override fun getContentView() = R.layout.activity_bottom_sheet
 
     override fun initView() {
@@ -23,8 +35,22 @@ class BottomSheetTestActivity : BaseActivity() {
 
     override fun initListener() {
 
+        inputDialog.setOnDismissListener {
+            vomView.findViewById<FrameLayout>(R.id.background).setBackgroundResource(R.drawable.bottom_sheet_background)
+        }
         btnSheetDialog.setOnClickListener {
-            showBottomSheetDialog()
+            val commDialog = BottomDialog(ctx as Context)
+            commDialog.topOffsetDefault()
+
+            val te = vomView.findViewById<TextView>(R.id.bNewtn)
+            te.text = "弹起的评论"
+            te.setOnClickListener {
+                vomView.findViewById<FrameLayout>(R.id.background).setBackgroundResource(R.drawable.bottom_sheet_background_open)
+                inputDialog.show()
+            }
+
+            commDialog.setContentView(vomView)
+            commDialog.show()
         }
 
         btnSheetFragmentDialog.setOnClickListener {
@@ -33,25 +59,5 @@ class BottomSheetTestActivity : BaseActivity() {
     }
 
     override fun initData() {
-    }
-
-    /**
-     *
-     */
-    private fun showBottomSheetDialog() {
-        val dialog = BottomSheetDialog(ctx, R.style.TransBottomSheetDialogStyle)
-        val view = layoutInflater.inflate(R.layout.view_bottomsheet, null)
-        dialog.setContentView(view)
-        view.findViewById<View>(R.id.tst).setOnClickListener {   BottomSheetFragment.instance.show(supportFragmentManager, "dialog") }
-
-        val behavior =
-            BottomSheetBehavior.from(dialog.delegate.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet))
-        behavior.peekHeight = 0
-        behavior.isHideable = true
-        behavior.skipCollapsed = true
-        dialog.show()
-        behavior.state = BottomSheetBehavior.STATE_EXPANDED
-
-
     }
 }

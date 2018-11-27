@@ -34,7 +34,7 @@ class AutoWrapLayout(ctx: Context, attrs: AttributeSet? = null, defStyleAttr: In
         flexWrap = FlexWrap.WRAP
 
         //内容行，从左到右依次排列
-//        justifyContent = JustifyContent.FLEX_START
+        justifyContent = JustifyContent.FLEX_START
 
         setShowDivider(SHOW_DIVIDER_BEGINNING or SHOW_DIVIDER_END or SHOW_DIVIDER_MIDDLE)
     }
