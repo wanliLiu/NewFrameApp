@@ -4,7 +4,9 @@
              android:background="@drawable/bottom_sheet_background"
              android:layout_height="match_parent">
 
-    <TextView android:layout_width="match_parent"
+    <TextView
+            android:id="@+id/tst"
+            android:layout_width="match_parent"
               android:layout_height="300dp"
               android:textSize="30sp"
               android:gravity="center"

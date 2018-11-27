@@ -4,5 +4,7 @@
         android:textColor="@android:color/black"
         android:text="我是测试文件"
         android:textSize="16sp"
+        android:singleLine="true"
+        android:ellipsize="end"
         android:background="@drawable/item_auto_wrap"
         android:layout_height="wrap_content"/>

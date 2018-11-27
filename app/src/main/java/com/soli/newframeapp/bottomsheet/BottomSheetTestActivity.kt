@@ -2,6 +2,7 @@ package com.soli.newframeapp.bottomsheet
 
 import android.support.design.widget.BottomSheetBehavior
 import android.support.design.widget.BottomSheetDialog
+import android.view.View
 import android.widget.FrameLayout
 import com.soli.libCommon.base.BaseActivity
 import com.soli.newframeapp.R
@@ -41,6 +42,7 @@ class BottomSheetTestActivity : BaseActivity() {
         val dialog = BottomSheetDialog(ctx, R.style.TransBottomSheetDialogStyle)
         val view = layoutInflater.inflate(R.layout.view_bottomsheet, null)
         dialog.setContentView(view)
+        view.findViewById<View>(R.id.tst).setOnClickListener {   BottomSheetFragment.instance.show(supportFragmentManager, "dialog") }
 
         val behavior =
             BottomSheetBehavior.from(dialog.delegate.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet))
