@@ -27,21 +27,20 @@ class AutoWrapLayoutTestActivity : BaseActivity() {
 
     override fun initView() {
         title = "AutoWrapLayout"
+        AutoRecycle.visibility = if (showRecycle) View.VISIBLE else View.GONE
+        wrapLayout.visibility = if (!showRecycle) View.VISIBLE else View.GONE
     }
 
     override fun initListener() {
         btnAdd.setOnClickListener {
             showRecycle = !showRecycle
-
-            initData()
+            AutoRecycle.visibility = if (showRecycle) View.VISIBLE else View.GONE
+            wrapLayout.visibility = if (!showRecycle) View.VISIBLE else View.GONE
             btnAdd.text = if (showRecycle) "用FlexboxLayoutManager" else "自己定义的"
         }
     }
 
     override fun initData() {
-
-        AutoRecycle.visibility = if (showRecycle) View.VISIBLE else View.GONE
-        wrapLayout.visibility = if (!showRecycle) View.VISIBLE else View.GONE
 
         val list = ArrayList<String>()
         for (index in 0 until 100) {
@@ -49,10 +48,8 @@ class AutoWrapLayoutTestActivity : BaseActivity() {
             list.add(if (index % 2 == 0) "内容$index" else "----内容$index----")
         }
 
-        if (!showRecycle)
-            useCustom(list)
-        else
-            useFlexboxLayoutManager(list)
+        useCustom(list)
+        useFlexboxLayoutManager(list)
     }
 
     private fun useFlexboxLayoutManager(list: ArrayList<String>) {
