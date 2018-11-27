@@ -58,7 +58,6 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':lib_common')
-    implementation deps.flexbox
 
     implementation deps.okhttp_mockwebserver
     implementation deps.rxbinding

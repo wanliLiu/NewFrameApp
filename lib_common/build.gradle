@@ -41,6 +41,8 @@ dependencies {
     api deps.constraint_layout
     api deps.corektx
 
+    api deps.flexbox
+
     //Rxjava
     api deps.rx_android
     api deps.rxbinding

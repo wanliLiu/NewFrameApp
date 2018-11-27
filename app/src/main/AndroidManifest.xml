@@ -39,6 +39,7 @@
         <activity android:name=".WebsocketActivity" />
         <activity android:name=".pic.PicDealActivity"/>
         <activity android:name=".bottomsheet.BottomSheetTestActivity"/>
+        <activity android:name=".autowrap.AutoWrapLayoutTestActivity"/>
 
         <service android:name=".download.DownloadService" />
     </application>

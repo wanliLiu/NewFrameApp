@@ -11,6 +11,7 @@ import com.soli.libCommon.net.ApiParams
 import com.soli.libCommon.util.NetworkUtil
 import com.soli.libCommon.util.ToastUtils
 import com.soli.libCommon.view.root.LoadingType
+import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.download.DownloadTestActivity
 import com.soli.newframeapp.net.NetWorkTestActivity
@@ -48,6 +49,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         websocket.setOnClickListener(this)
         btnColorMatrix.setOnClickListener(this)
         btnBottomSheet.setOnClickListener(this)
+        btnCustFlex.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -97,6 +99,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.websocket -> startActivity(Intent(ctx, WebsocketActivity::class.java))
             R.id.btnColorMatrix -> startActivity(Intent(ctx, PicDealActivity::class.java))
             R.id.btnBottomSheet -> startActivity(Intent(ctx, BottomSheetTestActivity::class.java))
+            R.id.btnCustFlex -> startActivity(Intent(ctx, AutoWrapLayoutTestActivity::class.java))
         }
     }
 

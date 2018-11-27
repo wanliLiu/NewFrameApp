@@ -9,7 +9,7 @@
         app:alignItems="flex_start"
         app:flexDirection="row"
         app:flexWrap="wrap"
-        app:justifyContent="center"
+        app:justifyContent="flex_start"
         tools:context=".MainActivity">
 
     <Button
@@ -91,5 +91,9 @@
             android:layout_height="wrap_content"
             android:text="BottomSheet"/>
 
+    <Button android:id="@+id/btnCustFlex"
+            android:layout_width="wrap_content"
+            android:text="封装FlexboxLayout"
+            android:layout_height="wrap_content"/>
 
 </com.google.android.flexbox.FlexboxLayout>

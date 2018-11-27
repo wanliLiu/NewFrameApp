@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto" android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:layout_height="match_parent">
+
+    <Button android:id="@+id/btnAdd"
+            android:layout_width="match_parent"
+            android:text="自定义"
+            android:layout_height="wrap_content"/>
+
+    <FrameLayout android:layout_width="match_parent"
+                 android:layout_height="match_parent">
+
+        <android.support.v4.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+            <com.soli.libCommon.view.flexboxlayout.AutoWrapLayout
+                    android:id="@+id/wrapLayout"
+                    android:layout_width="match_parent"
+                    app:showDivider="beginning|end|middle"
+                    app:justifyContent="center"
+                    app:dividerDrawable="@drawable/listdivider_5dp"
+                    android:layout_height="wrap_content"/>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <ListView android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+
+        </ListView>
+        <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:id="@+id/AutoRecycle"
+                android:layout_height="wrap_content"/>
+
+    </FrameLayout>
+
+</LinearLayout>
