@@ -2,29 +2,19 @@ package com.soli.libCommon.net;
 
 import android.os.Build;
 import android.support.annotation.NonNull;
-
+import android.text.TextUtils;
+import com.alibaba.fastjson.JSONObject;
 import com.soli.libCommon.base.Constant;
-import com.soli.libCommon.net.cookie.PersistentCookieJar;
-import com.soli.libCommon.net.cookie.cache.SetCookieCache;
 import com.soli.libCommon.net.cookie.https.HttpsUtils;
 import com.soli.libCommon.net.cookie.https.Tls12SocketFactory;
-import com.soli.libCommon.net.cookie.persistence.SharedPrefsCookiePersistor;
 import com.soli.libCommon.net.download.ProgressInterceptor;
 import com.soli.libCommon.net.download.downloadProgressListener;
+import com.soli.libCommon.net.websocket.RxWebSocket;
 import com.soli.libCommon.util.FileUtil;
 import com.soli.libCommon.util.NetworkUtil;
 import com.soli.libCommon.util.RxJavaUtil;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import okhttp3.Cache;
 import okhttp3.OkHttpClient;
 import okhttp3.ResponseBody;
@@ -34,22 +24,32 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author Soli
  * @Time 18-5-17 下午4:42
  */
 public class ApiHelper {
 
-    /*用户设置的BASE_URL*/
-    private static String BASE_URL = Constant.webServer;
-    /*本地使用的baseUrl*/
-    private String baseUrl = "";
-    private static OkHttpClient.Builder okHttpClient;
+    private static OkHttpClient okHttpClient;
+
+    private long timeout = 30L;
     private Retrofit retrofit;
     private Call<ResponseBody> mCall;
     private static final Map<String, Call> CALL_MAP = new HashMap<>();
     private Builder mBuilder;
     private static ApiHelper client;
+
+
+    private boolean isWebSocketRequest = false;
 
     //文件下载进度回调
     private downloadProgressListener progressListener;
@@ -83,21 +83,24 @@ public class ApiHelper {
      *
      */
     private ApiHelper() {
-        okHttpClient = new OkHttpClient.Builder();
-        okHttpClient.connectTimeout(30, TimeUnit.SECONDS);
-        okHttpClient.readTimeout(30, TimeUnit.SECONDS);
-        okHttpClient.writeTimeout(30, TimeUnit.SECONDS);
-        okHttpClient.retryOnConnectionFailure(true);
-        okHttpClient.cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(Constant.getContext())));
-        okHttpClient.hostnameVerifier((hostname, session) -> true);
+        OkHttpClient.Builder client = new OkHttpClient.Builder();
+        client.connectTimeout(timeout, TimeUnit.SECONDS);
+        client.readTimeout(timeout, TimeUnit.SECONDS);
+        client.writeTimeout(timeout, TimeUnit.SECONDS);
+        client.retryOnConnectionFailure(true);
+//        client.cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(Constant.getContext())));
+        client.hostnameVerifier((hostname, session) -> true);
 
-        addProgress(okHttpClient);
-        netWorkCacheSet(okHttpClient);
+        addProgress(client);
+        netWorkCacheSet(client);
+
+        //添加公共请求头的参数
+        client.addInterceptor(new RequestHeaderInterceptor());
 
         if (Constant.Debug) {
-            okHttpClient.addInterceptor((new HttpLoggingInterceptor()).setLevel(HttpLoggingInterceptor.Level.BODY));
+            client.addInterceptor((new HttpLoggingInterceptor()).setLevel(HttpLoggingInterceptor.Level.BODY));
             //for stetho 在网页调试页看网络日志
-//            okHttpClient.addNetworkInterceptor(new StethoInterceptor());
+//            client.addNetworkInterceptor(new StethoInterceptor());
         }
 
         //支持https访问  Android 5.0以下 TLSV1.1和TLSV1.2是关闭的，要自己打开，Android 5.0以上是打开的
@@ -105,7 +108,7 @@ public class ApiHelper {
         if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
             //Android 5.0以上
             HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
-            okHttpClient.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
+            client.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
         } else {
             //Android 5.0 以下
             SSLContext sslContext = null;
@@ -114,11 +117,13 @@ public class ApiHelper {
                 sslContext.init(null, null, null);
 
                 SSLSocketFactory socketFactory = new Tls12SocketFactory(sslContext.getSocketFactory());
-                okHttpClient.sslSocketFactory(socketFactory, new HttpsUtils.UnSafeTrustManager());
+                client.sslSocketFactory(socketFactory, new HttpsUtils.UnSafeTrustManager());
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+
+        okHttpClient = client.build();
     }
 
     /**
@@ -154,11 +159,24 @@ public class ApiHelper {
      * 引起Retrofit变化的因素只有静态变量BASE_URL的改变。
      */
     private void getRetrofit() {
-        if (!BASE_URL.equals(baseUrl) || retrofit == null) {
-            baseUrl = BASE_URL;
+        //默认的
+        String defaultUrl = Constant.webServer;
+        //动态设置的
+        String setUrl = mBuilder.builderBaseUrl;
+        boolean isNeedGet = false;
+        if (retrofit == null)
+            isNeedGet = true;
+        else if (!TextUtils.isEmpty(setUrl) && !defaultUrl.equals(setUrl))
+            isNeedGet = true;
+        else if (!retrofit.baseUrl().toString().equals(defaultUrl))
+            isNeedGet = true;
+
+        if (isNeedGet) {
+            if (TextUtils.isEmpty(setUrl))
+                setUrl = defaultUrl;
             retrofit = new Retrofit.Builder()
-                    .baseUrl(baseUrl)
-                    .client(okHttpClient.build())
+                    .baseUrl(setUrl)
+                    .client(okHttpClient)
                     .build();
         }
     }
@@ -167,7 +185,7 @@ public class ApiHelper {
      * @return
      */
     private OkHttpClient getOkHttpClient() {
-        return okHttpClient.build();
+        return okHttpClient;
     }
 
     /**
@@ -193,6 +211,114 @@ public class ApiHelper {
         mCall = retrofit.create(ApiService.class).executePost(builder.url, builder.params);
         putCall(builder, mCall);
         startRequest(builder, callBack);
+    }
+
+
+    /**
+     * 发送post请求
+     *
+     * @param callBack
+     */
+    public void request(final ApiCallBack callBack) {
+        if (!isWebSocketRequest)
+            post(callBack);
+        else
+            webSocketRequest(callBack);
+    }
+
+    /**
+     * 监听websocket回来的数据并处理
+     *
+     * @param builder
+     * @param callBack
+     */
+    private void listenerWebSocketResult(Builder builder, final ApiCallBack callBack) {
+        Disposable disposable = RxWebSocket.Companion.getInstance().getWebSocketInfoObservable()
+                .timeout(10, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+                .filter(webSocketInfo -> webSocketInfo.getString() != null)
+                .take(1)
+                .subscribe(dataBack -> {
+                    ApiResult result;
+                    try {
+                        result = new ApiResult(ResultCode.RESULT_OK, parseData(dataBack.getString(), builder.clazz, builder.bodyType), dataBack.getString());
+//                        JSONObject json = JSON.parseObject(dataBack.getString());
+//                        String token = json.getString("token");
+//                        String code = json.getString("code");
+//                        String content = json.getString("content");
+//
+//                        if (!token.equals(builder.params.get("token").toString()))
+//                            //回来的和请求的token不一致，就不处理，继续等待
+//                            return;
+//
+//                        boolean isOkay = false;
+//                        if (code.equals("0") &&
+//                                !TextUtils.isEmpty(token)
+//                                && !TextUtils.isEmpty(content)) {
+//                            isOkay = true;
+//                        }
+//
+//                        if (isOkay) {
+//                            result = parseOriginData(builder, content);
+//                        } else {
+//                            result = new ApiResult(ResultCode.RESULT_FAILED, "websocket返回的数据有问题");
+//                        }
+                    } catch (Exception e) {
+                        result = new ApiResult(ResultCode.RESULT_FAILED, e.getMessage());
+                    }
+
+                    if (callBack != null) {
+                        callBack.receive(result);
+                    }
+
+                }, throwable -> {
+                    if (callBack != null) {
+                        callBack.receive(new ApiResult(ResultCode.RESULT_FAILED, throwable.getMessage()));
+                    }
+                });
+    }
+
+    /**
+     * 每个请求的超时时间为10s,就是如果10s,对应的token数据都还没回来，那么就timeoutException
+     *
+     * @param callBack
+     */
+    private void webSocketRequest(final ApiCallBack callBack) {
+        if (!NetworkUtil.INSTANCE.isConnected()) {
+            if (callBack != null)
+                callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));
+            return;
+        }
+
+        final Builder builder = mBuilder;
+//        builder.params = builder.params.getWebSocketParams(builder.url);
+        listenerWebSocketResult(builder, callBack);
+        RxWebSocket.Companion.getInstance().asyncSend(builder.params.getParams());
+    }
+
+
+    /**
+     * @param builder
+     * @param content
+     * @return
+     */
+    private ApiResult parseOriginData(Builder builder, String content) {
+
+        ApiResult result = new ApiResult();
+
+        result.setJson(content);
+        JSONObject object = JSONObject.parseObject(content);
+        if (object.containsKey("state") && object.getBoolean("state")) {
+            //网络数据，逻辑成功
+            result.setCode(ResultCode.RESULT_OK);
+            String data = object.getString("data");
+            if (!TextUtils.isEmpty(data))
+                result.setResult(parseData(data, builder.clazz, builder.bodyType));
+        } else {
+            result.setCode(ResultCode.RESULT_FAILED);
+            result.setErrorCodeMsg(object.getString("errcode"), object.getString("errmsg"));
+        }
+
+        return result;
     }
 
     /**
@@ -270,6 +396,7 @@ public class ApiHelper {
         mCall.enqueue(new Callback<ResponseBody>() {
             @Override
             public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+
                 // TODO: 2018/5/19 这里可以根据实际情况做相应的调整 比如
                 ApiResult result = null;
                 if (200 == response.code()) {
@@ -292,6 +419,21 @@ public class ApiHelper {
                 if (null != builder.tag) {
                     removeCall(builder.url);
                 }
+
+//                ApiResult result;
+//                try {
+//                    result = parseOriginData(builder, response.body().string());
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                    result = new ApiResult(ResultCode.RESULT_FAILED, e.getMessage());
+//                }
+//
+//                if (callBack != null)
+//                    callBack.receive(result);
+//
+//                if (null != builder.tag) {
+//                    removeCall(builder.url);
+//                }
             }
 
             @Override
@@ -502,12 +644,17 @@ public class ApiHelper {
          * @return
          */
         public ApiHelper build() {
-            if (!builderBaseUrl.equals(BASE_URL)) {
-                BASE_URL = builderBaseUrl;
-            }
             ApiHelper client = getInstance();
-            client.getRetrofit();
+            client.isWebSocketRequest = false;
             client.setBuilder(this);
+            client.getRetrofit();
+            return client;
+        }
+
+        public ApiHelper webSocket() {
+            ApiHelper client = getInstance();
+            client.setBuilder(this);
+            client.isWebSocketRequest = true;
             return client;
         }
     }

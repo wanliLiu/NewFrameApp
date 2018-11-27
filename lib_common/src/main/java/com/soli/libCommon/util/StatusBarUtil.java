@@ -507,7 +507,7 @@ public class StatusBarUtil {
 
 
     @TargetApi(Build.VERSION_CODES.M)
-    public static boolean setLightMode(Activity activity) {
+    public static boolean setDarkMode(Activity activity) {
         boolean xiaomi = setMIUIStatusBarDarkIcon(activity, true);
         boolean meizu = setMeizuStatusBarDarkIcon(activity, true);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -518,7 +518,7 @@ public class StatusBarUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    public static boolean setDarkMode(Activity activity) {
+    public static boolean setLightMode(Activity activity) {
         boolean xiaomi = setMIUIStatusBarDarkIcon(activity, false);
         boolean meizu = setMeizuStatusBarDarkIcon(activity, false);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -662,6 +662,15 @@ public class StatusBarUtil {
             activity.getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
     }
+
+    /**
+     * windown全屏
+     *
+     * @param activity
+     */
+    public static void setWindowForFullscreen(Activity activity) {
+        activity.getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    }
 //
 //    /**
 //     * 使状态栏透明
@@ -701,17 +710,17 @@ public class StatusBarUtil {
      * @param context context
      * @return 状态栏高度
      */
-    private static int getStatusBarHeight(Context context) {
+    public static int getStatusBarHeight(Context context) {
         // 获得状态栏高度
         int resourceId = context.getResources().getIdentifier("status_bar_height", "dimen", "android");
-        return context.getResources().getDimensionPixelSize(resourceId);
+        return resourceId != 0 ? context.getResources().getDimensionPixelSize(resourceId) : 0;
     }
 
     /**
      * 计算状态栏颜色
      *
      * @param color color值
-     * @param alpha alpha值
+     * @param alpha alpha值 0 -- 255
      * @return 最终的状态栏颜色
      */
     private static int calculateStatusColor(@ColorInt int color, int alpha) {
@@ -726,5 +735,16 @@ public class StatusBarUtil {
         green = (int) (green * a + 0.5);
         blue = (int) (blue * a + 0.5);
         return 0xff << 24 | red << 16 | green << 8 | blue;
+    }
+
+    /**
+     * @param alpha     0 -- 1
+     * @param baseColor
+     * @return
+     */
+    public static int getColorWit1hAlpha1(double alpha, int baseColor) {
+        int a = Math.min(255, Math.max(0, (int) (alpha * 255))) << 24;
+        int rgb = 0x00ffffff & baseColor;
+        return a + rgb;
     }
 }

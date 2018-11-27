@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+    <!--顶部滑动 联动效果  统一模板   CoordinatorLayout-->
+
+    <android.support.design.widget.AppBarLayout
+            android:id="@+id/appBarLayout"
+            android:layout_width="match_parent"
+            app:elevation="0dp"
+            android:layout_height="wrap_content">
+
+        <com.soli.libCommon.view.CollapsingToolbarLayout
+                android:layout_width="match_parent"
+                app:layout_scrollFlags="scroll|exitUntilCollapsed"
+                android:layout_height="wrap_content">
+            <!--CollapsingToolbarLayout  是  FrameLayout-->
+
+            <!--头部的内容-->
+            <com.facebook.drawee.view.SimpleDraweeView
+                    android:id="@+id/tempImage"
+                    android:layout_width="match_parent"
+                    app:viewAspectRatio="1.3"
+                    app:collapseMode="parallax"
+                    app:collapseParallaxMultiplier="0.5"
+                    android:layout_height="wrap_content"/>
+
+            <!--app:collapseMode="parallax"-->
+            <!--app:collapseParallaxMultiplier="0.8"-->
+
+
+            <!--Toolbar 放到最下面 这种布局Toolbar统一指定 id为 tool_bar-->
+            <com.soli.libCommon.view.root.Toolbar
+                    android:id="@id/tool_bar"
+                    android:layout_width="match_parent"
+                    app:collapseMode="pin"
+                    android:layout_height="wrap_content"/>
+
+        </com.soli.libCommon.view.CollapsingToolbarLayout>
+
+        <TextView android:layout_width="match_parent"
+                  android:text="滑动顶部固定----具体更换布局"
+                  android:textColor="@color/C5"
+                  android:background="@color/A1"
+                  android:textSize="18sp"
+                  android:gravity="center"
+                  android:layout_height="48dp"/>
+
+    </android.support.design.widget.AppBarLayout>
+
+
+    <!--具体需要滑动的视图，父视图必须指明 layout_behavior 为@string/appbar_scrolling_view_behavior -->
+    <android.support.v4.widget.NestedScrollView
+            android:layout_width="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            android:layout_height="match_parent">
+
+        <LinearLayout android:id="@+id/tempAdd"
+                      android:layout_width="match_parent"
+                      android:orientation="vertical"
+                      android:paddingBottom="100dp"
+                      android:layout_height="wrap_content">
+
+
+            <Button android:layout_width="match_parent"
+                    android:layout_marginTop="100dp"
+                    android:layout_height="wrap_content"/>
+
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+            <Button android:layout_width="match_parent"
+                    android:layout_height="wrap_content"/>
+
+        </LinearLayout>
+    </android.support.v4.widget.NestedScrollView>
+
+</android.support.design.widget.CoordinatorLayout>

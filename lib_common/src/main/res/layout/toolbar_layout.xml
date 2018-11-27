@@ -1,107 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/rl_title"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/toolbar_height"
-    android:background="@color/toolbar_background"
-    android:paddingRight="5dp">
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
+             android:id="@+id/barRoot"
+             android:background="@color/B2"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:minHeight="@dimen/toolbar_height">
 
-    <RelativeLayout
-        android:id="@+id/back_layout"
-        android:layout_width="wrap_content"
-        android:layout_height="@dimen/toolbar_height"
-        android:layout_alignParentLeft="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="130dp"
-        android:background="@drawable/default_view_press_selector">
+    <View android:layout_width="@dimen/toolbar_height"
+          android:visibility="invisible"
+          android:layout_height="@dimen/toolbar_height"/>
 
-        <ImageView
-            android:id="@+id/tv_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="5dp"
-            android:clickable="false"
-            android:src="@mipmap/icon_nav_back" />
-
-        <TextView
-            android:id="@+id/tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="10dp"
-            android:layout_toRightOf="@id/tv_back"
-            android:clickable="false"
-            android:duplicateParentState="true"
-            android:ellipsize="end"
-            android:maxLines="1"
-            android:paddingRight="10dp"
-            android:textColor="@color/toolbar_title_color"
-            android:textSize="18sp"
-            tools:text="Title" />
-    </RelativeLayout>
-
-    <LinearLayout
-        android:id="@+id/barContainer"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:gravity="center_horizontal">
-
-        <ImageButton
-            android:id="@+id/iv_right_btn_left"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
+    <ImageView
+            android:id="@+id/barBackIcon"
+            android:padding="15dp"
+            android:layout_width="@dimen/toolbar_height"
+            app:srcCompat="@drawable/ic_arrow_left"
             android:background="@drawable/default_view_press_selector"
-            android:gravity="center"
-            android:minWidth="48dp"
-            android:visibility="gone" />
-
-        <ImageButton
-            android:id="@+id/iv_right_btn"
-            android:layout_width="wrap_content"
-            android:layout_height="48dp"
-            android:background="@drawable/default_view_press_selector"
-            android:gravity="center"
-            android:minWidth="48dp"
-            android:visibility="gone" />
-    </LinearLayout>
+            android:layout_height="@dimen/toolbar_height"/>
 
     <TextView
-        android:id="@+id/tv_commit"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:layout_marginRight="5dp"
-        android:background="@drawable/default_view_press_selector"
-        android:gravity="center"
-        android:minWidth="48dp"
-        android:paddingLeft="5dp"
-        android:paddingRight="5dp"
-        android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="@android:color/black"
-        android:textSize="16sp"
-        android:visibility="gone"
-        tools:text="有关" />
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="0.5dp"
-        android:layout_alignParentBottom="true"
-        android:background="@color/line_color" />
+            android:id="@+id/barTitle"
+            tools:text="薛之谦"
+            android:textSize="18sp"
+            android:textColor="@color/C1"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/toolbar_height"/>
 
     <ProgressBar
-        android:id="@+id/loadprogress"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="fill_parent"
-        android:layout_height="2dp"
-        android:layout_alignParentBottom="true"
-        android:max="100"
-        android:progress="0"
-        android:progressDrawable="@drawable/progressbar_color"
-        android:visibility="gone" />
-</RelativeLayout>
+            android:id="@+id/loadprogress"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="2dp"
+            android:layout_gravity="top"
+            android:max="100"
+            android:visibility="gone"
+            android:progress="0"
+            android:progressDrawable="@drawable/progressbar_color"/>
+
+</FrameLayout>
+
+

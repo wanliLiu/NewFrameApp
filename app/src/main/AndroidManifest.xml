@@ -40,6 +40,7 @@
         <activity android:name=".pic.PicDealActivity"/>
         <activity android:name=".bottomsheet.BottomSheetTestActivity"/>
         <activity android:name=".autowrap.AutoWrapLayoutTestActivity"/>
+        <activity android:name=".demo.TestTopSpecialActivity"/>
 
         <service android:name=".download.DownloadService" />
     </application>

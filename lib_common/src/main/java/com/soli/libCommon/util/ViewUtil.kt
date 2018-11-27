@@ -21,9 +21,17 @@ object ViewUtil {
     /**
      * dip转成pixels
      */
-    fun dip2px(dip: Int, context: Context): Int {
-        val px = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip.toFloat(), context.resources.displayMetrics)
-        return px.toInt()
+    fun dip2px(dip: Float, context: Context): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dip, context.resources.displayMetrics).toInt()
+    }
+
+    /**
+     * 将sp值转换为px值，保证文字大小不变
+     * @param spValue
+     * @return
+     */
+    fun sp2px(context: Context, spValue: Float): Int {
+        return (spValue * context.resources.displayMetrics.scaledDensity + 0.5f).toInt()
     }
 
     /**
@@ -35,12 +43,19 @@ object ViewUtil {
      * @param message
      * @param listener
      */
-    fun setNoDataEmptyView(context: Context, listview: RecyclerViewEmpty, resourceId: Int = 0, message: String = "", paddingTop: Int = 0, listener: View.OnClickListener? = null) {
+    fun setNoDataEmptyView(
+        context: Context,
+        listview: RecyclerViewEmpty,
+        resourceId: Int = 0,
+        message: String = "",
+        paddingTop: Int = 0,
+        listener: View.OnClickListener? = null
+    ) {
         var parentView = listview.parent as ViewGroup
 
         if (parentView is PullRefreshLayout && parentView.childCount > 0) {
             var child: View? = null
-            for (index in 0..parentView.childCount) {
+            for (index in 0 until parentView.childCount) {
                 if (parentView.getChildAt(index) is RecyclerViewEmpty) {
                     child = parentView.getChildAt(index)
                     break
@@ -51,7 +66,8 @@ object ViewUtil {
                 parentView.removeView(child)
 
                 val container = FrameLayout(context)
-                val layoutParams = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
+                val layoutParams =
+                    ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT)
 
                 container.addView(child, layoutParams)
 
@@ -67,7 +83,10 @@ object ViewUtil {
         removeItem(parentView, listview, R.id.id_recycler_empty)
 
         val inflate = getEmptyView(context, resourceId, message, listener)
-        val params = ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, if (paddingTop > 0) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT)
+        val params = ViewGroup.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            if (paddingTop > 0) ViewGroup.LayoutParams.WRAP_CONTENT else ViewGroup.LayoutParams.MATCH_PARENT
+        )
         if (paddingTop > 0)
             inflate.setPadding(0, paddingTop, 0, 0)
         parentView.addView(inflate, params)
@@ -83,7 +102,13 @@ object ViewUtil {
      * @param message
      * @param listener
      */
-    fun setNoDataEmptyView(context: Context, listview: RecyclerViewEmpty, resourceId: Int = 0, message: String = "", listener: View.OnClickListener? = null) {
+    fun setNoDataEmptyView(
+        context: Context,
+        listview: RecyclerViewEmpty,
+        resourceId: Int = 0,
+        message: String = "",
+        listener: View.OnClickListener? = null
+    ) {
         setNoDataEmptyView(context, listview, resourceId, message, 0, listener)
     }
 
@@ -97,7 +122,13 @@ object ViewUtil {
      * @param message
      * @param listener
      */
-    fun setNoDataEmptyView(context: Context, listview: AbsListView, resourceId: Int, message: String, listener: View.OnClickListener?) {
+    fun setNoDataEmptyView(
+        context: Context,
+        listview: AbsListView,
+        resourceId: Int,
+        message: String,
+        listener: View.OnClickListener?
+    ) {
         val parentView = listview.parent as ViewGroup
 
         removeItem(parentView, listview, R.id.id_listView_empty)
@@ -143,7 +174,12 @@ object ViewUtil {
      * @param click
      * @return
      */
-    private fun getEmptyView(context: Context, resourceId: Int = 0, str: String = "", click: View.OnClickListener? = null): View {
+    private fun getEmptyView(
+        context: Context,
+        resourceId: Int = 0,
+        str: String = "",
+        click: View.OnClickListener? = null
+    ): View {
 
         val emptyView = View.inflate(context, R.layout.layout_empty, null)
         val txt_emtpy = emptyView.findViewById<TextView>(R.id.txt_emtpy)

@@ -33,10 +33,40 @@ abstract class BaseFragment : BaseFunctionFragment() {
     }
 
     /**
+     * Fragment中是否需要toolbar，默认不需要
+     */
+    open fun needTopToolbar() = false
+
+    /**
+     *
+     */
+    open fun setTitle(title: CharSequence) {
+        rootView.setTitle(title)
+    }
+
+    /**
+     *
+     */
+    open fun setTitle(titleId: Int) {
+        rootView.setTitle(titleId)
+    }
+
+    /**
      *
      */
     private fun setContentViews(view: View) {
-        rootView = RootView(ctx as Activity, view, getContentView(), true)
+        rootView = RootView(ctx as Activity, view, getContentView(), needTopToolbar())
+    }
+
+    /**
+     *
+     */
+    fun addIconMenu(idIndex: Int, resId: Int) {
+        rootView.getToolbar()?.addIconMenu(idIndex, resId)
+    }
+
+    fun addTextMenu(idIndex: Int, text: String?, colorId: Int) {
+        rootView.getToolbar()?.addTextMenu(idIndex, text, colorId)
     }
 
     /**
@@ -61,7 +91,8 @@ abstract class BaseFragment : BaseFunctionFragment() {
         when (loadingType) {
             LoadingType.TypeDialog -> showProgressDialog()
             LoadingType.TypeInside -> rootView.showProgressInside(getProgressView())
-            else->{}
+            else -> {
+            }
         }
     }
 
@@ -80,7 +111,7 @@ abstract class BaseFragment : BaseFunctionFragment() {
      * @return
      */
     open fun getProgressView(): Int {
-        return R.layout.loding_inside
+        return R.layout.loding_inside_top
     }
 
     /**

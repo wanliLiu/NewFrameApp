@@ -8,11 +8,14 @@ import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.net.ApiHelper
 import com.soli.libCommon.net.ApiParams
+import com.soli.libCommon.net.ApiResult
+import com.soli.libCommon.net.ResultCode
 import com.soli.libCommon.util.NetworkUtil
 import com.soli.libCommon.util.ToastUtils
 import com.soli.libCommon.view.root.LoadingType
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
+import com.soli.newframeapp.demo.TestTopSpecialActivity
 import com.soli.newframeapp.download.DownloadTestActivity
 import com.soli.newframeapp.net.NetWorkTestActivity
 import com.soli.newframeapp.net.WebviewActivity
@@ -26,15 +29,21 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     private var retry: Int = 0
     private val rxPermissions by lazy { RxPermissions(ctx) }
 
-    override fun isNeedSliderActivity() = false
 
-    override fun needShowBackIcon() = false
+    override fun needSliderActivity() = false
 
     override fun getContentView() = R.layout.activity_main
 
     override fun initView() {
         title = "New Frame"
-        hideBackFunc()
+    }
+
+    override fun setTitle(title: CharSequence) {
+        rootView.setTitleLeft(title)
+    }
+
+    override fun setTitle(titleId: Int) {
+        rootView.setTitleLeft(titleId)
     }
 
     override fun initListener() {
@@ -50,6 +59,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         btnColorMatrix.setOnClickListener(this)
         btnBottomSheet.setOnClickListener(this)
         btnCustFlex.setOnClickListener(this)
+        btnSpecialDemo.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -80,10 +90,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         Handler().postDelayed({
             dismissProgress()
             if (retry < retryIndex)
-                errorHappen {
-                    retry++
-                    loadingErrorTest()
-                }
+               errorHappen(1, ApiResult(ResultCode.NETWORK_TROBLE,"测试")){
+                   retry++
+                   loadingErrorTest()
+               }
         }, 2000)
     }
 
@@ -100,6 +110,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.btnColorMatrix -> startActivity(Intent(ctx, PicDealActivity::class.java))
             R.id.btnBottomSheet -> startActivity(Intent(ctx, BottomSheetTestActivity::class.java))
             R.id.btnCustFlex -> startActivity(Intent(ctx, AutoWrapLayoutTestActivity::class.java))
+            R.id.btnSpecialDemo -> startActivity(Intent(ctx, TestTopSpecialActivity::class.java))
+
         }
     }
 

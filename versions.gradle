@@ -22,11 +22,17 @@ versions.fastjson = "1.+"
 versions.fresco = "1.+"
 versions.stetho = "1.5.0"
 versions.scaleImageView = "3.+"
+versions.nine_old = "2.4.0"
 versions.mterialprogress = "1.7"
 versions.flexbox = "1.0.0" //1.1.0 for androidX
 //Arouter
 versions.arouter_compiler = "1.+"
 versions.arouter_api = "1.+"
+
+versions.skin_support = "1.+"
+
+versions.cordova = "1.+"
+
 
 
 def deps = [:]
@@ -40,6 +46,8 @@ support.design = "com.android.support:design:$versions.support"
 support.gridlayout = "com.android.support:gridlayout-v7:$versions.support"
 support.media = "com.android.support:support-media-compat:$versions.support"
 support.multidex = "com.android.support:multidex:$versions.multidex"
+support.vector = "com.android.support:support-vector-drawable:$versions.multidex"
+support.animate_vector = "com.android.support:animated-vector-drawable:$versions.multidex"
 deps.support = support
 
 
@@ -94,7 +102,7 @@ deps.webpsupport = "com.facebook.fresco:webpsupport:$versions.fresco"
 deps.frescoOkhttp = "com.facebook.fresco:imagepipeline-okhttp3:$versions.fresco"
 
 deps.subsamplingScaleImage = "com.davemorrissey.labs:subsampling-scale-image-view:$versions.scaleImageView"
-
+deps.nineoldandroids = "com.nineoldandroids:library:$versions.nine_old"
 //stetho
 deps.stetho = "com.facebook.stetho:stetho:$versions.stetho"
 deps.stethoOkhttp3 = "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
@@ -102,7 +110,8 @@ deps.stethoOkhttp3 = "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
 //other
 deps.event_bus = "org.greenrobot:eventbus:$versions.event_bus"
 deps.gson = "com.google.code.gson:gson:$versions.gson"
-deps.fastjson = "com.alibaba:fastjson:$versions.fastjson"
+//deps.fastjson = "com.alibaba:fastjson:$versions.fastjson"
+deps.fastjson = "com.alibaba:fastjson:1.1.70.android"
 deps.arouter_api = "com.alibaba:arouter-api:$versions.arouter_api"
 deps.arouter_compiler = "com.alibaba:arouter-compiler:$versions.arouter_compiler"
 deps.materialishPro = "com.pnikosis:materialish-progress:$versions.mterialprogress"
@@ -111,28 +120,45 @@ deps.rxpermissions = "com.soli.lib:rxpermissions:latest.release"
 deps.pullupdown = 'com.soli.refresh:pull_up_down:latest.release'
 deps.nineOld = 'com.nineoldandroids:library:2.4.0'
 deps.silder = 'com.r0adkll:slidableactivity:2.0.6'
+deps.swipelayout = "com.daimajia.swipelayout:library:1.2.0"
 //---------------------------------------------和业务相关的第三方东西，比如友盟 统计，支付，登录啥的  放到下面
+
+deps.nimSDklib = 'com.netease.nimlib:basesdk:5.7.0'
+
+//skin support
+deps.skin_support = "skin.android.support:skin-support:$versions.skin_support"
+deps.skin_support_appcompat = "skin.android.support:skin-support-appcompat:$versions.skin_support"
+deps.skin_support_cardview = "skin.android.support:skin-support-cardview:$versions.skin_support"
+deps.skin_support_constraint_layout = "skin.android.support:skin-support-constraint-layout:$versions.skin_support"
+deps.skin_support_design = "skin.android.support:skin-support-design:$versions.skin_support"
+
+//cordova
+deps.cordova = "org.apache:cordova:$versions.cordova"
+
+//FlycoTabLayout_Lib
+deps.flycoTab = "com.taihe.tablayout:flycotablayout:2.+"
 
 ext.deps = deps
 
 //编译版本
 def build_versions = [:]
-build_versions.min_sdk = 16
+build_versions.min_sdk = 17
 build_versions.target_sdk = 28
 build_versions.build_tools = "28.0.3"
 ext.build_versions = build_versions
 //运用版本
 def app_versions = [:]
-app_versions.versionName = "1.0.0"
-app_versions.versionCode = 20180515
+app_versions.versionName = appVersion
+app_versions.versionCode = appVersionCode.toInteger()
 ext.app_versions = app_versions
 
 
 def addRepos(RepositoryHandler handler) {
-    handler.google()
-    handler.jcenter()
     handler.mavenCentral()
+    handler.jcenter()
+    handler.google()
     //Add the JitPack repository
+    handler.maven { url 'http://10.20.120.200:8081/nexus/content/repositories/taiheRepo/' }
 }
 
 ext.addRepos = this.&addRepos

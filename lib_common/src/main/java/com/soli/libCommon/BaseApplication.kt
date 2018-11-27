@@ -1,9 +1,10 @@
 package com.soli.libCommon
 
+import android.os.Build
 import android.support.multidex.MultiDexApplication
+import android.support.v7.app.AppCompatDelegate
 import com.facebook.stetho.Stetho
 import com.soli.libCommon.base.Constant
-import com.soli.libCommon.net.websocket.RxWebSocket
 import com.soli.libCommon.util.FrescoUtil
 
 /**
@@ -21,12 +22,20 @@ abstract class BaseApplication : MultiDexApplication() {
 
         beforeLaunch()
 
+        initSkin()
+
         if (Constant.Debug)
             Stetho.initializeWithDefaults(this)
 
         FrescoUtil.Init(this)
+    }
 
-        //设置websocket httpclient
-        RxWebSocket.initWebsocket()
+
+    /**
+     * 初始化皮肤框架
+     * */
+    private fun initSkin() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)//适配android5.0以下
+            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
     }
 }

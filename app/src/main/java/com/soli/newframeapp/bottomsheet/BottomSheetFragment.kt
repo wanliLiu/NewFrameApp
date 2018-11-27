@@ -80,7 +80,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
     }
 
     fun getTopOffset(): Int {
-        return ViewUtil.dip2px(100, activity as Context)
+        return ViewUtil.dip2px(100f, activity as Context)
     }
 
     fun setTopOffset(topOffset: Int) {

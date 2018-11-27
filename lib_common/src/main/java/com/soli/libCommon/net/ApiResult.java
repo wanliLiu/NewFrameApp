@@ -1,5 +1,8 @@
 package com.soli.libCommon.net;
 
+import android.text.TextUtils;
+import com.soli.libCommon.util.MLog;
+
 /*
  * 网络请求的结果
  * @author soli
@@ -17,6 +20,10 @@ public class ApiResult<T> {
     //错误信息
     private String errorCode, errormsg;
 
+    public ApiResult() {
+
+    }
+
     /**
      * @param mCode
      * @param mResult
@@ -27,17 +34,17 @@ public class ApiResult<T> {
         this.result = mResult;
         this.json = mJson;
     }
-
-    /**
-     * @param mCode
-     * @param merrorCode
-     * @param errormsg
-     */
-    public ApiResult(ResultCode mCode, String merrorCode, String errormsg) {
-        this.code = mCode;
-        this.errorCode = merrorCode;
-        this.errormsg = errormsg;
-    }
+//
+//    /**
+//     * @param mCode
+//     * @param merrorCode
+//     * @param errormsg
+//     */
+//    public ApiResult(ResultCode mCode, String merrorCode, String errormsg) {
+//        this.code = mCode;
+//        this.errorCode = merrorCode;
+//        this.errormsg = errormsg;
+//    }
 
     /**
      * @param mCode
@@ -53,6 +60,8 @@ public class ApiResult<T> {
      */
     public boolean isSuccess() {
         // TODO: 2018/5/19 网络发生错误的时候，这里可以统一提示啥处理
+        if (!(TextUtils.isEmpty(errorCode) && TextUtils.isEmpty(errormsg)))
+            MLog.e(errorCode + "------" + errormsg);
         return code == ResultCode.RESULT_OK;
     }
 
@@ -93,5 +102,22 @@ public class ApiResult<T> {
      */
     public ResultCode getCode() {
         return code;
+    }
+
+    public void setJson(String json) {
+        this.json = json;
+    }
+
+    public void setCode(ResultCode code) {
+        this.code = code;
+    }
+
+    public void setResult(T result) {
+        this.result = result;
+    }
+
+    public void setErrorCodeMsg(String code, String msg) {
+        this.errorCode = code;
+        this.errormsg = msg;
     }
 }

@@ -2,9 +2,10 @@ package com.soli.libCommon.base
 
 import android.os.Bundle
 import com.soli.libCommon.R
+import com.soli.libCommon.net.ApiResult
+import com.soli.libCommon.util.ToastUtils
 import com.soli.libCommon.view.root.LoadingType
 import com.soli.libCommon.view.root.RootView
-import kotlinx.android.synthetic.main.activity_root_view.*
 
 /**
  * @author Soli
@@ -12,7 +13,7 @@ import kotlinx.android.synthetic.main.activity_root_view.*
  */
 abstract class BaseActivity : BaseFunctionActivity() {
 
-    protected var defaultLoadingType = LoadingType.TypeInside
+    open var defaultLoadingType = LoadingType.TypeInside
     private var loadingType = defaultLoadingType
     protected lateinit var rootView: RootView
 
@@ -21,44 +22,21 @@ abstract class BaseActivity : BaseFunctionActivity() {
 
         setContentViews()
         initView()
-        initDefaultBack()
         initListener()
         initData()
     }
 
     /**
-     *
+     * Activity默认需要顶部的toolbar
      */
-    private fun initDefaultBack() {
-        //是否要显示返回的icon
-        if (needShowBackIcon()) {
-            //默认显示，点击关闭
-//            rootView.getToolbar()?.setNavigationOnClickListener { onBackPressed() }
-        }
-    }
-
-    /**
-     *
-     */
-    open fun hideBackFunc() {
-        tool_bar?.hideBackFunction()
-    }
-
-    /**
-     * 是否要显示返回的按钮
-     *
-     * @return 默认要显示
-     */
-    open fun needShowBackIcon(): Boolean {
-        return true
-    }
+    open fun needTopToolbar() = true
 
     /**
      *
      */
     private fun setContentViews() {
         setContentView(R.layout.activity_root_view)
-        rootView = RootView(this, getContentView())
+        rootView = RootView(this, getContentView(), needTopToolbar())
         setStatusBarColor()
     }
 
@@ -104,7 +82,7 @@ abstract class BaseActivity : BaseFunctionActivity() {
      * @return
      */
     open fun getProgressView(): Int {
-        return R.layout.loding_inside
+        return R.layout.loding_inside_top
     }
 
     /**
@@ -123,12 +101,26 @@ abstract class BaseActivity : BaseFunctionActivity() {
         rootView.setTitle(titleId)
     }
 
+
     /**
      *
      */
-    fun errorHappen(listener: () -> Unit) {
-        rootView.errorHappen(listener, R.layout.error_trouble_layout, R.id.btnRetry)
-//        TODO("可以根据情况实际做相应的调整，这里只是case")
+    fun addIconMenu(idIndex: Int, resId: Int) {
+        rootView.getToolbar()?.addIconMenu(idIndex, resId)
+    }
+
+    fun addTextMenu(idIndex: Int, text: String?, colorId: Int) {
+        rootView.getToolbar()?.addTextMenu(idIndex, text, colorId)
+    }
+
+    /**
+     *
+     */
+    fun errorHappen(pageNo: Int = 1, result: ApiResult<Any>, listener: () -> Unit) {
+        if (pageNo == 1)
+            rootView.errorHappen(listener, R.layout.error_trouble_layout, R.id.btnRetry)
+        else
+            ToastUtils.showShortToast(result.errormsg)
     }
 
     /**

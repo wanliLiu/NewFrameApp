@@ -14,4 +14,25 @@
 
     <color name="color_bg">#f2f4f5</color>
 
+
+    <!--/***************下面是APP项目规范的颜色定义**************/-->
+    <color name="A1">#FE5C33</color>
+    <color name="A2">#191919</color>
+    <color name="A3">#FCC200</color>
+    <!--文字原色-->
+    <color name="C1">#191919</color>
+    <color name="C2">#666666</color>
+    <color name="C3">#999999</color>
+    <color name="C4">#B2B2B2</color>
+    <color name="C5">#ffffff</color>
+    <color name="C6">#CCCCCC</color>
+    <color name="C7">#587692</color>
+    <!--分割线原色-->
+    <color name="L1">#EBEBEB</color>
+    <!--输入框的原色-->
+    <color name="B1">#F8F8F8</color>
+    <!--默认背景 view 背景-->
+    <color name="B2">#FFFFFF</color>
+
+
 </resources>

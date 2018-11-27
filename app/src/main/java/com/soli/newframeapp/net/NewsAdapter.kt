@@ -18,15 +18,18 @@ import com.soli.newframeapp.model.Story
  */
 class NewsAdapter(ctx: Context) : BaseRecycleAdapter<Story>(ctx) {
 
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return NewsViewHolder(LayoutInflater.from(ctx).inflate(R.layout.item_news_list, parent, false))
+    override fun onCreateViewHolder_impl(viewGroup: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+        return NewsViewHolder(LayoutInflater.from(ctx).inflate(R.layout.item_news_list, viewGroup, false))
     }
 
-    override fun onBindViewHolder(mholder: RecyclerView.ViewHolder, position: Int) {
-        super.onBindViewHolder(mholder, position)
-        val data = getItemData(position)
-        val holder = mholder as NewsViewHolder
+    override fun onBindViewHolder_impl(
+        viewHolder: RecyclerView.ViewHolder?,
+        itemType: Int,
+        original_position: Int,
+        real_position: Int
+    ) {
+        val data = getItemData(real_position)
+        val holder = viewHolder as NewsViewHolder
         if (data.images.isNotEmpty())
             ImageLoader.loadImage(holder.news_image, data.images[0])
         holder.news_title.text = data.title

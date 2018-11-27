@@ -26,6 +26,10 @@ android {
 
         //android 3.0  flavor
         flavorDimensions "packageChannel"
+
+
+        //vectorDrawable 使用android.support库支持，支持低版本，默认是使用系统的
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -59,7 +63,7 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':lib_common')
 
-    implementation deps.okhttp_mockwebserver
+//    implementation deps.okhttp_mockwebserver
     implementation deps.rxbinding
     implementation deps.rxlifecycleAndroid_kotlin
 //    implementation deps.rxlifecycle_kotlin

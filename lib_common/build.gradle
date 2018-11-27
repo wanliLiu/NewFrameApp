@@ -12,6 +12,9 @@ android {
         targetSdkVersion build_versions.target_sdk
         versionCode 1
         versionName "1.0"
+
+        //vectorDrawable 使用android.support库支持，支持低版本，默认是使用系统的
+        vectorDrawables.useSupportLibrary = true
     }
 
     buildTypes {
@@ -43,6 +46,10 @@ dependencies {
 
     api deps.flexbox
 
+    //
+    api deps.support.vector
+    api deps.support.animate_vector
+
     //Rxjava
     api deps.rx_android
     api deps.rxbinding
@@ -52,12 +59,13 @@ dependencies {
     //network
     implementation deps.loggingInterceptor
     implementation deps.retrofit.runtime
+    api deps.okhttp
 //    api deps.retrofit.gson
 
     //picture
     api deps.fresco
     implementation deps.frescoOkhttp
-//    api deps.animatedgif
+    api deps.animatedgif
 //    api deps.animatedwebp
 //    api deps.webpsupport
 
@@ -74,4 +82,17 @@ dependencies {
     api deps.pullupdown
 //    api deps.nineOld
     api deps.silder
+
+    //skin support
+//    api deps.skin_support
+//    api deps.skin_support_appcompat
+//    api deps.skin_support_cardview
+//    api deps.skin_support_constraint_layout
+//    api deps.skin_support_design
+
+    implementation deps.subsamplingScaleImage
+
+    //flycoTab
+    api deps.flycoTab
+    api deps.swipelayout
 }

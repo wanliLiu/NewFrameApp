@@ -11,15 +11,16 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AccelerateDecelerateInterpolator
 import com.soli.libCommon.R
+import com.soli.libCommon.util.StatusBarUtil
 
 /**
  * @author Soli
  * @Time 2017/8/8
  */
-class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean = false) {
+class RootView(mctx: Activity, rooContent: View, showView: Int, isNeedToolbar: Boolean = false) {
     //内容根视图
     //视图窗根视图
-    private var contentView: ViewGroup
+    private var rootView: ViewGroup
 
     private var content: ViewGroup? = null
     private var toolbar: Toolbar? = null
@@ -35,16 +36,21 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
 
     init {
         mInflater = LayoutInflater.from(ctx)
-        contentView = rooContent as ViewGroup
-        initView(showView, isClear)
+        rootView = rooContent as ViewGroup
+        initView(showView, isNeedToolbar)
     }
 
     /**
      * @param mctx
      * @param showView
-     * @param isClear
+     * @param isNeedToolbar
      */
-    constructor(mctx: Activity, showView: Int, isClear: Boolean = false) : this(mctx, mctx.findViewById<View>(R.id.viewRoot) as ViewGroup, showView, isClear)
+    constructor(mctx: Activity, showView: Int, isNeedToolbar: Boolean = false) : this(
+        mctx,
+        mctx.findViewById<View>(R.id.viewRoot) as ViewGroup,
+        showView,
+        isNeedToolbar
+    )
 
     /**
      * 调整进度加载的视图 的容器
@@ -55,40 +61,65 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
     }
 
     /**
+     * 重新定位toolbar 和 content
+     */
+    fun reInitView() {
+        rootView.apply {
+            content = findViewById(R.id.root_content)
+            toolbar = findViewById(R.id.tool_bar)
+        }
+    }
+
+    /**
      *
      */
-    private fun initView(showView: Int, isClear: Boolean) {
-        if (isClear) {
-            contentView.removeAllViews()
-            content = contentView
+    private fun initView(showView: Int, isNeedToolbar: Boolean) {
+        if (!isNeedToolbar) {
+            rootView.removeAllViews()
+            content = rootView
         } else {
-            contentView.apply {
-                content = findViewById(R.id.root_content)
-                toolbar = findViewById(R.id.tool_bar)
-            }
+            reInitView()
         }
 
         //add content
         viewDisplay = setContentView(showView)
     }
 
+
     /**
-     * 隐藏顶部视图
+     * 把root_content 调整到屏幕顶端，前提是内容全屏SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
      */
-    fun hideToolBar() {
-        toolbar?.visibility = View.GONE
-        offsetContentToStatusBar()
+    fun offsetContentToScreenTop() {
+        offsetContent(0)
     }
 
     /**
      *
      */
-    private fun offsetContentToStatusBar() {
+    private fun offsetContent(offset: Int) {
         content?.apply {
             val params = layoutParams as ViewGroup.MarginLayoutParams
-            params.topMargin = 0
+            params.topMargin = offset
             layoutParams = params
         }
+    }
+
+    /**
+     * 调整toolbar到屏幕顶端的位置，前提是内容全屏SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+     */
+    fun judgeToolBarOffset() {
+        toolbar?.apply {
+            val statbarHeight = StatusBarUtil.getStatusBarHeight(ctx)
+            getBarRoot().setPadding(0, statbarHeight, 0, 0)
+            offsetContent(statbarHeight + ctx.resources.getDimensionPixelOffset(R.dimen.toolbar_height))
+        }
+    }
+
+    /**
+     * 设置导航栏的原色
+     */
+    fun setToolbarBackgroudColor(color: Int) {
+        toolbar?.setToolBackgroundColor(color)
     }
 
     /**
@@ -98,7 +129,7 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
         if (justyContent != null && view != viewDisplay) {
             justyContent!!.removeView(view)
         } else
-            content!!.removeView(view)
+            content?.removeView(view)
     }
 
     /**
@@ -108,7 +139,7 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
         if (justyContent != null && view != viewDisplay) {
             justyContent!!.addView(view)
         } else
-            content!!.addView(view)
+            content?.addView(view)
         return view
     }
 
@@ -150,6 +181,17 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
             toolbar?.setTitle(ctx.resources.getString(title))
         } else {
             toolbar?.setTitle(title as String)
+        }
+    }
+
+    /**
+     *
+     */
+    fun setTitleLeft(title: Any) {
+        if (title is Int) {
+            toolbar?.setTitleLeft(ctx.resources.getString(title))
+        } else {
+            toolbar?.setTitleLeft(title as String)
         }
     }
 
@@ -217,7 +259,10 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
 
         val set = AnimatorSet()
         set.interpolator = AccelerateDecelerateInterpolator()
-        set.playTogether(ObjectAnimator.ofFloat(showView, "alpha", 0.0f, 1.0f), ObjectAnimator.ofFloat(dissMissView, "alpha", 1f, 0.0f))
+        set.playTogether(
+            ObjectAnimator.ofFloat(showView, "alpha", 0.0f, 1.0f),
+            ObjectAnimator.ofFloat(dissMissView, "alpha", 1f, 0.0f)
+        )
         set.addListener(object : AnimatorListenerAdapter() {
             override fun onAnimationEnd(animation: Animator) {
                 super.onAnimationEnd(animation)
@@ -238,7 +283,9 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isClear: Boolean
      *
      * @return
      */
-    fun getContentView() = contentView
+    fun getContentView() = content
+
+    fun getRootView() = rootView
 
     /**
      *

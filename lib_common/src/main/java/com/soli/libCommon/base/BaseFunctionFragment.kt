@@ -1,6 +1,7 @@
 package com.soli.libCommon.base
 
 import android.app.ProgressDialog
+import android.os.Handler
 import android.support.v4.app.Fragment
 
 /**
@@ -14,6 +15,8 @@ abstract class BaseFunctionFragment : Fragment(), BaseInterface {
     protected val ctx by lazy { this.activity }
 
     private var dialog: ProgressDialog? = null
+
+    private val handler = Handler()
 
 
     /**
@@ -42,5 +45,22 @@ abstract class BaseFunctionFragment : Fragment(), BaseInterface {
     override fun onPause() {
         super.onPause()
         dissProgressDialog()
+    }
+
+    protected fun getHandler(): Handler {
+        return handler
+    }
+
+    protected fun postRunnable(runnable: Runnable) {
+        handler.post(Runnable {
+            // validate
+            // TODO use getActivity ?
+            if (!isAdded) {
+                return@Runnable
+            }
+
+            // run
+            runnable.run()
+        })
     }
 }

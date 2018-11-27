@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <declare-styleable name="toolbar_attr">
-        <attr name="setTitle" format="string" />
-        <attr name="commitText" format="string" />
-        <attr name="commitTextColor" format="color|reference" />
-        <attr name="right_image" format="reference" />
+    <declare-styleable name="CollapsingToolbarLayout">
+        <attr name="collapseMode">
+            <enum name="none" value="0"/>
+            <enum name="pin" value="1"/>
+            <enum name="parallax" value="2"/>
+        </attr>
+        <attr name="collapseParallaxMultiplier" format="float"/>
+        <attr name="isForSpecailTitle" format="boolean"/>
     </declare-styleable>
-
 </resources>

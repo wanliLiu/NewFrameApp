@@ -1,10 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <item name="id_listView_empty" type="id" />
     <item name="id_recycler_empty" type="id" />
 
-    <item type="id" name="statusbarutil_fake_status_bar_view" />
-    <item type="id" name="statusbarutil_translucent_view" />
+    <item name="statusbarutil_fake_status_bar_view" type="id" />
+    <item name="statusbarutil_translucent_view" type="id" />
+
+    <item name="id_toolbar_custom" type="id" />
+
+    <item name="tool_bar" type="id" />
+    <item name="root_content" type="id" />
+    <item name="specialHead" type="id" />
+    <item name="tips_layout" type="id" />
 
 </resources>
