@@ -58,30 +58,30 @@ open class RecyclerViewEmpty(ctx: Context, attrs: AttributeSet?, defstyle: Int) 
             checkIfEmpty()
         }
 
-//        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
-//            super.onItemRangeChanged(positionStart, itemCount)
-//            checkIfEmpty()
-//        }
-//
-//        override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
-//            super.onItemRangeChanged(positionStart, itemCount, payload)
-//            checkIfEmpty()
-//        }
-//
-//        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-//            super.onItemRangeInserted(positionStart, itemCount)
-//            checkIfEmpty()
-//        }
-//
-//        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
-//            super.onItemRangeMoved(fromPosition, toPosition, itemCount)
-//            checkIfEmpty()
-//        }
-//
-//        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
-//            super.onItemRangeRemoved(positionStart, itemCount)
-//            checkIfEmpty()
-//        }
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int) {
+            super.onItemRangeChanged(positionStart, itemCount)
+            checkIfEmpty()
+        }
+
+        override fun onItemRangeChanged(positionStart: Int, itemCount: Int, payload: Any?) {
+            super.onItemRangeChanged(positionStart, itemCount, payload)
+            checkIfEmpty()
+        }
+
+        override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+            super.onItemRangeInserted(positionStart, itemCount)
+            checkIfEmpty()
+        }
+
+        override fun onItemRangeMoved(fromPosition: Int, toPosition: Int, itemCount: Int) {
+            super.onItemRangeMoved(fromPosition, toPosition, itemCount)
+            checkIfEmpty()
+        }
+
+        override fun onItemRangeRemoved(positionStart: Int, itemCount: Int) {
+            super.onItemRangeRemoved(positionStart, itemCount)
+            checkIfEmpty()
+        }
     }
 
 }

@@ -31,7 +31,7 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
     protected LayoutInflater inflater;
 
     //更新数据是否要用有动画的那种效果
-    protected boolean useHaveAnimationRefresh = false;
+    protected boolean useHaveAnimationRefresh = true;
 
     public BaseRecycleAdapter(Context context) {
         this.ctx = context;
