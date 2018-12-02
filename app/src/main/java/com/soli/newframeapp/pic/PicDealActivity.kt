@@ -58,6 +58,9 @@ class PicDealActivity : BaseActivity() {
                     bitmap = mb
                     imageview.setImageBitmap(bitmap)
                 }
+
+//        ImageLoader.loadResPic(headImage1, R.mipmap.icon_avatar_default)
+        headImage.loadImage("https://nim.nosdn.127.net/MTAxMTAwMg==/bmltYV81NDU5MjM4ODk3XzE1Mzk2ODIxMjg3NzBfOWY3YmZhYTYtNzczYy00YjBhLTg0MWEtYjYzMjVmMTIxZDhj?")
     }
 
     private val onSeekChange = object : SeekBar.OnSeekBarChangeListener {
