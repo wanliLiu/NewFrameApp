@@ -13,11 +13,10 @@ import com.soli.libCommon.net.websocket.RxWebSocket;
 import com.soli.libCommon.util.FileUtil;
 import com.soli.libCommon.util.NetworkUtil;
 import com.soli.libCommon.util.RxJavaUtil;
+import com.soli.libCommon.util.Utils;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
-import okhttp3.Cache;
-import okhttp3.OkHttpClient;
-import okhttp3.ResponseBody;
+import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -27,6 +26,8 @@ import retrofit2.Retrofit;
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLSocketFactory;
 import java.io.File;
+import java.io.FileInputStream;
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -321,6 +322,117 @@ public class ApiHelper {
         return result;
     }
 
+    public String bytesToHexString(byte[] src) {
+        StringBuilder stringBuilder = new StringBuilder("");
+        if (src == null || src.length <= 0) {
+            return null;
+        }
+        for (int i = 0; i < src.length; i++) {
+            int v = src[i] & 0xFF;
+            String hv = Integer.toHexString(v);
+            if (hv.length() < 2) {
+                stringBuilder.append(0);
+            }
+            stringBuilder.append(hv);
+        }
+        return stringBuilder.toString();
+    }
+
+    public String getFileMD5(File file) {
+        if (!file.isFile()) {
+            return null;
+        }
+        MessageDigest digest = null;
+        FileInputStream in = null;
+        byte buffer[] = new byte[1024];
+        int len;
+        try {
+            digest = MessageDigest.getInstance("MD5");
+            in = new FileInputStream(file);
+            while ((len = in.read(buffer, 0, 1024)) != -1) {
+                digest.update(buffer, 0, len);
+            }
+            in.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+        return bytesToHexString(digest.digest());
+    }
+
+    public void uploadFile(final ApiCallBack<String> callBack, final downloadProgressListener listener) {
+        Builder builder = mBuilder;
+
+        File file = new File(builder.fileUrl);
+        if (!file.exists()) throw new IllegalArgumentException("上传的文件不存在--->" + file.getAbsolutePath());
+
+        RequestBody filebody = RequestBody.create(MediaType.parse("multipart/form-data"), file);
+        MultipartBody.Part body = MultipartBody.Part.createFormData("file", file.getName(), filebody);
+
+        String ds = Utils.MD5("3jpg1" + getFileMD5(file) + "taiheUp@#");
+        StringBuffer sp = new StringBuffer();
+        String teds = "0123456789abcdef";
+        String to = "f7c8d0e1a9b53426";
+        for (int i = 0; i < ds.length(); i++) {
+            int tst = Integer.parseInt(ds.substring(i, i + 1), 16);
+            sp.append(to.substring(tst, tst + 1));
+        }
+
+        mCall = retrofit.create(ApiService.class).uploadFile("/?upload=1&fileMode=3&fileExt=jpg&safe=1&cache=1&mode=upload&secureKey=" + sp.toString() , body);
+        putCall(builder, mCall);
+        startUploadFileRequest(builder, callBack);
+    }
+
+    /**
+     * @param builder
+     * @param callBack
+     */
+    private void startUploadFileRequest(final Builder builder, final ApiCallBack callBack) {
+        if (!NetworkUtil.INSTANCE.isConnected()) {
+            if (callBack != null)
+                callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));
+            return;
+        }
+        mCall.enqueue(new Callback<ResponseBody>() {
+            @Override
+            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+                // TODO: 2018/5/19 这里可以根据实际情况做相应的调整 比如
+                ApiResult result = null;
+                if (200 == response.code()) {
+                    try {
+                        String re = response.body().string();
+                        result = new ApiResult(ResultCode.RESULT_OK, parseData(re, builder.clazz, builder.bodyType), re);
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        result = new ApiResult(ResultCode.RESULT_FAILED, e.getMessage());
+                    }
+                }
+                if (!response.isSuccessful() || 200 != response.code()) {
+                    // TODO: 2018/5/19  这里可以根据实际情况，对返回的错误msg，通过接口的msg来拿
+                    result = new ApiResult(ResultCode.RESULT_FAILED, response.message());
+                }
+
+                if (callBack != null)
+                    callBack.receive(result);
+
+                if (null != builder.tag) {
+                    removeCall(builder.url);
+                }
+            }
+
+            @Override
+            public void onFailure(Call<ResponseBody> call, Throwable t) {
+                t.printStackTrace();
+                if (callBack != null)
+                    callBack.receive(new ApiResult(ResultCode.RESULT_FAILED, t.getMessage()));
+                if (null != builder.tag) {
+                    removeCall(builder.url);
+                }
+                progressListener = null;
+            }
+        });
+    }
+
     /**
      * 文件下载
      *
@@ -336,14 +448,14 @@ public class ApiHelper {
 
         mCall = retrofit.create(ApiService.class).executeDownloadFile(builder.fileUrl);
         putCall(builder, mCall);
-        startFileRequest(builder, callBack);
+        startDownloadFileRequest(builder, callBack);
     }
 
     /**
      * @param builder
      * @param callBack
      */
-    private void startFileRequest(final Builder builder, final ApiCallBack callBack) {
+    private void startDownloadFileRequest(final Builder builder, final ApiCallBack callBack) {
         if (!NetworkUtil.INSTANCE.isConnected()) {
             if (callBack != null)
                 callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));
