@@ -30,7 +30,10 @@ object FileUtil {
 
         try {
             if (isExternalMemoryAvailable()) {
-                targetDir = if (isInAndroidDataFile) File(context.externalCacheDir!!.absolutePath + "/frame") else File(Environment.getExternalStorageDirectory(), "frame")
+                targetDir = if (isInAndroidDataFile) File(context.externalCacheDir!!.absolutePath + "/frame") else File(
+                    Environment.getExternalStorageDirectory(),
+                    "frame"
+                )
 
                 if (!targetDir.exists()) {
                     targetDir.mkdirs()
@@ -163,4 +166,53 @@ object FileUtil {
         }
         return ret
     }
+
+
+    /**
+     * 是否是音频文件
+     *
+     * @param filename
+     * @return
+     */
+    private fun isVolumeFile(fileExt: String): Boolean {
+        val extensions = arrayOf("mp3", "amr", "wav", "aac", "m4a", "ogg")
+        for (i in extensions.indices) {
+            if (fileExt == extensions[i]) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isVideoFile(fileExt: String): Boolean {
+        val extensions = arrayOf("mp4", "3gp", "avi", "rm", "rmvb", "mkv", "mov", "m4v")
+        for (i in extensions.indices) {
+            if (fileExt == extensions[i]) {
+                return true
+            }
+        }
+        return false
+    }
+
+    private fun isImageFile(fileExt: String): Boolean {
+        val extensions = arrayOf("jpg", "jpeg", "png", "bmp")//"gif
+        for (i in extensions.indices) {
+            if (fileExt == extensions[i]) {
+                return true
+            }
+        }
+        return false
+    }
+
+
+    fun getFileUploadType(fileExt: String): Int {
+        return when {
+            fileExt == "gif" -> 4
+            isImageFile(fileExt) -> 3
+            isVideoFile(fileExt) -> 2
+            isVolumeFile(fileExt) -> 1
+            else -> 5
+        }
+    }
+
 }
