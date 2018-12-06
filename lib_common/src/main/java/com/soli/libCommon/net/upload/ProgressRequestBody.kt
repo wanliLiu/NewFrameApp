@@ -1,6 +1,7 @@
 package com.soli.libCommon.net.upload
 
 import com.soli.libCommon.net.download.FileProgressListener
+import com.soli.libCommon.util.RxJavaUtil
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.*
@@ -55,7 +56,9 @@ internal class ProgressRequestBody(
                     val temp = ((100 * totalBytesSend) / contentLength).toInt()
                     if (progress != temp) {
                         progress = temp
-                        progressListener.progress(progress, totalBytesSend, contentLength, byteCount == -1L)
+                        RxJavaUtil.runOnUiThread{
+                            progressListener.progress(progress, totalBytesSend, contentLength, byteCount == -1L)
+                        }
                     }
                 }
             }

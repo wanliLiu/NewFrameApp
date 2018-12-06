@@ -332,10 +332,10 @@ public class ApiHelper {
 
         File file = new File(builder.fileUrl);
         if (!file.exists()) throw new IllegalArgumentException("上传的文件不存在--->" + file.getAbsolutePath());
+//
+//        progressListener = listener;
 
-        progressListener = listener;
-
-       ProgressRequestBody filebody = new ProgressRequestBody(RequestBody.create(MediaType.parse("multipart/form-data"), file),progressListener);
+       ProgressRequestBody filebody = new ProgressRequestBody(RequestBody.create(MediaType.parse("multipart/form-data"), file),listener);
         MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), filebody);
 
         String fileExt = MimeTypeMap.getFileExtensionFromUrl(file.getAbsolutePath());
