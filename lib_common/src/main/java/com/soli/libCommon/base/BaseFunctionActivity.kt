@@ -1,6 +1,5 @@
 package com.soli.libCommon.base
 
-import android.app.ProgressDialog
 import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
@@ -13,6 +12,7 @@ import com.r0adkll.slidr.Slidr
 import com.soli.libCommon.R
 import com.soli.libCommon.util.KeyBoardUtils
 import com.soli.libCommon.util.StatusBarUtil
+import com.soli.libCommon.view.root.LoadingDialog
 
 /**
  * @author Soli
@@ -30,7 +30,7 @@ abstract class BaseFunctionActivity : AppCompatActivity(), BaseInterface {
      */
     protected val ctx by lazy { this }
 
-    private var dialog: ProgressDialog? = null
+    private var dialog: LoadingDialog? = null
 
     @JvmField
     protected var savedInstanceState: Bundle? = null
@@ -110,8 +110,7 @@ abstract class BaseFunctionActivity : AppCompatActivity(), BaseInterface {
      */
     fun showProgressDialog() {
         if (dialog == null) {
-            dialog = ProgressDialog(ctx)
-            dialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
+            dialog = LoadingDialog(ctx)
         }
 
         if (!dialog!!.isShowing)

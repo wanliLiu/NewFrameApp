@@ -35,4 +35,15 @@
     <color name="B2">#FFFFFF</color>
 
 
+    <!--阴影颜色-->
+    <color name="cardShadowColor_1">#00000000</color>
+    <color name="cardShadowColor_2">#01000000</color>
+    <color name="cardShadowColor_3">#02000000</color>
+    <color name="cardShadowColor_4">#03000000</color>
+    <color name="cardShadowColor_5">#04000000</color>
+    <color name="cardShadowColor_6">#05000000</color>
+    <color name="cardShadowColor_7">#06000000</color>
+    <color name="cardShadowColor_8">#07000000</color>
+    <color name="cardShadowColor_9">#08000000</color>
+    <color name="cardShadowColor_10">#09000000</color>
 </resources>
