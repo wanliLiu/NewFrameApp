@@ -113,12 +113,10 @@ class Android7Activity : BaseActivity() {
             .build()
             .uploadFile({ result: ApiResult<String>? ->
                 dialog.dismiss()
-//                if (result!!.isSuccess)
-//                    if (result.result) {
-////                        ToastUtils.showLongToast("文件下载成功！：${result.fullData}")
-////                        InstallUtil.install(ctx, result.result)
-//                    } else
-//                        ToastUtils.showShortToast(result.errormsg)
+                if (result!!.isSuccess) {
+                    ToastUtils.showShortToast(result.fullData)
+                } else
+                    ToastUtils.showShortToast(result.errormsg)
             }, { _, bytesRead, fileSize, _ ->
                 dialog.max = (fileSize / 1024).toInt()
                 dialog.progress = (bytesRead / 1024).toInt()
