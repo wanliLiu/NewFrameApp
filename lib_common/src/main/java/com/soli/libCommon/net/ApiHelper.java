@@ -1,13 +1,11 @@
 package com.soli.libCommon.net;
 
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
 import com.alibaba.fastjson.JSONObject;
 import com.soli.libCommon.base.Constant;
 import com.soli.libCommon.net.cookie.https.HttpsUtils;
-import com.soli.libCommon.net.cookie.https.Tls12SocketFactory;
 import com.soli.libCommon.net.download.FileProgressListener;
 import com.soli.libCommon.net.download.ProgressInterceptor;
 import com.soli.libCommon.net.upload.ProgressRequestBody;
@@ -25,8 +23,6 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import retrofit2.Retrofit;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -106,23 +102,23 @@ public class ApiHelper {
 
         //支持https访问  Android 5.0以下 TLSV1.1和TLSV1.2是关闭的，要自己打开，Android 5.0以上是打开的
         //这里就针对这两种情况，不同处理
-        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
+//        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
             //Android 5.0以上
             HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
             client.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
-        } else {
-            //Android 5.0 以下
-            SSLContext sslContext = null;
-            try {
-                sslContext = SSLContext.getInstance("TLS");
-                sslContext.init(null, null, null);
-
-                SSLSocketFactory socketFactory = new Tls12SocketFactory(sslContext.getSocketFactory());
-                client.sslSocketFactory(socketFactory, new HttpsUtils.UnSafeTrustManager());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+//        } else {
+//            //Android 5.0 以下
+//            SSLContext sslContext = null;
+//            try {
+//                sslContext = SSLContext.getInstance("TLS");
+//                sslContext.init(null, null, null);
+//
+//                SSLSocketFactory socketFactory = new Tls12SocketFactory(sslContext.getSocketFactory());
+//                client.sslSocketFactory(socketFactory, new HttpsUtils.UnSafeTrustManager());
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }
 
         okHttpClient = client.build();
     }
@@ -347,7 +343,7 @@ public class ApiHelper {
         String safe = "1";
         String cache = "1";
 
-        String key = Utils.MD5(fileMode + fileExt + safe + Utils.getFileMD5(file) + "taiheUp@#");
+        String key = Utils.INSTANCE.MD5(fileMode + fileExt + safe + Utils.INSTANCE.getFileMD5(file) + "taiheUp@#");
         StringBuffer secureKey = new StringBuffer();
 //        String mapFrom = "0123456789abcdef";
         String mapTo = "f7c8d0e1a9b53426";

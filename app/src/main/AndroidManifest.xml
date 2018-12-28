@@ -41,6 +41,7 @@
         <activity android:name=".bottomsheet.BottomSheetTestActivity"/>
         <activity android:name=".autowrap.AutoWrapLayoutTestActivity"/>
         <activity android:name=".demo.TestTopSpecialActivity"/>
+        <activity android:name=".pubu.PubuTestActivity"/>
 
         <service android:name=".download.DownloadService" />
     </application>

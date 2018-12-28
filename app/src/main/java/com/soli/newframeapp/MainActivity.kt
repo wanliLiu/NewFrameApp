@@ -20,6 +20,7 @@ import com.soli.newframeapp.download.DownloadTestActivity
 import com.soli.newframeapp.net.NetWorkTestActivity
 import com.soli.newframeapp.net.WebviewActivity
 import com.soli.newframeapp.pic.PicDealActivity
+import com.soli.newframeapp.pubu.PubuTestActivity
 import com.soli.permissions.RxPermissions
 import kotlinx.android.synthetic.main.activity_main.*
 
@@ -60,6 +61,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         btnBottomSheet.setOnClickListener(this)
         btnCustFlex.setOnClickListener(this)
         btnSpecialDemo.setOnClickListener(this)
+        btnpubo.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -111,6 +113,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.btnBottomSheet -> startActivity(Intent(ctx, BottomSheetTestActivity::class.java))
             R.id.btnCustFlex -> startActivity(Intent(ctx, AutoWrapLayoutTestActivity::class.java))
             R.id.btnSpecialDemo -> startActivity(Intent(ctx, TestTopSpecialActivity::class.java))
+            R.id.btnpubo ->  startActivity(Intent(ctx, PubuTestActivity::class.java))
 
         }
     }

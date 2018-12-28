@@ -23,6 +23,6 @@ class MyCacheKeyFactory extends DefaultCacheKeyFactory {
 
     @Override
     protected Uri getCacheKeySourceUri(Uri sourceUri) {
-        return Uri.parse(Utils.MD5(sourceUri.toString()));
+        return Uri.parse(Utils.INSTANCE.MD5(sourceUri.toString()));
     }
 }

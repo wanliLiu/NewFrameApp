@@ -33,6 +33,8 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
     //更新数据是否要用有动画的那种效果
     protected boolean useHaveAnimationRefresh = true;
 
+    private OnItemClickListener onItemClickListener;
+
     public BaseRecycleAdapter(Context context) {
         this.ctx = context;
         inflater = LayoutInflater.from(context);
@@ -53,7 +55,19 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder mholder, int position) {
-        onBindViewHolder_impl(mholder, getItemViewType(position), position, getRealItemPosition(position));
+
+        int type = getItemViewType(position);
+        int realPosition = getRealItemPosition(position);
+
+        if (ITEM_TYPE_NORMAL == type) {
+            mholder.itemView.setOnClickListener(view -> {
+                if (onItemClickListener != null) {
+                    onItemClickListener.OnItemClick(realPosition);
+                }
+            });
+        }
+
+        onBindViewHolder_impl(mholder, type, position, realPosition);
     }
 
     @Override
@@ -123,15 +137,7 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
 
     @Override
     public int getItemCount() {
-        int size = mList == null ? 0 : mList.size();
-
-        if (HeaderView != null)
-            size += 1;
-
-        if (FooterView != null)
-            size += 1;
-
-        return size;
+        return getRealItemCount() + getHeaderCount() + getFooterCount();
     }
 
     @Override
@@ -157,16 +163,14 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
      * @param list
      */
     public void setList(List<T> list) {
-        if (this.mList != null) {
-            this.mList.clear();
-        } else {
-            mList = new ArrayList<>();
-        }
+        checkList();
+        mList.clear();
         this.mList.addAll(list);
         notifyDataSetChanged();
     }
 
     public List<T> getList() {
+        checkList();
         return this.mList;
     }
 
@@ -205,14 +209,17 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
     public void add(int position, T item) {
         checkList();
         mList.add(position, item);
-        if (useHaveAnimationRefresh)
+        if (useHaveAnimationRefresh) {
             notifyItemInserted(position + getHeaderCount());
-        else
+            notifyItemRangeChanged(position + getHeaderCount(), getItemCount() - position - getHeaderCount());
+        } else
             notifyDataSetChanged();
     }
 
 
     public void addAll(List<T> newData) {
+        if (newData == null)
+            return;
         checkList();
         mList.addAll(newData);
         if (useHaveAnimationRefresh) {
@@ -221,12 +228,21 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
             notifyDataSetChanged();
     }
 
+    public void addAll_Range(List<T> newData) {
+        if (newData == null)
+            return;
+        checkList();
+        mList.addAll(newData);
+        notifyItemRangeChanged(mList.size() - newData.size() + getHeaderCount(), newData.size());
+    }
+
     public void addAll(int position, List<T> newData) {
         checkList();
         mList.addAll(position, newData);
-        if (useHaveAnimationRefresh)
+        if (useHaveAnimationRefresh) {
             notifyItemRangeInserted(position + getHeaderCount(), newData.size());
-        else
+            notifyItemRangeChanged(position + getHeaderCount(), getItemCount() - position - getHeaderCount());
+        } else
             notifyDataSetChanged();
     }
 
@@ -241,9 +257,10 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
     public void insert(int position, T data) {
         checkList();
         mList.add(position, data);
-        if (useHaveAnimationRefresh)
+        if (useHaveAnimationRefresh) {
             notifyItemInserted(position + getHeaderCount());
-        else
+            notifyItemRangeChanged(position + getHeaderCount(), getItemCount() - position - getHeaderCount());
+        } else
             notifyDataSetChanged();
     }
 
@@ -265,20 +282,16 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
             if (mList != null) {
                 if (position < mList.size()) {
                     mList.remove(position);
-                    if (useHaveAnimationRefresh)
+                    if (useHaveAnimationRefresh) {
                         notifyItemRemoved(position + getHeaderCount());
-                    else
+                        notifyItemRangeChanged(position + getHeaderCount(), getItemCount() - position - getHeaderCount());
+                    } else
                         notifyDataSetChanged();
                 }
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    public void clear() {
-        if (mList != null)
-            mList.clear();
     }
 
     public void removeAll() {
@@ -288,7 +301,16 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
         }
     }
 
-    protected abstract RecyclerView.ViewHolder onCreateViewHolder_impl(ViewGroup viewGroup, int viewType);
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public interface OnItemClickListener {
+        void OnItemClick(int position);
+    }
+
+
+    protected abstract RecyclerView.ViewHolder onCreateViewHolder_impl(ViewGroup parent, int viewType);
 
     /**
      * 加了header后，position会有所不同,以下是说明
@@ -297,5 +319,5 @@ public abstract class BaseRecycleAdapter<T> extends RecyclerView.Adapter<Recycle
      * @param original_position 原始的position
      * @param real_position     真正的position，
      */
-    protected abstract void onBindViewHolder_impl(RecyclerView.ViewHolder viewHolder, int itemType, int original_position, int real_position);
+    protected abstract void onBindViewHolder_impl(RecyclerView.ViewHolder mholder, int itemType, int original_position, int real_position);
 }
