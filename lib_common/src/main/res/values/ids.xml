@@ -13,4 +13,6 @@
     <item name="specialHead" type="id" />
     <item name="tips_layout" type="id" />
 
+
+    <item name="zoom_image" type="id"/>
 </resources>

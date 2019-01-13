@@ -41,7 +41,7 @@ class TestTopSpecialActivity : BaseTopSpecialActivity() {
     override fun initData() {
 
         ImageLoader.loadImage(
-            tempImage,
+            zoom_image,
             "https://nim.nosdn.127.net/MTAxMTAwMg==/bmltYV81NDU4MzMzMzc4XzE1NDAyNjIzOTQxNzZfODkwNDNlNDUtMGY2ZS00MTUzLTg3YTctYjBmNjExOTU2NWY4"
         )
     }
