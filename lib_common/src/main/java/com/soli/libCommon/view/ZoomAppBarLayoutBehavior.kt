@@ -100,7 +100,10 @@ class ZoomAppBarLayoutBehavior : FixAppBarLayoutBehavior {
         type: Int
     ) {
 
-        MLog.e("位置", "dx:$dx --- dy:$dy")
+        MLog.e(
+            "位置",
+            "dx:$dx --- dy:$dy child.bottom:${child.bottom}  mAppbarHeight:$mAppbarHeight topImageMinHeight:$topImageMinHeight"
+        )
         if (topImage != null && child.bottom >= mAppbarHeight && dy < 0 && type == ViewCompat.TYPE_TOUCH) {
             zoomHeaderImageView(child, dy)
         } else {
@@ -126,14 +129,14 @@ class ZoomAppBarLayoutBehavior : FixAppBarLayoutBehavior {
      */
     private fun zoomHeaderImageView(abl: AppBarLayout, dy: Int) {
         mTotalDy += -dy
-//        changeTopImageHeight(MathUtils.clamp(topImageMinHeight + mTotalDy, topImageMinHeight, topImageMinHeight * 2))
-
-        mTotalDy = Math.min(mTotalDy, MAX_ZOOM_HEIGHT)
-        mScaleValue = Math.max(1f, 1f + mTotalDy / MAX_ZOOM_HEIGHT)
-        ViewCompat.setScaleX(topImage, mScaleValue)
-        ViewCompat.setScaleY(topImage, mScaleValue)
-        mLastBottom = mAppbarHeight + (topImageMinHeight / 2 * (mScaleValue - 1)).toInt()
-        abl.bottom = mLastBottom
+        changeTopImageHeight(MathUtils.clamp(topImageMinHeight + mTotalDy, topImageMinHeight, topImageMinHeight * 2))
+//
+//        mTotalDy = Math.min(mTotalDy, MAX_ZOOM_HEIGHT)
+//        mScaleValue = Math.max(1f, 1f + mTotalDy / MAX_ZOOM_HEIGHT)
+//        ViewCompat.setScaleX(topImage, mScaleValue)
+//        ViewCompat.setScaleY(topImage, mScaleValue)
+//        mLastBottom = mAppbarHeight + (topImageMinHeight / 2 * (mScaleValue - 1)).toInt()
+//        abl.bottom = mLastBottom
     }
 
 
@@ -182,24 +185,24 @@ class ZoomAppBarLayoutBehavior : FixAppBarLayoutBehavior {
      * @param abl
      */
     private fun recovery(abl: AppBarLayout) {
-//        releaseToInitPosition()
-        if (mTotalDy > 0) {
-            mTotalDy = 0
-            if (isAnimate) {
-                valueAnimator = ValueAnimator.ofFloat(mScaleValue, 1f).setDuration(220)
-                valueAnimator!!.addUpdateListener { animation ->
-                    val value = animation.animatedValue as Float
-                    ViewCompat.setScaleX(topImage, value)
-                    ViewCompat.setScaleY(topImage, value)
-                    abl.bottom = (mLastBottom - (mLastBottom - mAppbarHeight) * animation.animatedFraction).toInt()
-                }
-                valueAnimator!!.start()
-            } else {
-                ViewCompat.setScaleX(topImage, 1f)
-                ViewCompat.setScaleY(topImage, 1f)
-                abl.bottom = mAppbarHeight
-            }
-        }
+        releaseToInitPosition()
+//        if (mTotalDy > 0) {
+//            mTotalDy = 0
+//            if (isAnimate) {
+//                valueAnimator = ValueAnimator.ofFloat(mScaleValue, 1f).setDuration(220)
+//                valueAnimator!!.addUpdateListener { animation ->
+//                    val value = animation.animatedValue as Float
+//                    ViewCompat.setScaleX(topImage, value)
+//                    ViewCompat.setScaleY(topImage, value)
+//                    abl.bottom = (mLastBottom - (mLastBottom - mAppbarHeight) * animation.animatedFraction).toInt()
+//                }
+//                valueAnimator!!.start()
+//            } else {
+//                ViewCompat.setScaleX(topImage, 1f)
+//                ViewCompat.setScaleY(topImage, 1f)
+//                abl.bottom = mAppbarHeight
+//            }
+//        }
     }
 
 

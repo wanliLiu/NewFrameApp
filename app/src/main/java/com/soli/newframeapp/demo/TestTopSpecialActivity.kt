@@ -42,7 +42,7 @@ class TestTopSpecialActivity : BaseTopSpecialActivity() {
 
         ImageLoader.loadImage(
             zoom_image,
-            "https://nim.nosdn.127.net/MTAxMTAwMg==/bmltYV81NDU4MzMzMzc4XzE1NDAyNjIzOTQxNzZfODkwNDNlNDUtMGY2ZS00MTUzLTg3YTctYjBmNjExOTU2NWY4"
+            "https://dev-img01-joker.taihe.com/0209/M00/58/27/ChR47Fw9QpWABNZ4AALxJ3a2MZ8350.jpg"
         )
     }
 

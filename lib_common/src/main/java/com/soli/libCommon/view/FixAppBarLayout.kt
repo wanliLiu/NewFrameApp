@@ -20,5 +20,7 @@ class FixAppBarLayout : AppBarLayout, CoordinatorLayout.AttachedBehavior {
     override fun getBehavior(): CoordinatorLayout.Behavior<*> {
 //        return FixAppBarLayoutBehavior()
         return AppbarZoomBehavior()
+
+//        return ZoomAppBarLayoutBehavior()
     }
 }
