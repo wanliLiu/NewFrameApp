@@ -6,6 +6,7 @@ import android.support.design.widget.AppBarLayout
 import android.support.design.widget.CoordinatorLayout
 import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
 import com.soli.libCommon.R
@@ -16,7 +17,7 @@ import com.soli.libCommon.util.MLog
  * @author soli
  * @Time 2019/1/13 22:15
  */
-class AppbarZoomBehavior : FixAppBarLayoutBehavior {
+class AppbarZoomBehavior : AppBarLayout.Behavior {
 
     private var mImageView: View? = null
     private var mAppbarHeight = 0//记录AppbarLayout原始高度
@@ -47,31 +48,38 @@ class AppbarZoomBehavior : FixAppBarLayoutBehavior {
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
-//    override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: AppBarLayout, ev: MotionEvent): Boolean {
-//        val action = ev.action
-//
-//        if (action == MotionEvent.ACTION_MOVE && mIsBeingDragged)
-//            return true
-//
-//        val y = ev.y
-//        when (ev.action) {
-//            MotionEvent.ACTION_DOWN -> {
-//                mIsBeingDragged = false
-//                mLastMotionY = y
-//                dragDistance = 0.0f
-//            }
-//            MotionEvent.ACTION_MOVE -> {
-//                val ydiff = y - mLastMotionY
-//                mIsBeingDragged =  ydiff > 0 //&& ydiff >= mTouchSlop
-//                dragDistance = ydiff
-//            }
-//            MotionEvent.ACTION_CANCEL -> mIsBeingDragged = false
-//        }
-//
-//        return if (mIsBeingDragged) true else super.onInterceptTouchEvent(parent, child, ev)
-//    }
 
-//    override fun onTouchEvent(parent: CoordinatorLayout, child: AppBarLayout, ev: MotionEvent): Boolean {
+    override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: AppBarLayout, ev: MotionEvent): Boolean {
+        MLog.e("event","onInterceptTouchEvent")
+//        if (child.bottom >= mAppbarHeight) {
+//            val action = ev.action
+//
+//            if (action == MotionEvent.ACTION_MOVE && mIsBeingDragged)
+//                return true
+//
+//            val y = ev.y
+//            when (ev.action) {
+//                MotionEvent.ACTION_DOWN -> {
+//                    mIsBeingDragged = false
+//                    mLastMotionY = y
+//                    dragDistance = 0.0f
+//                }
+//                MotionEvent.ACTION_MOVE -> {
+//                    val ydiff = y - mLastMotionY
+//                    mIsBeingDragged = ydiff > 0 //&& ydiff >= mTouchSlop
+//                    dragDistance = ydiff
+//                }
+//                MotionEvent.ACTION_CANCEL -> mIsBeingDragged = false
+//            }
+//
+//            return true
+//        }
+
+        return super.onInterceptTouchEvent(parent, child, ev)
+    }
+
+    override fun onTouchEvent(parent: CoordinatorLayout, child: AppBarLayout, ev: MotionEvent): Boolean {
+        MLog.e("event","onTouchEvent")
 //        if (child.bottom >= mAppbarHeight) {
 //            val y = ev.y
 //            when (ev.action) {
@@ -90,8 +98,8 @@ class AppbarZoomBehavior : FixAppBarLayoutBehavior {
 //            }
 //            return true
 //        }
-//        return super.onTouchEvent(parent, child, ev)
-//    }
+        return super.onTouchEvent(parent, child, ev)
+    }
 
     override fun onLayoutChild(parent: CoordinatorLayout, abl: AppBarLayout, layoutDirection: Int): Boolean {
         val handled = super.onLayoutChild(parent, abl, layoutDirection)
