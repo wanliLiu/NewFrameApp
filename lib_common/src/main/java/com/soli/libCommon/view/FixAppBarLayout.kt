@@ -6,6 +6,10 @@ import android.support.design.widget.CoordinatorLayout
 import android.util.AttributeSet
 
 /**
+ *
+ * http://liuling123.com/2016/01/overscroll-appBarLayout-behavior.html
+ *
+ *
  *用这个，添加处理惯性滑动引起的问题
  * @author Soli
  * @Time 2018/12/21 13:34
