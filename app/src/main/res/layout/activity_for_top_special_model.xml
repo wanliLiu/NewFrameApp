@@ -25,7 +25,7 @@
                     android:layout_width="match_parent"
                     app:viewAspectRatio="1"
                     app:collapseMode="parallax"
-                    app:collapseParallaxMultiplier="0.5"
+                    app:collapseParallaxMultiplier="1"
                     android:layout_height="wrap_content"/>
 
             <!--app:collapseMode="parallax"-->
@@ -56,6 +56,9 @@
     <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:behavior_overlapTop="40dp"
+            android:background="@drawable/test_shape"
+            android:paddingTop="30dp"
             android:layout_height="match_parent">
 
         <LinearLayout android:id="@+id/tempAdd"
@@ -63,7 +66,6 @@
                       android:orientation="vertical"
                       android:paddingBottom="100dp"
                       android:layout_height="wrap_content">
-
 
             <Button android:layout_width="match_parent"
                     android:layout_marginTop="100dp"
