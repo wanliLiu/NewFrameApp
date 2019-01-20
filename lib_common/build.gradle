@@ -93,6 +93,6 @@ dependencies {
     implementation deps.subsamplingScaleImage
 
     //flycoTab
-    api deps.flycoTab
+//    api deps.flycoTab
     api deps.swipelayout
 }
