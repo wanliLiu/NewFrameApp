@@ -7,7 +7,7 @@
 
     <!--顶部滑动 联动效果  统一模板   CoordinatorLayout-->
 
-    <android.support.design.widget.AppBarLayout
+    <com.soli.libCommon.view.FixAppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             app:elevation="0dp"
@@ -49,15 +49,15 @@
                   android:gravity="center"
                   android:layout_height="48dp"/>
 
-    </android.support.design.widget.AppBarLayout>
+    </com.soli.libCommon.view.FixAppBarLayout>
 
 
     <!--具体需要滑动的视图，父视图必须指明 layout_behavior 为@string/appbar_scrolling_view_behavior -->
     <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
     <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
-            app:layout_behavior="com.soli.libCommon.view.OverscrollScalingViewAppBarLayoutBehavior"
             app:behavior_overlapTop="40dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:background="@drawable/test_shape"
             android:paddingTop="30dp"
             android:layout_height="match_parent">

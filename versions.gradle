@@ -158,7 +158,7 @@ def addRepos(RepositoryHandler handler) {
     handler.jcenter()
     handler.google()
     //Add the JitPack repository
-    handler.maven { url 'http://10.20.120.200:8081/nexus/content/repositories/taiheRepo/' }
+//    handler.maven { url 'http://10.20.120.200:8081/nexus/content/repositories/taiheRepo/' }
 }
 
 ext.addRepos = this.&addRepos
