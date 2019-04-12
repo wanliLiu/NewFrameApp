@@ -68,4 +68,6 @@ dependencies {
     implementation deps.rxlifecycleAndroid_kotlin
 //    implementation deps.rxlifecycle_kotlin
 
+    implementation deps.support.palette
+
 }

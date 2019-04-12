@@ -19,6 +19,7 @@ import com.soli.newframeapp.demo.TestTopSpecialActivity
 import com.soli.newframeapp.download.DownloadTestActivity
 import com.soli.newframeapp.net.NetWorkTestActivity
 import com.soli.newframeapp.net.WebviewActivity
+import com.soli.newframeapp.palette.PaletteActivity
 import com.soli.newframeapp.pic.PicDealActivity
 import com.soli.newframeapp.pubu.PubuTestActivity
 import com.soli.newframeapp.toast.CustomToastActivity
@@ -64,6 +65,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         btnSpecialDemo.setOnClickListener(this)
         btnpubo.setOnClickListener(this)
         myToast.setOnClickListener(this)
+        palette.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -117,6 +119,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.btnSpecialDemo -> startActivity(Intent(ctx, TestTopSpecialActivity::class.java))
             R.id.btnpubo -> startActivity(Intent(ctx, PubuTestActivity::class.java))
             R.id.myToast -> startActivity(Intent(ctx, CustomToastActivity::class.java))
+            R.id.palette -> startActivity(Intent(ctx, PaletteActivity::class.java))
         }
     }
 

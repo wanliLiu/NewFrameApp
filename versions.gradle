@@ -5,8 +5,8 @@
 ext.deps = [:]
 
 def versions = [:]
-versions.android_gradle_plugin = "3.3.0"
-versions.kotlin = "1.3.11"
+versions.android_gradle_plugin = '3.3.2'
+versions.kotlin = "1.3.30"
 versions.support = "28.0.0"//28.0.0-alpha3
 versions.multidex = "1.0.3"
 versions.constraint_layout = "1.+"
@@ -48,6 +48,7 @@ support.media = "com.android.support:support-media-compat:$versions.support"
 support.multidex = "com.android.support:multidex:$versions.multidex"
 support.vector = "com.android.support:support-vector-drawable:$versions.multidex"
 support.animate_vector = "com.android.support:animated-vector-drawable:$versions.multidex"
+support.palette = "com.android.support:palette-v7:$versions.support"
 deps.support = support
 
 

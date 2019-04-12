@@ -1,11 +1,8 @@
 package com.soli.libCommon.base
 
 import android.content.Context
-import android.content.res.Configuration
-import android.content.res.Resources
 import android.os.Bundle
 import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import com.r0adkll.slidr.Slidr
@@ -18,7 +15,7 @@ import com.soli.libCommon.view.root.LoadingDialog
  * @author Soli
  * @Time 18-5-15 下午3:07
  */
-abstract class BaseFunctionActivity : AppCompatActivity(), BaseInterface {
+abstract class BaseFunctionActivity : BaseFixOTranslucentActivity(), BaseInterface {
 
     /**
      * 默认竖屏，不支持横竖自定转换
@@ -38,22 +35,7 @@ abstract class BaseFunctionActivity : AppCompatActivity(), BaseInterface {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         this.savedInstanceState = savedInstanceState
-        //FIXME Android 8.0上，如果Activty 透明并且要固定方向的话，就会报错，所以目前先屏蔽这里
-//        requestedOrientation = if (isScreenOnlyPORTRAIT) ActivityInfo.SCREEN_ORIENTATION_PORTRAIT else ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
-
-//    /**
-//     * 动态根据情况来动态设置style  默认的是透明可以滑动的的主题
-//     */
-//    override fun setTheme(resid: Int) {
-//        //不需要透明 <----- 不需要右滑动删除 需要处理键盘
-//        super.setTheme(if (!needRightSild()) R.style.AppThemeNoneTranslucent else resid)
-//    }
-
-//    protected fun test() {
-//        if (!needRightSild())
-//            setTheme(R.style.AppThemeNoneTranslucent)
-//    }
 
     /**
      * 是否需要右滑动删除
@@ -133,25 +115,25 @@ abstract class BaseFunctionActivity : AppCompatActivity(), BaseInterface {
     }
 
 
-    /**
-     * 加载系统默认设置，字体不随用户设置变化
-     * FIXME 注意下这个加上了，ProgressDialog就显示不出来了
-     */
-    override fun onConfigurationChanged(newConfig: Configuration) {
-        if (newConfig.fontScale != 1f)//非默认值
-            resources
-        super.onConfigurationChanged(newConfig)
-    }
-
-    override fun getResources(): Resources {
-        val res = super.getResources()
-        if (res.configuration.fontScale != 1f) {//非默认值
-            val newConfig = res.configuration
-            newConfig.setToDefaults()//设置默认
-            res.updateConfiguration(newConfig, res.displayMetrics)
-        }
-        return res
-    }
+//    /**
+//     * 加载系统默认设置，字体不随用户设置变化
+//     * FIXME 注意下这个加上了，ProgressDialog就显示不出来了
+//     */
+//    override fun onConfigurationChanged(newConfig: Configuration) {
+//        if (newConfig.fontScale != 1f)//非默认值
+//            resources
+//        super.onConfigurationChanged(newConfig)
+//    }
+//
+//    override fun getResources(): Resources {
+//        val res = super.getResources()
+//        if (res.configuration.fontScale != 1f) {//非默认值
+//            val newConfig = res.configuration
+//            newConfig.setToDefaults()//设置默认
+//            res.updateConfiguration(newConfig, res.displayMetrics)
+//        }
+//        return res
+//    }
 
 
     /**
