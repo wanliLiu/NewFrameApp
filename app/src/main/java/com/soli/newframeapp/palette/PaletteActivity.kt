@@ -6,6 +6,7 @@ import android.support.v7.widget.GridLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.base.BaseRecycleAdapter
@@ -82,7 +83,7 @@ class PaletteActivity : BaseActivity() {
                     .subscribe {
                         Palette.from(it).generate { palette ->
                             palette?.apply {
-                                var vibrant = palette.vibrantSwatch
+                                var vibrant = palette.vibrantSwatch//palette.vibrantSwatch
                                 if (vibrant == null)
                                     for (temp in palette.swatches) {
                                         vibrant = temp
@@ -90,6 +91,8 @@ class PaletteActivity : BaseActivity() {
                                     }
 
                                 itemView.setBackgroundColor(vibrant!!.rgb)
+                                title.setTextColor(vibrant.titleTextColor)
+                                content.setTextColor(vibrant.bodyTextColor)
                             }
 
                         }
@@ -100,6 +103,8 @@ class PaletteActivity : BaseActivity() {
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
             val image = view.findViewById<SimpleDraweeView>(R.id.palette)
+            val title = view.findViewById<TextView>(R.id.tv1)
+            val content = view.findViewById<TextView>(R.id.tv2)
 
         }
     }
