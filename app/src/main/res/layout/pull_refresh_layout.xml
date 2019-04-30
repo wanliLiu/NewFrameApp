@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".net.NetWorkTestActivity">
 
-    <com.taihe.libCommon.view.recyclerview.LoadMoreRecyclerView
+    <com.soli.libCommon.view.recyclerview.LoadMoreRecyclerView
         android:id="@+id/itemList"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />

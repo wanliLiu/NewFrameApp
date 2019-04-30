@@ -2,6 +2,7 @@ package com.soli.newframeapp.toast
 
 import android.view.LayoutInflater
 import com.soli.libCommon.base.BaseActivity
+import com.soli.libCommon.util.ToastUtils
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.activity_toast.*
 
@@ -23,6 +24,8 @@ class CustomToastActivity : BaseActivity() {
         toast.setOnClickListener {
             val toast = LayoutInflater.from(ctx).inflate(R.layout.toastlayout, null)
             ToastManager.getInstance(ctx).makeToastSelfViewAnim(toast!!, R.style.MyToast)
+
+            ToastUtils.showShortToast("我长度但是看到了斯柯达了SDK类似都开始来得快熟练度说的了")
         }
     }
 

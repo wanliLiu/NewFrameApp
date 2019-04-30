@@ -1,4 +1,4 @@
-package com.taihe.libCommon.view.recyclerview
+package com.soli.libCommon.view.recyclerview
 
 import android.content.Context
 import android.util.AttributeSet

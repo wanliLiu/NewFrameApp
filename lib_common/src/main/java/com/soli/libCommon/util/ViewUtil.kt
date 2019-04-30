@@ -9,7 +9,7 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
 import com.soli.libCommon.R
-import com.soli.libCommon.view.RecyclerViewEmpty
+import com.soli.libCommon.view.recyclerview.RecyclerViewEmpty
 import com.soli.pullupdownrefresh.PullRefreshLayout
 
 /**
