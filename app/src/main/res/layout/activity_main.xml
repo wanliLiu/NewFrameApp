@@ -116,4 +116,9 @@
             android:layout_width="wrap_content"
             android:text="取色器Palette"
             android:layout_height="wrap_content"/>
+
+    <Button android:id="@+id/customToast"
+            android:layout_width="wrap_content"
+            android:text="自定义Toast"
+            android:layout_height="wrap_content"/>
 </com.google.android.flexbox.FlexboxLayout>
