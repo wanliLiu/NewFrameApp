@@ -7,12 +7,17 @@ import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.view.WindowManager
-import android.view.animation.AnimationUtils
+import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.doOnLayout
+import com.nineoldandroids.animation.Animator
+import com.nineoldandroids.animation.AnimatorListenerAdapter
+import com.nineoldandroids.animation.AnimatorSet
+import com.nineoldandroids.animation.ObjectAnimator
 import com.soli.libCommon.R
 import com.soli.libCommon.base.Constant
+import java.util.*
 
 
 /**
@@ -20,7 +25,26 @@ import com.soli.libCommon.base.Constant
  */
 object ToastUtils {
 
+    private data class ToastData(val text: String, val duration: Int)
+
+    private var isToastShow = false
+    private val toastList = LinkedList<ToastData>()
     private val sHandler = Handler(Looper.getMainLooper())
+
+    private fun QueueLength() = toastList.size
+    /**
+     *
+     */
+    private fun enQueue(data: ToastData) {
+        toastList.addLast(data)
+    }
+
+    /**
+     *
+     */
+    private fun deQueue(): ToastData? {
+        return if (!toastList.isEmpty()) toastList.removeFirst() else null
+    }
 
     /**
      * 安全地显示短时吐司
@@ -207,85 +231,67 @@ object ToastUtils {
             showToast(String.format(format, *args), duration)
     }
 
-    //全屏和动画的设置方法
-    private fun initToast(toast: Toast): WindowManager.LayoutParams? {
-        try {
-            val mTN = toast.javaClass.getDeclaredField("mTN")
-            mTN.isAccessible = true
-            val mTNObj = mTN.get(toast)
-
-            val mParams = mTNObj.javaClass.getDeclaredField("mParams")
-            mParams.isAccessible = true
-            val params = mParams.get(mTNObj) as WindowManager.LayoutParams
-            params.width = WindowManager.LayoutParams.MATCH_PARENT
-            params.height = WindowManager.LayoutParams.WRAP_CONTENT
-//            params.windowAnimations = R.style.toastStyle//设置动画, 需要是style类型
-            return params
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        return null
+    /**
+     *
+     */
+    private fun showToast(text: String, duration: Int) {
+        if (QueueLength() == 0 && !isToastShow) {
+            showCustomToast(text, duration)
+        } else
+            enQueue(ToastData(text, duration))
     }
 
     /**
-     * 显示吐司
      *
-     * @param text     文本
-     * @param duration 显示时长
      */
-    private fun showToast(mtext: String, duration: Int) {
-        if (!TextUtils.isEmpty(mtext)) {
-//            Toast.makeText(Constant.getContext(),mtext,duration).show()
-//            if (toast == null) {
+    private fun startNext() {
+        val data = deQueue()
+        data?.apply {
+            showCustomToast(text, duration)
+        }
+        if (data == null)
+            isToastShow = false
+    }
 
-
-            val toast = Toast.makeText(Constant.getContext(), "", duration)
-            val parrams = initToast(toast)
+    /**
+     *自定义的Toast类型
+     */
+    private fun showCustomToast(text: String, duration: Int) {
+        if (!TextUtils.isEmpty(text)) {
+            isToastShow = true
+            val mToast = Toast(Constant.getContext())
             val layout =
                 LayoutInflater.from(Constant.getContext()).inflate(R.layout.view_push_tips_layout, null)//自定义的布局
-            toast.view = layout
-            toast.setGravity(Gravity.TOP, 0, 0)//从顶部开始显示
-//            }
-            toast.view.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN//设置Toast可以布局到系统状态栏的下面
-            val toastLayout = toast.view.findViewById<View>(R.id.toastLayout)
-            val tips_content = toast.view.findViewById<TextView>(R.id.tips_content)
+            mToast.view = layout
+            mToast.setGravity(Gravity.TOP or Gravity.FILL_HORIZONTAL, 0, 0)//从顶部开始显示
 
-            tips_content.text = mtext
-            parrams?.windowAnimations = R.style.toastStyle_null
-            toast.show()
-            initToastAnimal(toast, duration)
+            mToast.view.systemUiVisibility =
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN//设置Toast可以布局到系统状态栏的下面
+
+            layout.doOnLayout {
+                val showAnimation = ObjectAnimator.ofFloat(it, "translationY", -it.height * 1.0f, 0f)
+                showAnimation.duration = 300
+                val pauseAnimation = ObjectAnimator.ofFloat(it, "alpha", 1f, 1f)
+                pauseAnimation.duration = if (duration == Toast.LENGTH_SHORT) 1500 else 2000
+                val hiedAnimation = ObjectAnimator.ofFloat(it, "translationY", 0f, -it.height * 1.0f)
+                hiedAnimation.duration = 300
+
+                val animationSet = AnimatorSet()
+                animationSet.setInterpolator(LinearInterpolator())
+                animationSet.playSequentially(arrayOf(showAnimation, pauseAnimation, hiedAnimation).toList())
+                animationSet.start()
+                animationSet.addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        super.onAnimationEnd(animation)
+                        startNext()
+                    }
+                })
+            }
+
+            mToast.view.findViewById<TextView>(R.id.tips_content).text = text
+            mToast.duration = Toast.LENGTH_LONG
+
+            mToast.show()
         }
-    }
-
-    /**
-     * Toast的动画
-     *
-     * */
-//    private var handler: Handler? = null
-//    private var runable: Runnable? = null
-
-    private fun initToastAnimal(toast: Toast, duration: Int) {
-        val layout_toast = toast.view.findViewById<View>(R.id.toastLayout)
-        layout_toast.startAnimation(AnimationUtils.loadAnimation(Constant.getContext(), R.anim.toast_show))
-//        val delay = when (duration) {
-//            Toast.LENGTH_LONG -> 3000
-//            Toast.LENGTH_SHORT -> 1500
-//            else -> 3000
-//        }
-//
-//        if (runable == null) {
-//            runable = Runnable {
-//                layout_toast.startAnimation(AnimationUtils.loadAnimation(Constant.getContext(), R.anim.toast_hide))
-//            }
-//        }
-//
-//        if (handler != null) {
-//            handler?.removeCallbacks(runable)
-//        }
-//        handler = Handler()
-//        handler?.postDelayed(
-//            runable, delay.toLong()
-//        )
     }
 }

@@ -83,6 +83,8 @@ dependencies {
 //    api deps.nineOld
     api deps.silder
 
+    api deps.nineoldandroids
+
     //skin support
 //    api deps.skin_support
 //    api deps.skin_support_appcompat
