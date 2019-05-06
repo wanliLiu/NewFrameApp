@@ -272,7 +272,7 @@ object ToastUtils {
                 val showAnimation = ObjectAnimator.ofFloat(it, "translationY", -it.height * 1.0f, 0f)
                 showAnimation.duration = 300
                 val pauseAnimation = ObjectAnimator.ofFloat(it, "alpha", 1f, 1f)
-                pauseAnimation.duration = if (duration == Toast.LENGTH_SHORT) 1500 else 2000
+                pauseAnimation.duration = if (duration == Toast.LENGTH_SHORT) 1000 else 2000
                 val hiedAnimation = ObjectAnimator.ofFloat(it, "translationY", 0f, -it.height * 1.0f)
                 hiedAnimation.duration = 300
 
