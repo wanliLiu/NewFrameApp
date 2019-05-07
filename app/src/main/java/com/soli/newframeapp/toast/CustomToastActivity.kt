@@ -8,6 +8,7 @@ import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
 import com.soli.libCommon.base.BaseActivity
+import com.soli.libCommon.util.ToastUtils
 import kotlinx.android.synthetic.main.activity_toast.*
 
 
@@ -32,7 +33,7 @@ class CustomToastActivity : BaseActivity() {
     override fun initListener() {
 
         toast.setOnClickListener {
-            //            ToastUtils.showShortToast("我长度但是看到了斯柯达了SDK类似都开始来得快熟练度说的了${++index}")
+            ToastUtils.showShortToast("我长度但是看到了斯柯达了SDK类似都开始来得快熟练度说的了${++index}")
 //            ToastUtils.showLongToast("我长度但是看到了斯柯达了SDK类似都开始来得快熟练度说的了${++index}")
 //            Toast.makeText(ctx,"我长度但是看到了斯柯达了SDK类似都开始来得快熟练度说的了${++index}",Toast.LENGTH_SHORT).show()
 
@@ -42,7 +43,7 @@ class CustomToastActivity : BaseActivity() {
 //
 //                }
 
-            test()
+//            test()
 
         }
     }
