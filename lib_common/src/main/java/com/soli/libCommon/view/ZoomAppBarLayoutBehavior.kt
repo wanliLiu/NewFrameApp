@@ -2,12 +2,11 @@ package com.soli.libCommon.view
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.math.MathUtils
-import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.math.MathUtils
+import androidx.core.view.ViewCompat
+import com.google.android.material.appbar.AppBarLayout
 import com.soli.libCommon.R
 import com.soli.libCommon.util.MLog
 
@@ -37,7 +36,7 @@ class ZoomAppBarLayoutBehavior : FixAppBarLayoutBehavior {
     constructor(context: Context? = null, attrs: AttributeSet? = null) : super(context, attrs)
 
 
-    override fun onLayoutChild(parent: CoordinatorLayout, abl: AppBarLayout, layoutDirection: Int): Boolean {
+    override fun onLayoutChild(parent: androidx.coordinatorlayout.widget.CoordinatorLayout, abl: AppBarLayout, layoutDirection: Int): Boolean {
         val handled = super.onLayoutChild(parent, abl, layoutDirection)
         init(abl)
         return handled
@@ -68,7 +67,7 @@ class ZoomAppBarLayoutBehavior : FixAppBarLayoutBehavior {
      * @return
      */
     override fun onStartNestedScroll(
-        parent: CoordinatorLayout,
+        parent: androidx.coordinatorlayout.widget.CoordinatorLayout,
         child: AppBarLayout,
         directTargetChild: View,
         target: View,
@@ -91,7 +90,7 @@ class ZoomAppBarLayoutBehavior : FixAppBarLayoutBehavior {
      * @param type
      */
     override fun onNestedPreScroll(
-        coordinatorLayout: CoordinatorLayout,
+        coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout,
         child: AppBarLayout,
         target: View,
         dx: Int,
@@ -151,7 +150,7 @@ class ZoomAppBarLayoutBehavior : FixAppBarLayoutBehavior {
      * @return
      */
     override fun onNestedPreFling(
-        coordinatorLayout: CoordinatorLayout,
+        coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout,
         child: AppBarLayout,
         target: View,
         velocityX: Float,
@@ -172,7 +171,7 @@ class ZoomAppBarLayoutBehavior : FixAppBarLayoutBehavior {
      * @param target
      * @param type
      */
-    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, abl: AppBarLayout, target: View, type: Int) {
+    override fun onStopNestedScroll(coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout, abl: AppBarLayout, target: View, type: Int) {
         recovery(abl)
         super.onStopNestedScroll(coordinatorLayout, abl, target, type)
     }

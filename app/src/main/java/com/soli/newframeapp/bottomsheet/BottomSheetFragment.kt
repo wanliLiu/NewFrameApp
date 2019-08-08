@@ -3,15 +3,15 @@ package com.soli.newframeapp.bottomsheet
 import android.content.Context
 import android.graphics.Point
 import android.os.Bundle
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.BottomSheetDialogFragment
-import android.support.design.widget.CoordinatorLayout
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.WindowManager
 import android.widget.FrameLayout
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.soli.libCommon.util.ViewUtil
 import com.soli.newframeapp.R
 
@@ -45,7 +45,7 @@ class BottomSheetFragment : BottomSheetDialogFragment() {
         // 设置软键盘不自动弹出
         dialog.window!!.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN)
         val dialog = dialog as BottomSheetDialog
-        val bottomSheet = dialog.delegate.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+        val bottomSheet = dialog.delegate.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
         if (bottomSheet != null) {
             val layoutParams = bottomSheet.layoutParams as CoordinatorLayout.LayoutParams
             layoutParams.height = getHeight()

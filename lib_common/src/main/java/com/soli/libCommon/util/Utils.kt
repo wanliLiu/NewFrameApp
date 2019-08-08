@@ -3,9 +3,9 @@ package com.soli.libCommon.util
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.support.v4.app.ActivityCompat
 import android.telephony.TelephonyManager
 import android.text.TextUtils
+import androidx.core.app.ActivityCompat
 import java.io.File
 import java.io.FileInputStream
 import java.security.MessageDigest

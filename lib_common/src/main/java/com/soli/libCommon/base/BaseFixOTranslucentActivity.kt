@@ -5,7 +5,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.soli.libCommon.util.MLog
 
 

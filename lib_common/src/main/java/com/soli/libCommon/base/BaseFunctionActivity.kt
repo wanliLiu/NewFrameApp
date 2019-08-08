@@ -2,7 +2,6 @@ package com.soli.libCommon.base
 
 import android.content.Context
 import android.os.Bundle
-import android.support.v4.app.Fragment
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
 import com.r0adkll.slidr.Slidr
@@ -139,7 +138,7 @@ abstract class BaseFunctionActivity : BaseFixOTranslucentActivity(), BaseInterfa
     /**
      * fragment management
      */
-    fun addFragment(fragment: Fragment, containerId: Int): Fragment {
+    fun addFragment(fragment: androidx.fragment.app.Fragment, containerId: Int): androidx.fragment.app.Fragment {
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(containerId, fragment)
         transaction.commitAllowingStateLoss()

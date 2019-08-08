@@ -12,7 +12,6 @@ import android.net.Uri
 import android.os.Binder
 import android.os.Build
 import android.os.IBinder
-import android.support.v4.util.LongSparseArray
 import android.text.TextUtils
 import android.util.Log
 import com.soli.libCommon.util.ShellUtils
@@ -30,14 +29,14 @@ class DownloadService : Service() {
 
     private var mDownloadManager: DownloadManager? = null
     private val mBinder = DownloadBinder()
-    private var mApkPaths: LongSparseArray<String>? = null
+    private var mApkPaths: androidx.collection.LongSparseArray<String>? = null
     private var mReceiver: DownloadFinishReceiver? = null
 
     override fun onCreate() {
         super.onCreate()
 
         mDownloadManager = getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
-        mApkPaths = LongSparseArray()
+        mApkPaths = androidx.collection.LongSparseArray()
         //注册下载完成的广播
         mReceiver = DownloadFinishReceiver()
         registerReceiver(mReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))

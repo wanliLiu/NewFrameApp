@@ -1,6 +1,5 @@
 package com.soli.newframeapp.net
 
-import android.support.v7.widget.LinearLayoutManager
 import android.view.View
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.net.ApiHelper
@@ -25,7 +24,7 @@ class NetWorkTestActivity : BaseActivity() {
         refreshLayout.setPageSize(20)
 
         itemList.apply {
-            layoutManager = LinearLayoutManager(ctx)
+            layoutManager = androidx.recyclerview.widget.LinearLayoutManager(ctx)
             adapter = mAadapter
         }
 

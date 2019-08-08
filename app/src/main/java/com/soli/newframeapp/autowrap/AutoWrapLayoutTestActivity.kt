@@ -1,6 +1,5 @@
 package com.soli.newframeapp.autowrap
 
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -96,18 +95,18 @@ class AutoWrapLayoutTestActivity : BaseActivity() {
     }
 
 
-    private inner class adapter(list: ArrayList<String>) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    private inner class adapter(list: ArrayList<String>) : androidx.recyclerview.widget.RecyclerView.Adapter<androidx.recyclerview.widget.RecyclerView.ViewHolder>() {
 
         private val mlist = list
 
-        override fun onCreateViewHolder(p0: ViewGroup, p1: Int): RecyclerView.ViewHolder {
+        override fun onCreateViewHolder(p0: ViewGroup, p1: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
             val view = LayoutInflater.from(ctx).inflate(R.layout.item_auto_warp, p0, false)
             return viewHolder(view)
         }
 
         override fun getItemCount() = mlist.size
 
-        override fun onBindViewHolder(p0: RecyclerView.ViewHolder, p1: Int) {
+        override fun onBindViewHolder(p0: androidx.recyclerview.widget.RecyclerView.ViewHolder, p1: Int) {
 //            p0.itemView.setBackgroundColor(Color.GREEN)
             if (p0.itemView is Button) {
                 (p0.itemView as Button).text = mlist[p1]
@@ -117,7 +116,7 @@ class AutoWrapLayoutTestActivity : BaseActivity() {
 
     }
 
-    private class viewHolder(ctx: View) : RecyclerView.ViewHolder(ctx)
+    private class viewHolder(ctx: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(ctx)
 
     private fun useCustom(list: ArrayList<String>) {
         wrapLayout.setAdapter(TestAutoWrapAdapter(ctx, list) as AutoWrapAdapter<String>)

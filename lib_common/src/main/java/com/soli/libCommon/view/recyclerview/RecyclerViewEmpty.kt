@@ -1,7 +1,6 @@
 package com.soli.libCommon.view.recyclerview
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.util.AttributeSet
 import android.view.View
 import com.soli.pullupdownrefresh.more.LoadMoreRecyclerAdapter
@@ -10,7 +9,7 @@ import com.soli.pullupdownrefresh.more.LoadMoreRecyclerAdapter
  * @author Soli
  * @Time 18-5-31 下午4:20
  */
-open class RecyclerViewEmpty(ctx: Context, attrs: AttributeSet?, defstyle: Int) : RecyclerView(ctx, attrs, defstyle) {
+open class RecyclerViewEmpty(ctx: Context, attrs: AttributeSet?, defstyle: Int) : androidx.recyclerview.widget.RecyclerView(ctx, attrs, defstyle) {
 
     private var emptyView: View? = null
     private val observer = dataObserver()

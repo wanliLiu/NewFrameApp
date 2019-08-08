@@ -1,13 +1,12 @@
 package com.soli.libCommon.view
 
 import android.content.Context
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.view.ViewCompat
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.widget.OverScroller
+import androidx.core.view.ViewCompat
+import com.google.android.material.appbar.AppBarLayout
 
 
 /*
@@ -32,7 +31,7 @@ open class FixAppBarLayoutBehavior : AppBarLayout.Behavior {
         fieldScroller
     }
 
-    override fun onInterceptTouchEvent(parent: CoordinatorLayout, child: AppBarLayout, ev: MotionEvent): Boolean {
+    override fun onInterceptTouchEvent(parent: androidx.coordinatorlayout.widget.CoordinatorLayout, child: AppBarLayout, ev: MotionEvent): Boolean {
         shouldBlockNestedScroll = false
         if (isFlinging) {
             shouldBlockNestedScroll = true
@@ -61,7 +60,7 @@ open class FixAppBarLayoutBehavior : AppBarLayout.Behavior {
     }
 
     override fun onStartNestedScroll(
-        parent: CoordinatorLayout,
+        parent: androidx.coordinatorlayout.widget.CoordinatorLayout,
         child: AppBarLayout,
         directTargetChild: View,
         target: View,
@@ -73,7 +72,7 @@ open class FixAppBarLayoutBehavior : AppBarLayout.Behavior {
     }
 
     override fun onNestedPreScroll(
-        coordinatorLayout: CoordinatorLayout,
+        coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout,
         child: AppBarLayout,
         target: View,
         dx: Int,
@@ -93,7 +92,7 @@ open class FixAppBarLayoutBehavior : AppBarLayout.Behavior {
     }
 
     override fun onNestedScroll(
-        coordinatorLayout: CoordinatorLayout,
+        coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout,
         child: AppBarLayout,
         target: View,
         dxConsumed: Int,
@@ -116,7 +115,7 @@ open class FixAppBarLayoutBehavior : AppBarLayout.Behavior {
         }
     }
 
-    override fun onStopNestedScroll(coordinatorLayout: CoordinatorLayout, abl: AppBarLayout, target: View, type: Int) {
+    override fun onStopNestedScroll(coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout, abl: AppBarLayout, target: View, type: Int) {
         super.onStopNestedScroll(coordinatorLayout, abl, target, type)
         isFlinging = false
         shouldBlockNestedScroll = false

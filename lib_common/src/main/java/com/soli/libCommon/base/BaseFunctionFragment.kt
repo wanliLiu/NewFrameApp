@@ -2,13 +2,12 @@ package com.soli.libCommon.base
 
 import android.app.ProgressDialog
 import android.os.Handler
-import android.support.v4.app.Fragment
 
 /**
  * @author Soli
  * @Time 18-5-16 上午11:10
  */
-abstract class BaseFunctionFragment : Fragment(), BaseInterface {
+abstract class BaseFunctionFragment : androidx.fragment.app.Fragment(), BaseInterface {
     /**
      * 上下午context
      */

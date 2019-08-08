@@ -2,7 +2,6 @@ package com.soli.libCommon.util
 
 import android.os.Handler
 import android.os.Looper
-import android.support.annotation.StringRes
 import android.text.TextUtils
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -10,6 +9,7 @@ import android.view.View
 import android.view.animation.LinearInterpolator
 import android.widget.TextView
 import android.widget.Toast
+import androidx.annotation.StringRes
 import androidx.core.view.doOnLayout
 import com.nineoldandroids.animation.Animator
 import com.nineoldandroids.animation.AnimatorListenerAdapter

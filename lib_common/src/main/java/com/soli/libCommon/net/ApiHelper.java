@@ -1,8 +1,8 @@
 package com.soli.libCommon.net;
 
-import android.support.annotation.NonNull;
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
+import androidx.annotation.NonNull;
 import com.alibaba.fastjson.JSONObject;
 import com.soli.libCommon.base.Constant;
 import com.soli.libCommon.net.cookie.https.HttpsUtils;

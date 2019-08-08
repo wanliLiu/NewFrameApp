@@ -1,6 +1,6 @@
 package com.soli.newframeapp.demo
 
-import android.support.design.widget.AppBarLayout
+import com.google.android.material.appbar.AppBarLayout
 import com.soli.libCommon.base.BaseTopSpecialActivity
 import com.soli.libCommon.util.ImageLoader
 import com.soli.libCommon.util.MLog

@@ -1,6 +1,6 @@
 package com.soli.newframeapp.pubu
 
-import android.support.v7.widget.StaggeredGridLayoutManager
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.util.RxJavaUtil
 import com.soli.newframeapp.R
@@ -39,8 +39,11 @@ class PubuTestActivity : BaseActivity() {
     override fun initView() {
         title = "瀑布流"
 
-        val manager = StaggeredGridLayoutManager(2, StaggeredGridLayoutManager.VERTICAL)
-        manager.gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        val manager = androidx.recyclerview.widget.StaggeredGridLayoutManager(
+            2,
+            androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
+        )
+        manager.gapStrategy = androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 
         itemList.setHasFixedSize(true)
 

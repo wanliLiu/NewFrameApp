@@ -1,9 +1,8 @@
 package com.soli.libCommon.view
 
 import android.content.Context
-import android.support.design.widget.AppBarLayout
-import android.support.design.widget.CoordinatorLayout
 import android.util.AttributeSet
+import com.google.android.material.appbar.AppBarLayout
 
 /**
  *
@@ -14,14 +13,14 @@ import android.util.AttributeSet
  * @author Soli
  * @Time 2018/12/21 13:34
  */
-class FixAppBarLayout : AppBarLayout, CoordinatorLayout.AttachedBehavior {
+class FixAppBarLayout : AppBarLayout, androidx.coordinatorlayout.widget.CoordinatorLayout.AttachedBehavior {
 
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
 
 
-    override fun getBehavior(): CoordinatorLayout.Behavior<*> {
+    override fun getBehavior(): androidx.coordinatorlayout.widget.CoordinatorLayout.Behavior<*> {
 //        return FixAppBarLayoutBehavior()
         return AppbarZoomBehavior()
 //        return ZoomAppBarLayoutBehavior()

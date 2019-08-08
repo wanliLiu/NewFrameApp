@@ -1,7 +1,6 @@
 package com.soli.newframeapp.net
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,12 +17,12 @@ import com.soli.newframeapp.model.Story
  */
 class NewsAdapter(ctx: Context) : BaseRecycleAdapter<Story>(ctx) {
 
-    override fun onCreateViewHolder_impl(viewGroup: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+    override fun onCreateViewHolder_impl(viewGroup: ViewGroup?, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
         return NewsViewHolder(LayoutInflater.from(ctx).inflate(R.layout.item_news_list, viewGroup, false))
     }
 
     override fun onBindViewHolder_impl(
-        viewHolder: RecyclerView.ViewHolder?,
+        viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder?,
         itemType: Int,
         original_position: Int,
         real_position: Int
@@ -36,7 +35,7 @@ class NewsAdapter(ctx: Context) : BaseRecycleAdapter<Story>(ctx) {
     }
 
 
-    private class NewsViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private class NewsViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val news_image: SimpleDraweeView = view.findViewById(R.id.news_image)
         val news_title: TextView = view.findViewById(R.id.news_title)
     }

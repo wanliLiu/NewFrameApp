@@ -2,12 +2,12 @@ package com.soli.libCommon.view
 
 import android.annotation.TargetApi
 import android.content.Context
-import android.support.annotation.RequiresApi
-import android.support.design.widget.AppBarLayout
 import android.util.AttributeSet
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.annotation.RequiresApi
+import com.google.android.material.appbar.AppBarLayout
 import com.soli.libCommon.R
 import com.soli.libCommon.util.StatusBarUtil
 

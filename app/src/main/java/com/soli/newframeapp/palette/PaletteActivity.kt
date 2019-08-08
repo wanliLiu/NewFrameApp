@@ -1,9 +1,6 @@
 package com.soli.newframeapp.palette
 
 import android.content.Context
-import android.support.v7.graphics.Palette
-import android.support.v7.widget.GridLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
@@ -27,7 +24,7 @@ class PaletteActivity : BaseActivity() {
 
     override fun initView() {
         title = "Android Palette"
-        paletteRecyclerView.layoutManager = GridLayoutManager(ctx, 2)
+        paletteRecyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(ctx, 2)
     }
 
     override fun initListener() {
@@ -62,12 +59,12 @@ class PaletteActivity : BaseActivity() {
 
 
     private class paletteAdapter(ctx: Context, list: ArrayList<String>) : BaseRecycleAdapter<String>(ctx, list) {
-        override fun onCreateViewHolder_impl(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+        override fun onCreateViewHolder_impl(parent: ViewGroup?, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
             return ViewHolder(inflater.inflate(R.layout.item_palette, parent, false))
         }
 
         override fun onBindViewHolder_impl(
-            mholder: RecyclerView.ViewHolder?,
+            mholder: androidx.recyclerview.widget.RecyclerView.ViewHolder?,
             itemType: Int,
             original_position: Int,
             real_position: Int
@@ -81,7 +78,7 @@ class PaletteActivity : BaseActivity() {
                 FrescoUtil.fetchBitmap("$path@w_300")
                     .observeOn(AndroidSchedulers.mainThread())
                     .subscribe {
-                        Palette.from(it).generate { palette ->
+                        androidx.palette.graphics.Palette.from(it).generate { palette ->
                             palette?.apply {
                                 var vibrant = palette.vibrantSwatch//palette.vibrantSwatch
                                 if (vibrant == null)
@@ -101,7 +98,7 @@ class PaletteActivity : BaseActivity() {
         }
 
 
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+        class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
             val image = view.findViewById<SimpleDraweeView>(R.id.palette)
             val title = view.findViewById<TextView>(R.id.tv1)
             val content = view.findViewById<TextView>(R.id.tv2)

@@ -3,9 +3,8 @@ package com.soli.libCommon.util;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
-
+import androidx.annotation.Nullable;
 import com.facebook.binaryresource.BinaryResource;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
@@ -29,16 +28,15 @@ import com.facebook.imagepipeline.listener.RequestLoggingListener;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.soli.libCommon.net.ApiHelper;
-
-import java.io.File;
-import java.util.HashSet;
-import java.util.Set;
-
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.schedulers.Schedulers;
+
+import java.io.File;
+import java.util.HashSet;
+import java.util.Set;
 
 import static com.facebook.drawee.backends.pipeline.Fresco.getImagePipeline;
 

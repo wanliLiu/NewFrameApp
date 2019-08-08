@@ -1,8 +1,7 @@
 package com.soli.libCommon.util
 
 import android.os.Bundle
-import android.support.v4.app.Fragment
-import android.support.v7.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatActivity
 import com.soli.libCommon.base.BaseFragment
 
 /**
@@ -58,7 +57,7 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
         mtabs[id.toString()]?.apply {
             val ft = mActivity.supportFragmentManager.beginTransaction()
             if (fragment == null) {
-                fragment = Fragment.instantiate(mActivity, clss.name, args) as BaseFragment
+                fragment = androidx.fragment.app.Fragment.instantiate(mActivity, clss.name, args) as BaseFragment
                 ft.add(mContainerId, fragment!!, tag)
                 fragment!!.Resume()
             } else {

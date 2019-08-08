@@ -3,12 +3,11 @@ package com.soli.libCommon.bottomSheet
 import android.app.Activity
 import android.content.Context
 import android.os.Build
-import android.support.design.widget.BottomSheetBehavior
-import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.CoordinatorLayout
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.soli.libCommon.R
 import com.soli.libCommon.util.StatusBarUtil
 
@@ -54,11 +53,11 @@ class BottomDialog(mctx: Context) : BottomSheetDialog(mctx) {
      * 设置背景原色
      */
     private fun setDialogBackGround() {
-        val bottomSheet = delegate.findViewById<FrameLayout>(android.support.design.R.id.design_bottom_sheet)
+        val bottomSheet = delegate.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
         bottomSheet?.apply {
             setBackgroundColor(ctx.resources.getColor(android.R.color.transparent))
             if (!isWrapConent && topOffset > 0) {
-                val params = layoutParams as CoordinatorLayout.LayoutParams
+                val params = layoutParams as androidx.coordinatorlayout.widget.CoordinatorLayout.LayoutParams
                 params.height = getContentHeight() - topOffset
             }
         }
@@ -135,7 +134,7 @@ class BottomDialog(mctx: Context) : BottomSheetDialog(mctx) {
      *
      */
     fun getBehavior(): BottomSheetBehavior<FrameLayout> =
-        BottomSheetBehavior.from(delegate.findViewById(android.support.design.R.id.design_bottom_sheet))
+        BottomSheetBehavior.from(delegate.findViewById(com.google.android.material.R.id.design_bottom_sheet))
 
     /**
      * 设置不可以拖拽

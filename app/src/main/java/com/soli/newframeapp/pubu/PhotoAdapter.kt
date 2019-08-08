@@ -1,7 +1,6 @@
 package com.soli.newframeapp.pubu
 
 import android.content.Context
-import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,12 +21,12 @@ class PhotoAdapter(context: Context) : BaseRecycleAdapter<String>(context) {
 
     private val itemWidth by lazy { Utils.getScreenWidthPixels(context) / 2 }
 
-    override fun onCreateViewHolder_impl(viewGroup: ViewGroup?, viewType: Int): RecyclerView.ViewHolder =
+    override fun onCreateViewHolder_impl(viewGroup: ViewGroup?, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder =
         ViewHolder(LayoutInflater.from(ctx).inflate(R.layout.item_joker_photo, viewGroup, false))
 
 
     override fun onBindViewHolder_impl(
-        viewHolder: RecyclerView.ViewHolder?,
+        viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder?,
         itemType: Int,
         original_position: Int,
         real_position: Int
@@ -52,7 +51,7 @@ class PhotoAdapter(context: Context) : BaseRecycleAdapter<String>(context) {
         ImageLoader.loadImage(holder.f_image_photo, bean, itemWidth, itemWidth)
     }
 
-    private class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    private class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
         val f_image_photo = view as SimpleDraweeView
     }
 

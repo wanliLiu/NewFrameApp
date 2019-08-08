@@ -1,8 +1,8 @@
 package com.soli.libCommon
 
 import android.os.Build
-import android.support.multidex.MultiDexApplication
-import android.support.v7.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.soli.libCommon.base.Constant
 import com.soli.libCommon.util.FrescoUtil

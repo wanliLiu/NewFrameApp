@@ -8,8 +8,8 @@ import android.content.ServiceConnection
 import android.net.Uri
 import android.os.Build
 import android.os.IBinder
-import android.support.v4.content.ContextCompat
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.soli.libCommon.base.BaseActivity
 import com.soli.libCommon.net.ApiHelper
 import com.soli.libCommon.net.ApiResult

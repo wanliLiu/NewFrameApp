@@ -1,7 +1,7 @@
 package com.soli.libCommon.view
 
-import android.support.v4.view.ViewCompat
 import android.view.View
+import androidx.core.view.ViewCompat
 
 /**
  *

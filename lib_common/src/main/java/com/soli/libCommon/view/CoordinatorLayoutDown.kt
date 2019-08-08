@@ -2,19 +2,18 @@ package com.soli.libCommon.view
 
 import android.animation.ValueAnimator
 import android.content.Context
-import android.support.design.widget.CoordinatorLayout
-import android.support.v4.math.MathUtils
 import android.util.AttributeSet
 import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewConfiguration
+import androidx.core.math.MathUtils
 import com.soli.libCommon.R
 
 /**
  * Created by soli on 18-3-9.
  */
-open class CoordinatorLayoutDown constructor(ctx: Context, attrs: AttributeSet) : CoordinatorLayout(ctx, attrs) {
+open class CoordinatorLayoutDown constructor(ctx: Context, attrs: AttributeSet) : androidx.coordinatorlayout.widget.CoordinatorLayout(ctx, attrs) {
 
     //appbarLayout 的offset为0的时候可以操作
     var canDetect: Boolean = false
