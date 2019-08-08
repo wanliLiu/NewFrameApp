@@ -10,11 +10,11 @@ import android.os.Build
 import android.os.IBinder
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.net.ApiHelper
-import com.soli.libCommon.net.ApiResult
-import com.soli.libCommon.util.FileUtil
-import com.soli.libCommon.util.ToastUtils
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.net.ApiHelper
+import com.soli.libcommon.net.ApiResult
+import com.soli.libcommon.util.FileUtil
+import com.soli.libcommon.util.ToastUtils
 import com.soli.newframeapp.R
 import com.soli.newframeapp.util.InstallUtil
 import io.reactivex.Observable

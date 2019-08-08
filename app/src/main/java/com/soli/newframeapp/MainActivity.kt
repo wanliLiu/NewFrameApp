@@ -5,14 +5,14 @@ import android.content.Intent
 import android.os.Handler
 import android.view.View
 import com.dhh.rxlifecycle2.RxLifecycle
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.net.ApiHelper
-import com.soli.libCommon.net.ApiParams
-import com.soli.libCommon.net.ApiResult
-import com.soli.libCommon.net.ResultCode
-import com.soli.libCommon.util.NetworkUtil
-import com.soli.libCommon.util.ToastUtils
-import com.soli.libCommon.view.root.LoadingType
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.net.ApiHelper
+import com.soli.libcommon.net.ApiParams
+import com.soli.libcommon.net.ApiResult
+import com.soli.libcommon.net.ResultCode
+import com.soli.libcommon.util.NetworkUtil
+import com.soli.libcommon.util.ToastUtils
+import com.soli.libcommon.view.root.LoadingType
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.demo.TestTopSpecialActivity
@@ -22,6 +22,7 @@ import com.soli.newframeapp.net.WebviewActivity
 import com.soli.newframeapp.palette.PaletteActivity
 import com.soli.newframeapp.pic.PicDealActivity
 import com.soli.newframeapp.pubu.PubuTestActivity
+import com.soli.newframeapp.span.SpecialSpanActivity
 import com.soli.newframeapp.toast.CustomToastActivity
 import com.soli.permissions.RxPermissions
 import kotlinx.android.synthetic.main.activity_main.*
@@ -66,6 +67,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         btnpubo.setOnClickListener(this)
         myToast.setOnClickListener(this)
         palette.setOnClickListener(this)
+        richText.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -120,6 +122,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.btnpubo -> startActivity(Intent(ctx, PubuTestActivity::class.java))
             R.id.myToast -> startActivity(Intent(ctx, CustomToastActivity::class.java))
             R.id.palette -> startActivity(Intent(ctx, PaletteActivity::class.java))
+            R.id.richText -> startActivity(Intent(ctx, SpecialSpanActivity::class.java))
         }
     }
 

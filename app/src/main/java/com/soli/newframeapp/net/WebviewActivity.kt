@@ -2,7 +2,7 @@ package com.soli.newframeapp.net
 
 import android.webkit.WebView
 import android.webkit.WebViewClient
-import com.soli.libCommon.base.BaseActivity
+import com.soli.libcommon.base.BaseActivity
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.activity_webview.*
 

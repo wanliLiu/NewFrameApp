@@ -7,13 +7,13 @@
 
     <!--顶部滑动 联动效果  统一模板   CoordinatorLayout-->
 
-    <com.soli.libCommon.view.FixAppBarLayout
+    <com.soli.libcommon.view.FixAppBarLayout
             android:id="@+id/appBarLayout"
             android:layout_width="match_parent"
             app:elevation="0dp"
             android:layout_height="wrap_content">
 
-        <com.soli.libCommon.view.CollapsingToolbarLayout
+        <com.soli.libcommon.view.CollapsingToolbarLayout
                 android:layout_width="match_parent"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed"
                 android:layout_height="wrap_content">
@@ -33,13 +33,13 @@
 
 
             <!--Toolbar 放到最下面 这种布局Toolbar统一指定 id为 tool_bar-->
-            <com.soli.libCommon.view.root.Toolbar
+            <com.soli.libcommon.view.root.Toolbar
                     android:id="@id/tool_bar"
                     android:layout_width="match_parent"
                     app:collapseMode="pin"
                     android:layout_height="wrap_content"/>
 
-        </com.soli.libCommon.view.CollapsingToolbarLayout>
+        </com.soli.libcommon.view.CollapsingToolbarLayout>
 
         <TextView android:layout_width="match_parent"
                   android:text="滑动顶部固定----具体更换布局"
@@ -49,7 +49,7 @@
                   android:gravity="center"
                   android:layout_height="48dp"/>
 
-    </com.soli.libCommon.view.FixAppBarLayout>
+    </com.soli.libcommon.view.FixAppBarLayout>
 
 
     <!--具体需要滑动的视图，父视图必须指明 layout_behavior 为@string/appbar_scrolling_view_behavior -->

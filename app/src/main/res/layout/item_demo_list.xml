@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.soli.newframeapp.span.SpecialTextView
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/testInput"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Hello 第三库代理商都开始代课老师打开熟练度是看到了SDK说的单身快乐三年多!"
+        android:textSize="14sp"
+        android:lineSpacingMultiplier="1.2"/>

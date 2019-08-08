@@ -10,7 +10,7 @@
             android:layout_height="match_parent"
             android:layout_marginTop="@dimen/toolbar_height"/>
 
-    <com.soli.libCommon.view.root.Toolbar
+    <com.soli.libcommon.view.root.Toolbar
             android:id="@id/tool_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>

@@ -5,10 +5,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.facebook.drawee.view.SimpleDraweeView
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.base.BaseRecycleAdapter
-import com.soli.libCommon.util.FrescoUtil
-import com.soli.libCommon.util.ImageLoader
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.base.BaseRecycleAdapter
+import com.soli.libcommon.util.FrescoUtil
+import com.soli.libcommon.util.ImageLoader
 import com.soli.newframeapp.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_palette.*

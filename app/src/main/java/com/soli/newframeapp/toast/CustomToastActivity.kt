@@ -7,8 +7,8 @@ import android.view.Gravity
 import android.view.WindowManager
 import android.widget.TextView
 import android.widget.Toast
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.util.ToastUtils
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.util.ToastUtils
 import kotlinx.android.synthetic.main.activity_toast.*
 
 

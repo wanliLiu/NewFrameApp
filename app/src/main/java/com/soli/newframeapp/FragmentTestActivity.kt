@@ -2,8 +2,8 @@ package com.soli.newframeapp
 
 import android.os.Handler
 import android.view.View
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.util.TabFragmentManager
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.util.TabFragmentManager
 import kotlinx.android.synthetic.main.activity_fragment_test.*
 
 class FragmentTestActivity : BaseActivity(), View.OnClickListener {

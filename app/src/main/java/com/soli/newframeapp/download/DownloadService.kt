@@ -14,7 +14,7 @@ import android.os.Build
 import android.os.IBinder
 import android.text.TextUtils
 import android.util.Log
-import com.soli.libCommon.util.ShellUtils
+import com.soli.libcommon.util.ShellUtils
 import com.soli.newframeapp.R
 import com.soli.newframeapp.util.InstallUtil
 import java.io.File

@@ -5,9 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.facebook.drawee.view.SimpleDraweeView
-import com.soli.libCommon.base.BaseRecycleAdapter
-import com.soli.libCommon.util.ImageLoader
-import com.soli.libCommon.util.Utils
+import com.soli.libcommon.base.BaseRecycleAdapter
+import com.soli.libcommon.util.ImageLoader
+import com.soli.libcommon.util.Utils
 import com.soli.newframeapp.R
 
 /**

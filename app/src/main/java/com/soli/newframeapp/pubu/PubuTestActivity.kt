@@ -1,8 +1,7 @@
 package com.soli.newframeapp.pubu
 
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.util.RxJavaUtil
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.util.RxJavaUtil
 import com.soli.newframeapp.R
 import com.soli.pullupdownrefresh.PullRefreshLayout
 import com.taihe.libCommon.view.recyclerview.decoration.SpacingDecoration

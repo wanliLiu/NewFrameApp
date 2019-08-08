@@ -2,9 +2,9 @@ package com.soli.newframeapp.pic
 
 import android.graphics.*
 import android.widget.SeekBar
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.util.FrescoUtil
-import com.soli.libCommon.util.MLog
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.util.FrescoUtil
+import com.soli.libcommon.util.MLog
 import com.soli.newframeapp.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_pic_deal.*

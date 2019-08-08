@@ -10,7 +10,7 @@
             android:layout_gravity="center"
             android:background="@drawable/shape_shadow"/>
 
-    <com.soli.libCommon.view.PullLoadingImageView
+    <com.soli.libcommon.view.PullLoadingImageView
             android:id="@+id/image_anim"
             android:layout_width="50dp"
             android:layout_height="50dp"

@@ -3,8 +3,8 @@ package com.soli.newframeapp.bottomsheet
 import android.content.Context
 import android.widget.FrameLayout
 import android.widget.TextView
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.bottomSheet.BottomDialog
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.bottomsheet.BottomDialog
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.activity_bottom_sheet.*
 

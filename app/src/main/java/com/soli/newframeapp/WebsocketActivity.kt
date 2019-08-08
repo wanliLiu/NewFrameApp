@@ -3,10 +3,10 @@ package com.soli.newframeapp
 import android.widget.ScrollView
 import com.dhh.rxlifecycle2.RxLifecycle
 import com.jakewharton.rxbinding2.view.RxView
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.net.ApiHelper
-import com.soli.libCommon.net.ApiParams
-import com.soli.libCommon.net.websocket.RxWebSocket
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.net.ApiHelper
+import com.soli.libcommon.net.ApiParams
+import com.soli.libcommon.net.websocket.RxWebSocket
 import kotlinx.android.synthetic.main.activity_websocket.*
 
 /**

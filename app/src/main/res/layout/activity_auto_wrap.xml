@@ -18,7 +18,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-            <com.soli.libCommon.view.flexboxlayout.AutoWrapLayout
+            <com.soli.libcommon.view.flexboxlayout.AutoWrapLayout
                     android:id="@+id/wrapLayout"
                     android:layout_width="match_parent"
                     app:showDivider="beginning|end|middle"

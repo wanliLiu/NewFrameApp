@@ -8,11 +8,11 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.net.ApiHelper
-import com.soli.libCommon.net.ApiResult
-import com.soli.libCommon.util.FileUtil
-import com.soli.libCommon.util.ToastUtils
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.net.ApiHelper
+import com.soli.libcommon.net.ApiResult
+import com.soli.libcommon.util.FileUtil
+import com.soli.libcommon.util.ToastUtils
 import com.soli.permissions.RxPermissions
 import kotlinx.android.synthetic.main.activity_android7.*
 import java.io.File

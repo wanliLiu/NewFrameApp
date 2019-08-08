@@ -8,9 +8,9 @@ import android.widget.Button
 import com.google.android.flexbox.FlexboxItemDecoration
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.google.android.flexbox.JustifyContent
-import com.soli.libCommon.base.BaseActivity
-import com.soli.libCommon.util.ToastUtils
-import com.soli.libCommon.view.flexboxlayout.AutoWrapAdapter
+import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.util.ToastUtils
+import com.soli.libcommon.view.flexboxlayout.AutoWrapAdapter
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.activity_auto_wrap.*
 

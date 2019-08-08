@@ -12,7 +12,7 @@ import androidx.coordinatorlayout.widget.CoordinatorLayout
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import com.soli.libCommon.util.ViewUtil
+import com.soli.libcommon.util.ViewUtil
 import com.soli.newframeapp.R
 
 

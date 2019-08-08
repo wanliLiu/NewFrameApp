@@ -5,8 +5,8 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import androidx.core.content.FileProvider
-import com.soli.libCommon.util.ShellUtils
-import com.soli.libCommon.util.ToastUtils
+import com.soli.libcommon.util.ShellUtils
+import com.soli.libcommon.util.ToastUtils
 import com.soli.newframeapp.BuildConfig
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
