@@ -1,7 +1,6 @@
 package com.soli.libcommon.net.upload
 
 import com.soli.libcommon.net.download.FileProgressListener
-import com.soli.libcommon.util.RxJavaUtil
 import okhttp3.MediaType
 import okhttp3.RequestBody
 import okio.*
@@ -11,11 +10,10 @@ import java.io.IOException
  * @author soli
  * @Time 2018/12/5 21:05
  */
-internal class ProgressRequestBody(
+class ProgressRequestBody(
     private val mDelegate: RequestBody,
     private val progressListener: FileProgressListener
 ) : RequestBody() {
-    private var mBufferedSink: BufferedSink? = null
 
     @Throws(IOException::class)
     override fun contentLength(): Long {
@@ -33,11 +31,11 @@ internal class ProgressRequestBody(
             mDelegate.writeTo(sink)
             return
         }
-        if (mBufferedSink == null) {
-            mBufferedSink = Okio.buffer(wrapSink(sink))
-        }
-        mDelegate.writeTo(mBufferedSink!!)
-        mBufferedSink!!.flush()
+//        if (mBufferedSink == null) {
+        val mBufferedSink = wrapSink(sink).buffer()
+//        }
+        mDelegate.writeTo(mBufferedSink)
+        mBufferedSink.flush()
     }
 
     private fun wrapSink(sink: Sink): Sink {
@@ -50,16 +48,21 @@ internal class ProgressRequestBody(
 
                 val contentLength = contentLength()
 
-                if (contentLength > 0) {
-                    totalBytesSend += if (byteCount != -1L) byteCount else 0
+                val update = if (byteCount != -1L) byteCount else 0
+                totalBytesSend += update
 
-                    val temp = ((100 * totalBytesSend) / contentLength).toInt()
-                    if (progress != temp) {
-                        progress = temp
-                        RxJavaUtil.runOnUiThread{
-                            progressListener.progress(progress, totalBytesSend, contentLength, byteCount == -1L)
-                        }
-                    }
+                val temp = ((100 * totalBytesSend) / contentLength).toInt()
+                if (progress != temp) {
+                    progress = temp
+//                        RxJavaUtil.runOnUiThread {
+                    progressListener.progress(
+                        progress,
+                        totalBytesSend,
+                        update,
+                        contentLength,
+                        byteCount == -1L
+                    )
+//                        }
                 }
             }
         }

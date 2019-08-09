@@ -24,6 +24,7 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 
 import java.io.File;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +41,6 @@ public class ApiHelper {
 
     private long timeout = 30L;
     private Retrofit retrofit;
-    private Call<ResponseBody> mCall;
     private static final Map<String, Call> CALL_MAP = new HashMap<>();
     private Builder mBuilder;
     private static ApiHelper client;
@@ -103,9 +103,9 @@ public class ApiHelper {
         //支持https访问  Android 5.0以下 TLSV1.1和TLSV1.2是关闭的，要自己打开，Android 5.0以上是打开的
         //这里就针对这两种情况，不同处理
 //        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
-            //Android 5.0以上
-            HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
-            client.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
+        //Android 5.0以上
+        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
+        client.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
 //        } else {
 //            //Android 5.0 以下
 //            SSLContext sslContext = null;
@@ -143,9 +143,12 @@ public class ApiHelper {
      * @param builder
      */
     private void addProgress(OkHttpClient.Builder builder) {
-        builder.addNetworkInterceptor(new ProgressInterceptor((progress, bytesRead, fileSize, done) -> {
+        builder.addNetworkInterceptor(new ProgressInterceptor((progress, bytesRead, updateBytes, fileSize, done) -> {
             if (progressListener != null) {
-                RxJavaUtil.runOnUiThread(() -> progressListener.progress(progress, bytesRead, fileSize, done));
+                RxJavaUtil.runOnUiThread(() -> {
+                    if (progressListener != null)
+                        progressListener.progress(progress, bytesRead, updateBytes, fileSize, done);
+                });
             }
             return null;
         }));
@@ -193,9 +196,9 @@ public class ApiHelper {
     public void get(final ApiCallBack callBack) {
         Builder builder = mBuilder;
         builder.url(builder.url + "?" + builder.params.getParams());
-        mCall = retrofit.create(ApiService.class).executeGet(builder.url);
+        Call<ResponseBody> mCall = retrofit.create(ApiService.class).executeGet(builder.url);
         putCall(builder, mCall);
-        startRequest(builder, callBack);
+        startRequest(builder, callBack, mCall);
     }
 
     /**
@@ -205,9 +208,9 @@ public class ApiHelper {
      */
     public void post(final ApiCallBack callBack) {
         Builder builder = mBuilder;
-        mCall = retrofit.create(ApiService.class).executePost(builder.url, builder.params);
+        Call<ResponseBody> mCall = retrofit.create(ApiService.class).executePost(builder.url, builder.params);
         putCall(builder, mCall);
-        startRequest(builder, callBack);
+        startRequest(builder, callBack, mCall);
     }
 
 
@@ -331,7 +334,7 @@ public class ApiHelper {
 //
 //        progressListener = listener;
 
-       ProgressRequestBody filebody = new ProgressRequestBody(RequestBody.create(MediaType.parse("multipart/form-data"), file),listener);
+        ProgressRequestBody filebody = new ProgressRequestBody(RequestBody.create(MediaType.parse("multipart/form-data"), file), listener);
         MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), filebody);
 
         String fileExt = MimeTypeMap.getFileExtensionFromUrl(file.getAbsolutePath());
@@ -354,9 +357,65 @@ public class ApiHelper {
 
         String url = "/?upload=1&fileMode=" + fileMode + "&fileExt=" + fileExt + "&safe=" + safe + "&cache=" + cache + "&mode=upload&secureKey=" + secureKey.toString();
 
-        mCall = retrofit.create(ApiService.class).uploadFile(url, filePart);
+        Call<ResponseBody> mCall = retrofit.create(ApiService.class).uploadFile(url, filePart);
         putCall(builder, mCall);
-        startRequest(builder, callBack);
+        startRequest(builder, callBack, mCall);
+    }
+
+
+    /**
+     * @param callBack
+     * @param listener
+     */
+    public void uploadFileNew(final ApiCallBack<String> callBack, final FileProgressListener listener) {
+        Builder builder = mBuilder;
+
+        File file = new File(builder.fileUrl);
+        if (!file.exists())
+            throw new IllegalArgumentException("上传的文件不存在--->" + file.getAbsolutePath());
+
+        ProgressRequestBody filebody = new ProgressRequestBody(RequestBody.create(file, MediaType.parse("multipart/form-data")), listener);
+
+        String fileExt = FileUtil.INSTANCE.getFileExtension(file.getAbsolutePath());
+
+        int fileMode = FileUtil.INSTANCE.getFileUploadType(fileExt);
+
+        String safe = "1";//二次验证1.开启验证 2.关闭验证
+        String cache = "1";//使用文件重复上传验证.1 开启 2.关闭
+
+        //upload : Key 的组装方式, fileMode+fileExt+safe+文件的md5+每个域名都不同的key 这个串md5后用字符mapping表映射一次.
+        String key = Utils.INSTANCE.MD5(fileMode + fileExt + safe + Utils.INSTANCE.getFileMD5(file) + "taiheUp@#");
+        StringBuffer secureKey = new StringBuffer();
+//        String mapFrom = "0123456789abcdef";
+        String mapTo = "f7c8d0e1a9b53426";
+        for (int i = 0; i < key.length(); i++) {
+            int tst = Integer.parseInt(key.substring(i, i + 1), 16);
+            secureKey.append(mapTo.substring(tst, tst + 1));
+        }
+
+        Map<String, RequestBody> fileUploadParams = new HashMap<>();
+        fileUploadParams.put("fileMode", RequestBody.create(String.valueOf(fileMode), null));
+        //(mov count是从视频中抽取的图片数量 0表示不抽取 仅当fileMode是2的时候生效.)
+        fileUploadParams.put("movImgCount", RequestBody.create("0", null));
+        fileUploadParams.put("fileExt", RequestBody.create(fileExt, null));
+        try {
+            fileUploadParams.put("file\"; filename=\"" + URLEncoder.encode(file.getName(), "UTF-8") + " ", filebody);
+        } catch (Exception e) {
+            e.printStackTrace();
+            fileUploadParams.put("file\"; filename=\"" + URLEncoder.encode(file.getName()) + " ", filebody);
+        }
+        fileUploadParams.put("safe", RequestBody.create(safe, null));
+        fileUploadParams.put("cache", RequestBody.create(cache, null));
+        fileUploadParams.put("secureKey", RequestBody.create(secureKey.toString(), null));
+//        fileUploadParams.put("action", RequestBody.create(builder.url.replace(Constant.apiHead, ""), null));
+        fileUploadParams.put("mode", RequestBody.create("upload", null));
+
+//        Call<ResponseBody> mCall = retrofit.create(ApiService.class).uploadFileNew(builder.url.replace(Constant.apiHead, ""), fileUploadParams);
+        Call<ResponseBody> mCall = retrofit.create(ApiService.class).uploadFileNew(builder.url, fileUploadParams);
+        mCall = mCall.clone();
+
+        putCall(builder, mCall);
+        startRequest(builder, callBack, mCall);
     }
 
     /**
@@ -372,16 +431,16 @@ public class ApiHelper {
 
         progressListener = listener;
 
-        mCall = retrofit.create(ApiService.class).executeDownloadFile(builder.fileUrl);
+        Call<ResponseBody> mCall = retrofit.create(ApiService.class).executeDownloadFile(builder.fileUrl);
         putCall(builder, mCall);
-        startDownloadFileRequest(builder, callBack);
+        startDownloadFileRequest(builder, callBack, mCall);
     }
 
     /**
      * @param builder
      * @param callBack
      */
-    private void startDownloadFileRequest(final Builder builder, final ApiCallBack callBack) {
+    private void startDownloadFileRequest(final Builder builder, final ApiCallBack callBack, Call<ResponseBody> mCall) {
         if (!NetworkUtil.INSTANCE.isConnected()) {
             if (callBack != null)
                 callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));
@@ -425,7 +484,7 @@ public class ApiHelper {
      * @param builder
      * @param callBack
      */
-    private void startRequest(final Builder builder, final ApiCallBack callBack) {
+    private void startRequest(final Builder builder, final ApiCallBack callBack, Call<ResponseBody> mCall) {
         if (!NetworkUtil.INSTANCE.isConnected()) {
             if (callBack != null)
                 callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));

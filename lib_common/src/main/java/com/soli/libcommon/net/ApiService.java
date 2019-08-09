@@ -1,6 +1,7 @@
 package com.soli.libcommon.net;
 
 import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.Call;
 import retrofit2.http.*;
@@ -39,5 +40,9 @@ public interface ApiService {
     @Multipart
     @POST
     Call<ResponseBody> uploadFile(@Url String url, @Part MultipartBody.Part file);
+
+    @Multipart
+    @POST
+    Call<ResponseBody> uploadFileNew(@Url String url, @PartMap Map<String, RequestBody> params);
 
 }

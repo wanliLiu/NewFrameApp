@@ -13,9 +13,9 @@ class CacheInterceptor : Interceptor {
 
     private val NET_MAX = 30 //30秒  有网超时时间
     private val NO_NET_MAX = 60 * 60 * 24 * 7 //7天 无网超时时
-    override fun intercept(chain: Interceptor.Chain?): Response {
+    override fun intercept(chain: Interceptor.Chain): Response {
 
-        var request = chain!!.request()
+        var request = chain.request()
         request = if (!NetworkUtil.isConnected()) {
             request.newBuilder()
                     //Pragma:no-cache。在HTTP/1.1协议中，它的含义和Cache-Control:no-cache相同。为了确保缓存生效

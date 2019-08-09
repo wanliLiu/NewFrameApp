@@ -124,26 +124,26 @@ class RxWebSocket private constructor() {
         private fun creatWebSocket(webSocketUrl: String, emitter: ObservableEmitter<WebSocketInfo>) {
             MLog.e(logTag, "开始连接：$webSocketUrl")
             client.newWebSocket(getRequest(webSocketUrl), object : WebSocketListener() {
-                override fun onOpen(webSocket: WebSocket?, response: Response?) {
+                override fun onOpen(webSocket: WebSocket, response: Response) {
                     MLog.e(logTag, "链接服务器: $webSocketUrl 成功")
                     webSocketClient = webSocket
                     emitter.onNext(WebSocketInfo(webSocket))
-                    emitter.onNext(WebSocketInfo(webSocket,"链接服务器: $webSocketUrl 成功"))
+                    emitter.onNext(WebSocketInfo(webSocket, "链接服务器: $webSocketUrl 成功"))
                 }
 
-                override fun onMessage(webSocket: WebSocket?, text: String?) {
+                override fun onMessage(webSocket: WebSocket, text: String) {
                     emitter.onNext(WebSocketInfo(webSocket, text))
                 }
 
-                override fun onFailure(webSocket: WebSocket?, t: Throwable?, response: Response?) {
+                override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
                     emitter.onError(Exception(t))
                 }
 
-                override fun onClosing(webSocket: WebSocket?, code: Int, reason: String?) {
-                    webSocket!!.close(code, reason)
+                override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
+                    webSocket.close(code, reason)
                 }
 
-                override fun onClosed(webSocket: WebSocket?, code: Int, reason: String?) {
+                override fun onClosed(webSocket: WebSocket, code: Int, reason: String) {
                     MLog.d(logTag, "$webSocketUrl --> onClosed:code= $code--> reason:$reason")
                 }
             })

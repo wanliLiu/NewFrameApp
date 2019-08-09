@@ -1,7 +1,6 @@
 package com.soli.newframeapp
 
 import android.Manifest
-import android.content.Intent
 import android.os.Handler
 import android.view.View
 import com.dhh.rxlifecycle2.RxLifecycle
@@ -12,6 +11,7 @@ import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
 import com.soli.libcommon.util.NetworkUtil
 import com.soli.libcommon.util.ToastUtils
+import com.soli.libcommon.util.openActivity
 import com.soli.libcommon.view.root.LoadingType
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
@@ -107,22 +107,22 @@ class MainActivity : BaseActivity(), View.OnClickListener {
 
     override fun onClick(v: View?) {
         when (v?.id) {
-            R.id.LauchActivity -> startActivity(Intent(ctx, SecondAcitivity::class.java))
-            R.id.fragmentTest -> startActivity(Intent(ctx, FragmentTestActivity::class.java))
-            R.id.netWorkTest -> startActivity(Intent(ctx, NetWorkTestActivity::class.java))
+            R.id.LauchActivity -> openActivity<SecondAcitivity>()
+            R.id.fragmentTest -> openActivity<FragmentTestActivity>()
+            R.id.netWorkTest -> openActivity<NetWorkTestActivity>()
             R.id.showStartnetWorkTest -> showStartEventPost()
             R.id.fileDownload -> checkPermission()
-            R.id.webViewTest -> startActivity(Intent(ctx, WebviewActivity::class.java))
-            R.id._23Test -> startActivity(Intent(ctx, Android7Activity::class.java))
-            R.id.websocket -> startActivity(Intent(ctx, WebsocketActivity::class.java))
-            R.id.btnColorMatrix -> startActivity(Intent(ctx, PicDealActivity::class.java))
-            R.id.btnBottomSheet -> startActivity(Intent(ctx, BottomSheetTestActivity::class.java))
-            R.id.btnCustFlex -> startActivity(Intent(ctx, AutoWrapLayoutTestActivity::class.java))
-            R.id.btnSpecialDemo -> startActivity(Intent(ctx, TestTopSpecialActivity::class.java))
-            R.id.btnpubo -> startActivity(Intent(ctx, PubuTestActivity::class.java))
-            R.id.myToast -> startActivity(Intent(ctx, CustomToastActivity::class.java))
-            R.id.palette -> startActivity(Intent(ctx, PaletteActivity::class.java))
-            R.id.richText -> startActivity(Intent(ctx, SpecialSpanActivity::class.java))
+            R.id.webViewTest -> openActivity<WebviewActivity>()
+            R.id._23Test -> openActivity<Android7Activity>()
+            R.id.websocket -> openActivity<WebsocketActivity>()
+            R.id.btnColorMatrix -> openActivity<PicDealActivity>()
+            R.id.btnBottomSheet -> openActivity<BottomSheetTestActivity>()
+            R.id.btnCustFlex -> openActivity<AutoWrapLayoutTestActivity>()
+            R.id.btnSpecialDemo -> openActivity<TestTopSpecialActivity>()
+            R.id.btnpubo -> openActivity<PubuTestActivity>()
+            R.id.myToast -> openActivity<CustomToastActivity>()
+            R.id.palette -> openActivity<PaletteActivity>()
+            R.id.richText -> openActivity<SpecialSpanActivity>()
         }
     }
 
@@ -135,7 +135,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                 .compose(RxLifecycle.with(this).bindToLifecycle())
                 .subscribe { pass ->
                     if (pass)
-                        startActivity(Intent(ctx, DownloadTestActivity::class.java))
+                        openActivity<DownloadTestActivity>()
                     else {
                         ToastUtils.showShortToast("需要文件读写权限")
                     }

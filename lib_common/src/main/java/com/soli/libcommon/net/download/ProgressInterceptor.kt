@@ -8,16 +8,15 @@ import okhttp3.Response
  * @Time 18-6-7 上午11:07
  */
 class ProgressInterceptor(
-        val progressCallBack: (progress: Int, bytesRead: Long, fileSize: Long, done: Boolean) -> Unit)
-    : Interceptor {
+    val progressCallBack: (progress: Int, bytesRead: Long, updates: Long, fileSize: Long, done: Boolean) -> Unit
+) : Interceptor {
 
-
-    override fun intercept(chain: Interceptor.Chain?): Response {
-        val originalResponse = chain!!.proceed(chain.request())
+    override fun intercept(chain: Interceptor.Chain): Response {
+        val originalResponse = chain.proceed(chain.request())
 
         return originalResponse
-                .newBuilder()
-                .body(ProgressResponseBody.create(originalResponse.body()!!, progressCallBack))
-                .build()
+            .newBuilder()
+            .body(ProgressResponseBody.create(originalResponse.body!!, progressCallBack))
+            .build()
     }
 }

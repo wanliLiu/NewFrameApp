@@ -28,7 +28,8 @@ import java.util.concurrent.TimeUnit
 
 class DownloadTestActivity : BaseActivity() {
 
-    private val downloadPath = "http://wxz.myapp.com/16891/8F4C11ED51021765F70085CB5B2C2413.apk?fsname=com.showstartfans.activity_4.2.0_20180831.apk&hsr=4d5s"
+    private val downloadPath =
+        "http://wxz.myapp.com/16891/8F4C11ED51021765F70085CB5B2C2413.apk?fsname=com.showstartfans.activity_4.2.0_20180831.apk&hsr=4d5s"
     private val savePath = FileUtil.getFile(ctx, "download", "showstart_4.2.0.apk", false)
 
     private var mDisposable: Disposable? = null//可以取消观察者
@@ -100,48 +101,48 @@ class DownloadTestActivity : BaseActivity() {
         dialog.progress = 0
 
         ApiHelper.Builder()
-                .fileUrl(downloadPath)
-                .saveFile(savePath)
-                .build()
-                .downloadFile({ result: ApiResult<File>? ->
-                    dialog.dismiss()
-                    if (result!!.isSuccess)
-                        if (result.result.exists()) {
-                            ToastUtils.showLongToast("文件下载成功！：${result.fullData}")
-                            InstallUtil.install(ctx, result.result)
-                        } else
-                            ToastUtils.showShortToast(result.errormsg)
-                }, { _, bytesRead, fileSize, _ ->
-                    dialog.max = (fileSize / 1024).toInt()
-                    dialog.progress = (bytesRead / 1024).toInt()
-                })
+            .fileUrl(downloadPath)
+            .saveFile(savePath)
+            .build()
+            .downloadFile({ result: ApiResult<File>? ->
+                dialog.dismiss()
+                if (result!!.isSuccess)
+                    if (result.result.exists()) {
+                        ToastUtils.showLongToast("文件下载成功！：${result.fullData}")
+                        InstallUtil.install(ctx, result.result)
+                    } else
+                        ToastUtils.showShortToast(result.errormsg)
+            }, { _, bytesRead, fileSize, _, _ ->
+                dialog.max = (fileSize / 1024).toInt()
+                dialog.progress = (bytesRead / 1024).toInt()
+            })
     }
 
     //开始监听进度
     private fun startCheckProgress(downloadId: Long) {
         mDisposable = Observable.interval(10, 20, TimeUnit.MILLISECONDS, Schedulers.io())//无限轮询,准备查询进度,在io线程执行
-                .filter { downloadBinder != null }
-                .map { downloadBinder?.getProgress(downloadId) }//获得下载进度
-                .takeUntil { it >= 100 }//返回true就停止了,当进度>=100就是下载完成了
-                .distinct()//去重复
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe {
-                    dialog.setProgressNumberFormat("%1d/%2d")
-                    dialog.show()
-                    dialog.progress = 0
-                    dialog.max = 100
-                }
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
-                    dialog.progress = it!!
-                }, {
-                    it.printStackTrace()
-                    ToastUtils.showShortToast("出错")
-                }, {
-                    dialog.dismiss()
-                    ToastUtils.showShortToast("下载完成")
-                })
+            .filter { downloadBinder != null }
+            .map { downloadBinder?.getProgress(downloadId) }//获得下载进度
+            .takeUntil { it >= 100 }//返回true就停止了,当进度>=100就是下载完成了
+            .distinct()//去重复
+            .subscribeOn(Schedulers.io())
+            .doOnSubscribe {
+                dialog.setProgressNumberFormat("%1d/%2d")
+                dialog.show()
+                dialog.progress = 0
+                dialog.max = 100
+            }
+            .subscribeOn(AndroidSchedulers.mainThread())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                dialog.progress = it!!
+            }, {
+                it.printStackTrace()
+                ToastUtils.showShortToast("出错")
+            }, {
+                dialog.dismiss()
+                ToastUtils.showShortToast("下载完成")
+            })
     }
 
     override fun onDestroy() {

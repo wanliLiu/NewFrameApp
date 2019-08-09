@@ -117,7 +117,7 @@ class Android7Activity : BaseActivity() {
                     ToastUtils.showShortToast(result.fullData)
                 } else
                     ToastUtils.showShortToast(result.errormsg)
-            }, { _, bytesRead, fileSize, _ ->
+            }, { _, bytesRead, fileSize, _, _ ->
                 dialog.max = (fileSize / 1024).toInt()
                 dialog.progress = (bytesRead / 1024).toInt()
             })
