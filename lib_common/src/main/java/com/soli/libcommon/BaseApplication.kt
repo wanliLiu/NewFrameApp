@@ -6,6 +6,8 @@ import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.FrescoUtil
+import com.soli.libcommon.util.MLog
+import io.reactivex.plugins.RxJavaPlugins
 
 /**
  * @author Soli
@@ -28,6 +30,9 @@ abstract class BaseApplication : MultiDexApplication() {
             Stetho.initializeWithDefaults(this)
 
         FrescoUtil.Init(this)
+
+        //Rxjava error handler  捕获Rxjava抛出的异常
+        setRxJavaErrorHandler()
     }
 
 
@@ -37,5 +42,13 @@ abstract class BaseApplication : MultiDexApplication() {
     private fun initSkin() {
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP)//适配android5.0以下
             AppCompatDelegate.setCompatVectorFromResourcesEnabled(true)
+    }
+
+    /**
+     * RxJava2 当取消订阅后(dispose())，RxJava抛出的异常后续无法接收(此时后台线程仍在跑，可能会抛出IO等异常),全部由RxJavaPlugin接收，需要提前设置ErrorHandler
+     * 详情：http://engineering.rallyhealth.com/mobile/rxjava/reactive/2017/03/15/migrating-to-rxjava-2.html#Error Handling
+     */
+    private fun setRxJavaErrorHandler() {
+        RxJavaPlugins.setErrorHandler { MLog.e("Rxjava", it?.message ?: "Rxjava出现错误") }
     }
 }

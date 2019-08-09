@@ -115,8 +115,7 @@ public class SpecialBottomSheetDialog extends AppCompatDialog {
      * @return
      */
     protected View wrapInBottomSheet(int layoutResId, View view, ViewGroup.LayoutParams params) {
-        FrameLayout container =
-                (FrameLayout) View.inflate(getContext(), R.layout.special_design_bottom_sheet_dialog, null);
+        FrameLayout container = (FrameLayout) View.inflate(getContext(), R.layout.special_design_bottom_sheet_dialog, null);
         CoordinatorLayout coordinator =  container.findViewById(R.id.coordinator);
         if (layoutResId != 0 && view == null) {
             view = getLayoutInflater().inflate(layoutResId, coordinator, false);

@@ -1,6 +1,7 @@
 package com.soli.newframeapp.bottomsheet
 
 import android.content.Context
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.TextView
 import com.soli.libcommon.base.BaseActivity
@@ -15,9 +16,8 @@ import kotlinx.android.synthetic.main.activity_bottom_sheet.*
  */
 class BottomSheetTestActivity : BaseActivity() {
 
-    private val vomView by lazy {
-        layoutInflater.inflate(R.layout.view_bottomsheet, null)
-    }
+    private var vomView : View?= null
+
     private val inputDialog by lazy {
         BottomDialog(ctx as Context).apply {
             val view = layoutInflater.inflate(R.layout.view_bottomsheet, null)
@@ -36,20 +36,21 @@ class BottomSheetTestActivity : BaseActivity() {
     override fun initListener() {
 
         inputDialog.setOnDismissListener {
-            vomView.findViewById<FrameLayout>(R.id.background).setBackgroundResource(R.drawable.bottom_sheet_background)
+            vomView?.findViewById<FrameLayout>(R.id.background)?.setBackgroundResource(R.drawable.bottom_sheet_background)
         }
         btnSheetDialog.setOnClickListener {
             val commDialog = BottomDialog(ctx as Context)
             commDialog.topOffsetDefault()
 
-            val te = vomView.findViewById<TextView>(R.id.bNewtn)
+            vomView = layoutInflater.inflate(R.layout.view_bottomsheet, null)
+            val te = vomView!!.findViewById<TextView>(R.id.bNewtn)
             te.text = "弹起的评论"
             te.setOnClickListener {
-                vomView.findViewById<FrameLayout>(R.id.background).setBackgroundResource(R.drawable.bottom_sheet_background_open)
+                vomView!!.findViewById<FrameLayout>(R.id.background).setBackgroundResource(R.drawable.bottom_sheet_background_open)
                 inputDialog.show()
             }
 
-            commDialog.setContentView(vomView)
+            commDialog.setContentView(vomView!!)
             commDialog.show()
         }
 

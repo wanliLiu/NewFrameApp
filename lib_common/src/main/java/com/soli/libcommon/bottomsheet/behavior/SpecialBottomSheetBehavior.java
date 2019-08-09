@@ -234,21 +234,21 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
 
     public SpecialBottomSheetBehavior(Context context, AttributeSet attrs) {
         super(context, attrs);
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.BottomSheetBehavior_Layout);
+        TypedArray a = context.obtainStyledAttributes(attrs, com.google.android.material.R.styleable.BottomSheetBehavior_Layout);
 
-        TypedValue value = a.peekValue(R.styleable.BottomSheetBehavior_Layout_behavior_peekHeight);
+        TypedValue value = a.peekValue(com.google.android.material.R.styleable.BottomSheetBehavior_Layout_behavior_peekHeight);
         if (value != null && value.data == PEEK_HEIGHT_AUTO) {
             setPeekHeight(value.data);
         } else {
             setPeekHeight(
                     a.getDimensionPixelSize(
-                            R.styleable.BottomSheetBehavior_Layout_behavior_peekHeight, PEEK_HEIGHT_AUTO));
+                            com.google.android.material.R.styleable.BottomSheetBehavior_Layout_behavior_peekHeight, PEEK_HEIGHT_AUTO));
         }
-        setHideable(a.getBoolean(R.styleable.BottomSheetBehavior_Layout_behavior_hideable, false));
+        setHideable(a.getBoolean(com.google.android.material.R.styleable.BottomSheetBehavior_Layout_behavior_hideable, false));
         setFitToContents(
-                a.getBoolean(R.styleable.BottomSheetBehavior_Layout_behavior_fitToContents, true));
+                a.getBoolean(com.google.android.material.R.styleable.BottomSheetBehavior_Layout_behavior_fitToContents, true));
         setSkipCollapsed(
-                a.getBoolean(R.styleable.BottomSheetBehavior_Layout_behavior_skipCollapsed, false));
+                a.getBoolean(com.google.android.material.R.styleable.BottomSheetBehavior_Layout_behavior_skipCollapsed, false));
         setSaveFlags(SAVE_NONE);
         a.recycle();
         ViewConfiguration configuration = ViewConfiguration.get(context);
@@ -602,7 +602,7 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
      *
      * @param peekHeight The height of the collapsed bottom sheet in pixels, or {@link
      *                   #PEEK_HEIGHT_AUTO} to configure the sheet to peek automatically at 16:9 ratio keyline.
-     * @attr ref com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_peekHeight
+     * @attr ref com.google.android.material.R.styleable#SpecialBottomSheetBehavior_Layout_behavior_peekHeight
      */
     public final void setPeekHeight(int peekHeight) {
         setPeekHeight(peekHeight, false);
@@ -615,7 +615,7 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
      * @param peekHeight The height of the collapsed bottom sheet in pixels, or {@link
      *                   #PEEK_HEIGHT_AUTO} to configure the sheet to peek automatically at 16:9 ratio keyline.
      * @param animate    Whether to animate between the old height and the new height.
-     * @attr ref com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_peekHeight
+     * @attr ref com.google.android.material.R.styleable#SpecialBottomSheetBehavior_Layout_behavior_peekHeight
      */
     public final void setPeekHeight(int peekHeight, boolean animate) {
         boolean layout = false;
@@ -651,7 +651,7 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
      *
      * @return The height of the collapsed bottom sheet in pixels, or {@link #PEEK_HEIGHT_AUTO} if the
      * sheet is configured to peek automatically at 16:9 ratio keyline
-     * @attr ref com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_peekHeight
+     * @attr ref com.google.android.material.R.styleable#SpecialBottomSheetBehavior_Layout_behavior_peekHeight
      */
     public final int getPeekHeight() {
         return peekHeightAuto ? PEEK_HEIGHT_AUTO : peekHeight;
@@ -661,7 +661,7 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
      * Sets whether this bottom sheet can hide when it is swiped down.
      *
      * @param hideable {@code true} to make this bottom sheet hideable.
-     * @attr ref com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_hideable
+     * @attr ref com.google.android.material.R.styleable#SpecialBottomSheetBehavior_Layout_behavior_hideable
      */
     public void setHideable(boolean hideable) {
         if (this.hideable != hideable) {
@@ -677,7 +677,7 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
      * Gets whether this bottom sheet can hide when it is swiped down.
      *
      * @return {@code true} if this bottom sheet can hide.
-     * @attr ref com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_hideable
+     * @attr ref com.google.android.material.R.styleable#SpecialBottomSheetBehavior_Layout_behavior_hideable
      */
     public boolean isHideable() {
         return hideable;
@@ -688,7 +688,7 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
      * is expanded once. Setting this to true has no effect unless the sheet is hideable.
      *
      * @param skipCollapsed True if the bottom sheet should skip the collapsed state.
-     * @attr ref com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_skipCollapsed
+     * @attr ref com.google.android.material.R.styleable#SpecialBottomSheetBehavior_Layout_behavior_skipCollapsed
      */
     public void setSkipCollapsed(boolean skipCollapsed) {
         this.skipCollapsed = skipCollapsed;
@@ -699,7 +699,7 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
      * is expanded once.
      *
      * @return Whether the bottom sheet should skip the collapsed state.
-     * @attr ref com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_skipCollapsed
+     * @attr ref com.google.android.material.R.styleable#SpecialBottomSheetBehavior_Layout_behavior_skipCollapsed
      */
     public boolean getSkipCollapsed() {
         return skipCollapsed;
@@ -711,7 +711,7 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
      * @param flags bitwise int of {@link #SAVE_PEEK_HEIGHT}, {@link #SAVE_FIT_TO_CONTENTS},
      *              {@link #SAVE_HIDEABLE}, {@link #SAVE_SKIP_COLLAPSED}, {@link #SAVE_ALL} and
      *              {@link #SAVE_NONE}.
-     * @attr ref com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_saveFlags
+     * @attr ref com.google.android.material.R.styleable#SpecialBottomSheetBehavior_Layout_behavior_saveFlags
      * @see #getSaveFlags()
      */
     public void setSaveFlags(int flags) {
@@ -721,7 +721,7 @@ public class SpecialBottomSheetBehavior<V extends View> extends CoordinatorLayou
     /**
      * Returns the save flags.
      *
-     * @attr ref com.google.android.material.R.styleable#BottomSheetBehavior_Layout_behavior_saveFlags
+     * @attr ref com.google.android.material.R.styleable#SpecialBottomSheetBehavior_Layout_behavior_saveFlags
      * @see #setSaveFlags(int)
      */
     public int getSaveFlags() {

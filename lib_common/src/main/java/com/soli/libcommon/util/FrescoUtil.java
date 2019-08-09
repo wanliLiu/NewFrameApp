@@ -57,7 +57,11 @@ public class FrescoUtil {
      * @param ctx
      */
     public static void Init(Context ctx) {
-        Fresco.initialize(ctx, getImagePipelineConfig(ctx));
+        try {
+            Fresco.initialize(ctx, getImagePipelineConfig(ctx));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -79,7 +83,7 @@ public class FrescoUtil {
                 if (MemoryTrimType.OnCloseToDalvikHeapLimit.getSuggestedTrimRatio() == suggestedTrimRatio
                         || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground.getSuggestedTrimRatio() == suggestedTrimRatio
                         || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.getSuggestedTrimRatio() == suggestedTrimRatio
-                        ) {
+                ) {
                     ImagePipelineFactory.getInstance().getImagePipeline().clearMemoryCaches();
                 }
             });
