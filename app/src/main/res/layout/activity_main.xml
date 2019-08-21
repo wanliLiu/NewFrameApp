@@ -50,12 +50,6 @@
             android:text="网络测试"/>
 
     <Button
-            android:id="@+id/showStartnetWorkTest"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="秀动网络测试"/>
-
-    <Button
             android:id="@+id/fileDownload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

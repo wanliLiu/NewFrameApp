@@ -10,7 +10,7 @@ import java.util.Iterator;
 public class ApiParams extends HashMap<String, String> {
 
     public ApiParams() {
-        // TODO: 18-5-17 公共参数的添加 这里以秀动专业版为例子  具体cut 掉
+        // TODO: 18-5-17 公共参数的添加 看和后台的约定，因为有些是这样干的，有些是直接加载header里面的
         put("terminal", "android");
         put("sysVersion", "6.0.1");
         put("appVersion", "3.0.0");

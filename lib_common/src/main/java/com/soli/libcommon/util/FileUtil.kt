@@ -346,4 +346,32 @@ object FileUtil {
         )
     }
 
+    /**
+     * 获取网络下载图片地址保存目录,自动根据文件类型保存到相应的文件夹里
+     * @param context
+     * @param url
+     * @param isIn    保存的位置
+     * @return
+     */
+    fun getDownLoadFilePath(context: Context, url: String, isIn: Boolean = false): File {
+
+        var dirName = "download"
+        try {
+            //网络文件
+            if (url.startsWith("http")) {
+                val extension = getFileExtension(url)
+                dirName += when {
+                    isImageFile(extension) -> "/picture"
+                    isAudioFile(extension) -> "/audio"
+                    isVideoFile(extension) -> "/video"
+                    else -> ""
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return getFile(context, dirName, getFileName("frame_", url), isIn)
+    }
+
 }

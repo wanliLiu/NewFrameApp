@@ -17,11 +17,6 @@ import com.soli.libcommon.view.root.LoadingDialog
 abstract class BaseFunctionActivity : BaseFixOTranslucentActivity(), BaseInterface {
 
     /**
-     * 默认竖屏，不支持横竖自定转换
-     */
-    protected val isScreenOnlyPORTRAIT = true
-
-    /**
      * 上下午context
      */
     protected val ctx by lazy { this }

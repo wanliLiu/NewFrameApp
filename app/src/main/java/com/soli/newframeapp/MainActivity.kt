@@ -5,8 +5,6 @@ import android.os.Handler
 import android.view.View
 import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libcommon.base.BaseActivity
-import com.soli.libcommon.net.ApiHelper
-import com.soli.libcommon.net.ApiParams
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
 import com.soli.libcommon.util.NetworkUtil
@@ -55,7 +53,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         fragmentTest.setOnClickListener(this)
         LauchActivity.setOnClickListener(this)
         netWorkTest.setOnClickListener(this)
-        showStartnetWorkTest.setOnClickListener(this)
         fileDownload.setOnClickListener(this)
         webViewTest.setOnClickListener(this)
         _23Test.setOnClickListener(this)
@@ -110,7 +107,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.LauchActivity -> openActivity<SecondAcitivity>()
             R.id.fragmentTest -> openActivity<FragmentTestActivity>()
             R.id.netWorkTest -> openActivity<NetWorkTestActivity>()
-            R.id.showStartnetWorkTest -> showStartEventPost()
             R.id.fileDownload -> checkPermission()
             R.id.webViewTest -> openActivity<WebviewActivity>()
             R.id._23Test -> openActivity<Android7Activity>()
@@ -131,7 +127,10 @@ class MainActivity : BaseActivity(), View.OnClickListener {
      */
     private fun checkPermission() {
         val diapose =
-            rxPermissions.request(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE)
+            rxPermissions.request(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
                 .compose(RxLifecycle.with(this).bindToLifecycle())
                 .subscribe { pass ->
                     if (pass)
@@ -140,36 +139,5 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                         ToastUtils.showShortToast("需要文件读写权限")
                     }
                 }
-    }
-
-    /**
-     * 利用秀动的网络,刚好测试一下问题
-     */
-    private fun showStartEventPost() {
-        val params = ApiParams()
-
-        params.apply {
-            put("title", "哦www用")
-            put(
-                "remark",
-                "急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民急急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急急竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急急急毕竟急急急毕竟估计民进急急急急急毕竟估计民进急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急民进急急急急急毕竟估计民进急急急急急毕竟计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急急急急毕竟估计民进急急毕竟估计民进急急急急急毕竟估"
-            )
-            put("startTime", "1528178400662")
-            put("endTime", "1528182000662")
-            put("repeatRule", "")
-            put("remind", "0")//提醒
-        }
-
-        ApiHelper.Builder()
-            .url("event/addOrUpdate.json")
-            .params(params)
-            .build()
-            .post { result ->
-
-                if (result.isSuccess)
-                    ToastUtils.showShortToast("添加成功")
-                else
-                    ToastUtils.showShortToast(".......,失败了哦")
-            }
     }
 }

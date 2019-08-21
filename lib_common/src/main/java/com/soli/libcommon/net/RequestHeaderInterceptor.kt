@@ -4,7 +4,7 @@ import okhttp3.Interceptor
 import okhttp3.Response
 
 /**
- *
+ * 网络请求头，添加的公共参数
  * @author Soli
  * @Time 2018/11/22 10:41
  */

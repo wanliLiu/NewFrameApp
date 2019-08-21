@@ -2,15 +2,12 @@ package com.soli.newframeapp
 
 import android.Manifest
 import android.app.Activity
-import android.app.ProgressDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
 import com.soli.libcommon.base.BaseActivity
-import com.soli.libcommon.net.ApiHelper
-import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.util.FileUtil
 import com.soli.libcommon.util.ToastUtils
 import com.soli.permissions.RxPermissions
@@ -27,16 +24,6 @@ class Android7Activity : BaseActivity() {
 
     private var imagePath: File? = null
     private val rxPermissions by lazy { RxPermissions(ctx) }
-
-    private val dialog by lazy {
-        val dialog = ProgressDialog(ctx)
-        dialog.setProgressNumberFormat("%1d KB/%2d KB")
-        dialog.setTitle("上传")
-        dialog.setMessage("正在上传，请稍后...")
-        dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-        dialog.setCancelable(false)
-        dialog
-    }
 
     override fun getContentView() = R.layout.activity_android7
 
@@ -74,14 +61,19 @@ class Android7Activity : BaseActivity() {
      *
      */
     private fun takePicture() {
-        imagePath = FileUtil.getFile(ctx, "capture", "${System.currentTimeMillis()}_picture.jpeg", false)
+        imagePath =
+            FileUtil.getFile(ctx, "capture", "${System.currentTimeMillis()}_picture.jpeg", false)
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         //拍照结果输出到这个uri对应的file中
         intent.putExtra(
             MediaStore.EXTRA_OUTPUT, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 //对这个uri进行授权
                 intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                FileProvider.getUriForFile(ctx, "${BuildConfig.APPLICATION_ID}.fileProvider", imagePath!!)
+                FileProvider.getUriForFile(
+                    ctx,
+                    "${BuildConfig.APPLICATION_ID}.fileProvider",
+                    imagePath!!
+                )
             } else {
                 Uri.fromFile(imagePath)
             }
@@ -95,31 +87,8 @@ class Android7Activity : BaseActivity() {
 
         if (requestCode == 21 && resultCode == Activity.RESULT_OK) {
             if (imagePath!!.exists()) {
-//                ToastUtils.showShortToast("${imagePath!!.absolutePath} 文件存在")
-
-                uploadFile(imagePath!!.absolutePath)
+                ToastUtils.showShortToast("${imagePath!!.absolutePath} 文件存在")
             }
         }
-    }
-
-    private fun uploadFile(path: String) {
-        dialog.setProgressNumberFormat("%1d KB/%2d KB")
-        dialog.show()
-        dialog.progress = 0
-
-        ApiHelper.Builder()
-            .baseUrl("http://upload-joker.taihe.com/")
-            .fileUrl(path)
-            .build()
-            .uploadFile({ result: ApiResult<String>? ->
-                dialog.dismiss()
-                if (result!!.isSuccess) {
-                    ToastUtils.showShortToast(result.fullData)
-                } else
-                    ToastUtils.showShortToast(result.errormsg)
-            }, { _, bytesRead, fileSize, _, _ ->
-                dialog.max = (fileSize / 1024).toInt()
-                dialog.progress = (bytesRead / 1024).toInt()
-            })
     }
 }
