@@ -2,12 +2,14 @@ package com.soli.newframeapp
 
 import android.Manifest
 import android.os.Handler
+import android.util.Log
 import android.view.View
 import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
 import com.soli.libcommon.util.NetworkUtil
+import com.soli.libcommon.util.RSAUtils
 import com.soli.libcommon.util.ToastUtils
 import com.soli.libcommon.util.openActivity
 import com.soli.libcommon.view.root.LoadingType
@@ -65,6 +67,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         myToast.setOnClickListener(this)
         palette.setOnClickListener(this)
         richText.setOnClickListener(this)
+        rsaTest.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -119,6 +122,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.myToast -> openActivity<CustomToastActivity>()
             R.id.palette -> openActivity<PaletteActivity>()
             R.id.richText -> openActivity<SpecialSpanActivity>()
+            R.id.rsaTest ->rsaTest()
         }
     }
 
@@ -140,4 +144,54 @@ class MainActivity : BaseActivity(), View.OnClickListener {
                     }
                 }
     }
+
+
+    val publick_key = """
+        -----BEGIN PUBLIC KEY-----
+MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQClXmeNn3ymwb2vslaHHFr3NiBz
+pGCRSSpWUc/VHDcsoeMOV7A918jFaXAOWxog8molRDLuliZqv7qrvLFOvq6LGwfW
+TCb/StokZglK/GmWdxmjmPelXs3MSQStgWYRyu9Jz2lxDo+G2Bc5ch37A9TCg6FS
+zgqTDtyxDZquhSMDbQIDAQAB
+-----END PUBLIC KEY-----
+    """.trimIndent()
+
+    val private_key = """
+        -----BEGIN RSA PRIVATE KEY-----
+MIICXQIBAAKBgQClXmeNn3ymwb2vslaHHFr3NiBzpGCRSSpWUc/VHDcsoeMOV7A9
+18jFaXAOWxog8molRDLuliZqv7qrvLFOvq6LGwfWTCb/StokZglK/GmWdxmjmPel
+Xs3MSQStgWYRyu9Jz2lxDo+G2Bc5ch37A9TCg6FSzgqTDtyxDZquhSMDbQIDAQAB
+AoGAEipHl8AAMlUv3//oD1lnCKbSc8GHtg3ib6729ILv8KArz+SEAJcWf9DwNTN+
+sEXQsR1HtvuZZrp+5+SHWY4KoCH1Bs+vfbx2fS/hkwf3JvCyFTFOv18+nNqaQyik
+SDFcxhsMElmJH45QoqstWIky30PfiFB0bq91BjG2iunHMEUCQQDTNIxOevm+/PEm
++VxzIuGoH7OROtoxKebfejIKI5yo/eWUNZ1W7aUaNIG5bp/vxlXmvOuEgI/9NdTz
+KiRMB5DbAkEAyHEmeejZxeQKTZRTnZMhD2Akd9OHOPLxkPkwys+jewXtyR46SamY
+XWc3dh1/MD3GO/8+tpObu+z/WmMBMnQrVwJAXy9vjG8f31Nf25DGeZ1e1cZzxyAe
+9clMo6sOokMqd3712LXREzxHDGhdjpSswANC85pxCmZmflekgXKcqSc/wQJBAK2B
+lMbOk0RDo8+H5+Fs7J88oBTBnDnlwsm1i1Dj8CWb+juv2NDO579ii5XI7sI5lxF0
+Xzr4B0TjYB9DuFOOT70CQQCKJ+hyKOtkrXI+9obKE3PP7untg1X8HvSkLZdY2Bah
+mtPFZWCyL3HNRSURFiOCfVzLk9LG+a+qgqXL9gw0jMK/
+-----END RSA PRIVATE KEY-----
+    """.trimIndent()
+
+
+    private fun rsaTest() {
+        val endString =
+            "{\"self_userid\":\"100016\",\"app_v\":\"1.13.1\",\"sys_v\":\"27\",\"userId\":\"100016\",\"sysModel\":\"MI 5X\",\"_authOnce\":\"94h9ggj9\",\"_authKey\":\"170894c09f7127d2ed3e084b4a80c231\",\"terminal\":\"android\",\"app_o\":\"0\",\"uvkey\":\"J0/bLJNwuaKp7oNrxtHAcBOCwpR5t53TCWl3xX8oY3d5xbsDx23Nh4X0F1fzb0n9RcGP0NpS1gZ0kYBJLJD6sCMakzYviFRRFw16F4pkCG3E0xkemPNLGAhES5EJ5lhDsE9Wh3CMSB+aUTswzAcz5gHb+rDKhuCSPlVcua3JTQ4=\"}"
+        val encode = RSAUtils.encryptDataByPublickey(endString, dealPublckKey())
+        Log.e("RSA", "加密的：$encode")
+        val decode = RSAUtils.decryptDataByPrivatekey(encode, dealPrivateKey())
+        Log.e("RSA", "解密的：$decode")
+    }
+
+
+    private fun dealPublckKey(): String =
+        publick_key.replace("-----BEGIN PUBLIC KEY-----", "").replace(
+            "-----END PUBLIC KEY-----",
+            ""
+        ).replace("\n", "")
+
+    private fun dealPrivateKey(): String = private_key.replace(
+        "-----BEGIN RSA PRIVATE KEY-----",
+        ""
+    ).replace("-----END RSA PRIVATE KEY-----", "").replace("\n", "")
 }
