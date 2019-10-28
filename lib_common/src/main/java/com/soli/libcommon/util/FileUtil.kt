@@ -3,8 +3,10 @@ package com.soli.libcommon.util
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
+import android.media.MediaScannerConnection
 import android.os.Environment
 import android.text.TextUtils
+import android.util.Log
 import android.webkit.MimeTypeMap
 import java.io.BufferedOutputStream
 import java.io.File
@@ -29,32 +31,32 @@ object FileUtil {
      * @return
      */
     fun getRootDir(context: Context, isInAndroidDataFile: Boolean): File {
+//
+//        var targetDir: File? = null
+//
+//        try {
+//            if (isExternalMemoryAvailable()) {
+//                targetDir = if (isInAndroidDataFile) context.cacheDir!! else File(
+//                    Environment.getExternalStorageDirectory(),
+//                    "frame"
+//                )
+//
+//                if (!targetDir.exists()) {
+//                    targetDir.mkdirs()
+//                }
+//            }
+//        } catch (e: Exception) {
+//            e.printStackTrace()
+//        }
+//
+//        if (targetDir == null || !targetDir.exists()) {
+//            targetDir = context.cacheDir!!
+//            if (!targetDir.exists()) {
+//                targetDir.mkdirs()
+//            }
+//        }
 
-        var targetDir: File? = null
-
-        try {
-            if (isExternalMemoryAvailable()) {
-                targetDir = if (isInAndroidDataFile) context.cacheDir!! else File(
-                    Environment.getExternalStorageDirectory(),
-                    "frame"
-                )
-
-                if (!targetDir.exists()) {
-                    targetDir.mkdirs()
-                }
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
-
-        if (targetDir == null || !targetDir.exists()) {
-            targetDir = context.cacheDir!!
-            if (!targetDir.exists()) {
-                targetDir.mkdirs()
-            }
-        }
-
-        return targetDir
+        return DirectoryUtl.getAppRootDir(context,isInAndroidDataFile)
     }
 
     /**
@@ -375,4 +377,17 @@ object FileUtil {
         return getFile(context, dirName, getFileName("frame_", url), isIn)
     }
 
+
+    /**
+     * 加入下载的文件到系统媒体数据库
+     */
+    fun scanMediaForFile(ctx: Context, filePath: String?) {
+        if (TextUtils.isEmpty(filePath)) return
+
+        MediaScannerConnection.scanFile(
+            ctx,
+            arrayOf(filePath),
+            null
+        ) { path, uri -> Log.d("scanMedia", "${path ?: ""} -->${uri?.toString() ?: ""}") }
+    }
 }
