@@ -13,7 +13,7 @@ public class Constant {
     /**
      * 服务器地址 todo 根据到时候服务器来填
      */
-    public static String webServer = "";
+    public static String webServer = "http://fb.ci.dev.showstart.com:9527/suapp/";
 
     private static Context ctx;
 

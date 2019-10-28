@@ -143,7 +143,7 @@ ext.deps = deps
 
 //编译版本
 def build_versions = [:]
-build_versions.min_sdk = 17
+build_versions.min_sdk = 21
 build_versions.target_sdk = 29
 build_versions.build_tools = "29.0.2"
 ext.build_versions = build_versions

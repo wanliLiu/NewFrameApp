@@ -28,9 +28,10 @@ import java.util.concurrent.TimeUnit
 
 class DownloadTestActivity : BaseActivity() {
 
-    private val downloadPath =
-        "http://wxz.myapp.com/16891/8F4C11ED51021765F70085CB5B2C2413.apk?fsname=com.showstartfans.activity_4.2.0_20180831.apk&hsr=4d5s"
-    private val savePath = FileUtil.getFile(ctx, "download", "showstart_4.2.0.apk", false)
+    private val downloadPath = "https://f0220b0248704674105d14e374bf3884.dd.cdntips.com/wxz.myapp.com/16891/apk/70A7E22BD825EF31297FDEDEC73E155B.apk?mkey=5db6ab89da59f8e1&f=8935&fsname=com.showstartfans.activity_4.4.3_20190918.apk&hsr=4d5s&cip=218.89.222.20&proto=https"
+    private val savePath by lazy {
+        FileUtil.getFile(ctx, "download", "showstart_4.4.3.apk", false)
+    }
 
     private var mDisposable: Disposable? = null//可以取消观察者
 
@@ -112,7 +113,7 @@ class DownloadTestActivity : BaseActivity() {
                         InstallUtil.install(ctx, result.result)
                     } else
                         ToastUtils.showShortToast(result.errormsg)
-            }, { _, bytesRead, fileSize, _, _ ->
+            }, { _, bytesRead, _, fileSize, _ ->
                 dialog.max = (fileSize / 1024).toInt()
                 dialog.progress = (bytesRead / 1024).toInt()
             })

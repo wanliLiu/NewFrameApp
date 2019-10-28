@@ -34,7 +34,7 @@ object FileUtil {
 
         try {
             if (isExternalMemoryAvailable()) {
-                targetDir = if (isInAndroidDataFile) File(context.externalCacheDir!!.absolutePath + "/frame") else File(
+                targetDir = if (isInAndroidDataFile) context.cacheDir!! else File(
                     Environment.getExternalStorageDirectory(),
                     "frame"
                 )
@@ -44,10 +44,11 @@ object FileUtil {
                 }
             }
         } catch (e: Exception) {
+            e.printStackTrace()
         }
 
         if (targetDir == null || !targetDir.exists()) {
-            targetDir = File(context.cacheDir.absolutePath + "/frame")
+            targetDir = context.cacheDir!!
             if (!targetDir.exists()) {
                 targetDir.mkdirs()
             }

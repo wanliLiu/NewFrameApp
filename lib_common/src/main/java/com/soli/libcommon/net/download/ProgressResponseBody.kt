@@ -1,5 +1,6 @@
 package com.soli.libcommon.net.download
 
+import android.util.Log
 import okhttp3.ResponseBody
 import okio.*
 
