@@ -15,14 +15,39 @@ import java.io.IOException
 import java.math.BigDecimal
 
 /**
+ * Android Q版本应用兼容性适配指导
+ * https://blog.csdn.net/irizhao/article/details/94121551
+ *
  * @author Soli
  * @Time 18-5-17 下午2:26
  */
 object FileUtil {
 
-    private fun isExternalMemoryAvailable(): Boolean {
-        return Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED, ignoreCase = true)
+    const val UserMediaPath = "DCIM/Camera"
+
+    private val isExternalMemoryAvailable: Boolean
+        get() = Environment.getExternalStorageState().equals(
+            Environment.MEDIA_MOUNTED,
+            ignoreCase = true
+        )
+
+    /**
+     * 获取需要下载到本地，并且用户需要看到的目录
+     */
+    fun getUserCanSeeDir(ctx: Context): File {
+
+        val dir = if (isExternalMemoryAvailable) File(
+            Environment.getExternalStorageDirectory().absolutePath,
+            UserMediaPath
+        ) else
+            getRootDir(ctx, false)
+
+        if (!dir.exists())
+            dir.mkdirs()
+
+        return dir
     }
+
 
     /**
      * 获取目录
@@ -30,33 +55,30 @@ object FileUtil {
      * @param context
      * @return
      */
-    fun getRootDir(context: Context, isInAndroidDataFile: Boolean): File {
-//
-//        var targetDir: File? = null
-//
-//        try {
-//            if (isExternalMemoryAvailable()) {
-//                targetDir = if (isInAndroidDataFile) context.cacheDir!! else File(
-//                    Environment.getExternalStorageDirectory(),
-//                    "frame"
-//                )
-//
-//                if (!targetDir.exists()) {
-//                    targetDir.mkdirs()
-//                }
-//            }
-//        } catch (e: Exception) {
-//            e.printStackTrace()
-//        }
-//
-//        if (targetDir == null || !targetDir.exists()) {
-//            targetDir = context.cacheDir!!
-//            if (!targetDir.exists()) {
-//                targetDir.mkdirs()
-//            }
-//        }
+    private fun getRootDir(context: Context, isInAndroidDataFile: Boolean): File {
+        var targetDir: File? = null
 
-        return DirectoryUtl.getAppRootDir(context,isInAndroidDataFile)
+        try {
+            targetDir = if (isInAndroidDataFile)
+                context.cacheDir
+            else {
+                context.externalCacheDir
+            }
+
+            if (!targetDir!!.exists()) {
+                targetDir.mkdirs()
+            }
+        } catch (e: Exception) {
+        }
+
+        if (targetDir == null || !targetDir.exists()) {
+            targetDir = context.cacheDir
+            if (!targetDir!!.exists()) {
+                targetDir.mkdirs()
+            }
+        }
+
+        return targetDir
     }
 
     /**
@@ -66,7 +88,10 @@ object FileUtil {
      * @return
      */
     fun getPicUploadTempPath(context: Context, path: String): String {
-        return File(getDir(context, "upload").absolutePath, getFileName("upload_", path)).absolutePath
+        return File(
+            getDir(context, "upload").absolutePath,
+            getFileName("upload_", path)
+        ).absolutePath
     }
 
     /**
@@ -240,28 +265,22 @@ object FileUtil {
     /**
      * 获取文件后缀
      * */
-    fun getFileExtension(url: String?): String {
+    fun getFileExtension(str: String?): String {
+        var extension = ""
+        val url: String = str ?: ""
 
         if (TextUtils.isEmpty(url)) return ""
 
-        val temp = MimeTypeMap.getFileExtensionFromUrl(url)
-        var extension = if (!TextUtils.isEmpty(temp)) temp.toLowerCase() else ""
-
-        if (TextUtils.isEmpty(extension))
-            extension = getSuffer(url)//从url后缀来识别
-
-        if (TextUtils.isEmpty(extension))
-            return ""
-
-        if (!url!!.startsWith("http") && isImageFile(extension)) {
+        if (!url.startsWith("http")) {
             //如果是本地图片，在从数据数据流中获取类型，进一步确认
             try {
                 if (File(url).exists()) {
                     val options = BitmapFactory.Options()
+
                     options.inJustDecodeBounds = true
                     BitmapFactory.decodeFile(url, options)
                     val mimeType = options.outMimeType
-                    MLog.d("mimeType", "后缀:->$extension  二进制：$mimeType")
+                    Log.d("mimeType", "  二进制：$mimeType")
                     if (mimeType.contains("image/"))
                         extension = mimeType.replace("image/", "").toLowerCase()
                 }
@@ -269,6 +288,17 @@ object FileUtil {
                 e.printStackTrace()
             }
         }
+
+        if (!TextUtils.isEmpty(extension)) return extension
+
+        val temp = MimeTypeMap.getFileExtensionFromUrl(url)
+        extension = if (!TextUtils.isEmpty(temp))
+            temp.toLowerCase()
+        else
+            ""
+
+        if (TextUtils.isEmpty(extension))
+            extension = getSuffer(url)//从url后缀来识别
 
         return extension
     }
@@ -288,7 +318,15 @@ object FileUtil {
 
         if (TextUtils.isEmpty(extension)) return false
 
-        return arrayOf("mp3", "aac", "flac", "amr", "wav", "m4a", "ogg").indexOf(extension?.toLowerCase() ?: "") != -1
+        return arrayOf(
+            "mp3",
+            "aac",
+            "flac",
+            "amr",
+            "wav",
+            "m4a",
+            "ogg"
+        ).indexOf(extension?.toLowerCase() ?: "") != -1
     }
 
     /**
@@ -320,7 +358,15 @@ object FileUtil {
 
         if (TextUtils.isEmpty(extension)) return false
 
-        return arrayOf("jpg", "jpeg", "png", "webp", "apng", "gif", "bmp").indexOf(extension?.toLowerCase() ?: "") != -1
+        return arrayOf(
+            "jpg",
+            "jpeg",
+            "png",
+            "webp",
+            "apng",
+            "gif",
+            "bmp"
+        ).indexOf(extension?.toLowerCase() ?: "") != -1
     }
 
 
