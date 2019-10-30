@@ -1,17 +1,19 @@
 package com.soli.libcommon.util
 
+import android.annotation.SuppressLint
+import android.annotation.TargetApi
+import android.content.ContentValues
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.MediaScannerConnection
+import android.os.Build
 import android.os.Environment
+import android.provider.MediaStore
 import android.text.TextUtils
 import android.util.Log
 import android.webkit.MimeTypeMap
-import java.io.BufferedOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.math.BigDecimal
 
 /**
@@ -100,7 +102,7 @@ object FileUtil {
      * @param url 地址
      * @return
      */
-    private fun getFileName(prex: String, url: String?): String {
+    fun getFileName(prex: String, url: String?): String {
         try {
             return "$prex${Utils.MD5(url!!)}.${getFileExtension(url)}"
         } catch (e: Exception) {
@@ -435,5 +437,42 @@ object FileUtil {
             arrayOf(filePath),
             null
         ) { path, uri -> Log.d("scanMedia", "${path ?: ""} -->${uri?.toString() ?: ""}") }
+    }
+
+    @TargetApi(Build.VERSION_CODES.Q)
+    fun storeFileInPublicAtTargetQ(ctx: Context, file: File?, storeWhere: String = "DCIM") {
+        file ?: return
+        if (!file.exists()) return
+
+        val values = ContentValues().apply {
+            put(MediaStore.Images.Media.DESCRIPTION, "Generate from demo app")
+            put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
+            put(MediaStore.Images.Media.RELATIVE_PATH, storeWhere)
+        }
+        val external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+
+        val resolver = ctx.contentResolver
+
+        val inserUri = resolver.insert(external, values)
+
+        var os: OutputStream? = null
+        try {
+            if (inserUri != null)
+                os = resolver.openOutputStream(inserUri)
+            val inputStream = FileInputStream(file)
+            val buffer = ByteArray(1444)
+            var byteread = inputStream.read(buffer)
+            while (byteread != -1) {
+                os!!.write(buffer, 0, byteread)
+                byteread = inputStream.read(buffer)
+            }
+            inputStream.close()
+
+            file.delete()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        } finally {
+            os?.close()
+        }
     }
 }

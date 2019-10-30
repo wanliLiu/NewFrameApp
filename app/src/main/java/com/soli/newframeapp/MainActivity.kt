@@ -8,7 +8,10 @@ import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
-import com.soli.libcommon.util.*
+import com.soli.libcommon.util.NetworkUtil
+import com.soli.libcommon.util.RSAUtils
+import com.soli.libcommon.util.ToastUtils
+import com.soli.libcommon.util.openActivity
 import com.soli.libcommon.view.root.LoadingType
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
@@ -119,7 +122,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.myToast -> openActivity<CustomToastActivity>()
             R.id.palette -> openActivity<PaletteActivity>()
             R.id.richText -> openActivity<SpecialSpanActivity>()
-            R.id.rsaTest ->rsaTest()
+            R.id.rsaTest -> rsaTest()
         }
     }
 

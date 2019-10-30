@@ -13,6 +13,18 @@
     <Button
         android:id="@+id/camerText"
         android:layout_width="wrap_content"
-        android:text="Android >= 7.0 Camer 测试"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:text="Android >= 7.0 Camer 测试" />
+
+    <Button
+        android:id="@+id/openDocumentPicker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="打开文件选择器" />
+
+    <Button
+        android:id="@+id/tartgetQ"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Android Q 保存图片到公共区域" />
 </com.google.android.flexbox.FlexboxLayout>

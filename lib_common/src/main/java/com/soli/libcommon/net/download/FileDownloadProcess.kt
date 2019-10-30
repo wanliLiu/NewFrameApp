@@ -8,6 +8,7 @@ import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
+import java.io.File
 
 /**
  *
@@ -16,9 +17,10 @@ import io.reactivex.schedulers.Schedulers
  */
 class FileDownloadProcess(
     private val downloadList: List<String>, //下载的文件链接
-    private val saveInInnerStorage: Boolean = true, //是否存在android.data.目录下  默认存储
+    private val saveInInnerStorage: Boolean = false, //默认保存到android.data.目录下(externalCacheDir) ，反之就cacheDir
     private val updateInfo: ((fileInfo: DownloadInfo) -> Unit)? = null, // 多个文件下载的时候，每下载完一个回调一下
     private val downloadProgress: ((progress: Int) -> Unit)? = null, //每个文件的下载进度
+    private val customSavePath: ((url: String, origin: File) -> File) = { _, file -> file },//自定义文件的下载位置
     private val callback: ((isSuccess: Boolean, fileInfo: ArrayList<DownloadInfo>?) -> Unit)? = null  //所有下载完后统一回调
 ) {
 
@@ -27,6 +29,7 @@ class FileDownloadProcess(
         val filePath: String//文件本地地址
     )
 
+    private var stop = false
     private var downIndex = 0
     private val info: ArrayList<DownloadInfo> = ArrayList()
 
@@ -36,25 +39,36 @@ class FileDownloadProcess(
     private fun downloadFile(url: String): Observable<String> {
         return Observable.create { source ->
             if (!source.isDisposed) {
-
-                val savePath = FileUtil.getDownLoadFilePath(Constant.getContext(), url, saveInInnerStorage)
+                val origin =
+                    FileUtil.getDownLoadFilePath(Constant.getContext(), url, saveInInnerStorage)
+                val savePath = customSavePath(url, origin)
 
                 if (savePath.exists()) {
                     //要下载的文件如果存在就直接返回
                     source.onNext(savePath.absolutePath)
                 } else {
                     ApiHelper.Builder()
+                        .tag(url)
                         .fileUrl(url)
                         .saveFile(savePath)
                         .build()
                         .downloadFile({ result ->
-                            if (result.isSuccess) {
-                                source.onNext(result.result.absolutePath)
-                            } else
-                                source.onError(IllegalArgumentException(result.errormsg))
+                            if (stop) {
+                                ApiHelper.Builder().build().cancel(url)
+                                source.onError(IllegalArgumentException("停止下载"))
+                            } else {
+                                if (result.isSuccess) {
+                                    source.onNext(result.result.absolutePath)
+                                } else
+                                    source.onError(IllegalArgumentException(result.errormsg))
+                            }
                         }, { progress, _, _, _, _ ->
                             downloadProgress?.invoke(progress)
-                            MLog.d("文件下载：$progress")
+                            MLog.d("文件下载：$url<-->$progress")
+                            if (stop) {
+                                ApiHelper.Builder().build().cancel(url)
+                                source.onError(IllegalArgumentException("停止下载"))
+                            }
                         })
                 }
             }
@@ -101,5 +115,9 @@ class FileDownloadProcess(
         info.clear()
 
         dealDownload(downloadList[downIndex])
+    }
+
+    fun release() {
+        stop = true
     }
 }
