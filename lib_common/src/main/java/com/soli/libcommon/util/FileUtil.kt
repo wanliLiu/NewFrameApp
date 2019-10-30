@@ -440,7 +440,7 @@ object FileUtil {
     }
 
     @TargetApi(Build.VERSION_CODES.Q)
-    fun storeFileInPublicAtTargetQ(ctx: Context, file: File?, storeWhere: String = "DCIM") {
+    fun storeFileInPublicAtTargetQ(ctx: Context, file: File?, storeWhere: String = UserMediaPath) {
         file ?: return
         if (!file.exists()) return
 
