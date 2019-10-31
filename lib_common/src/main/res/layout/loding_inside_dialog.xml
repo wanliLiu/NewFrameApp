@@ -1,20 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="wrap_content"
-             android:layout_height="wrap_content">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
     <TextView
-            android:id="@+id/iv_bg"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:layout_gravity="center"
-            android:background="@drawable/shape_shadow"/>
+        android:id="@+id/iv_bg"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:background="@drawable/shape_shadow" />
 
     <com.soli.libcommon.view.PullLoadingImageView
-            android:id="@+id/image_anim"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_gravity="center"/>
+        android:id="@+id/image_anim"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_gravity="center" />
 
+    <com.soli.libcommon.view.RingProgressBar
+        android:id="@+id/progBarView"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:max="100"
+        app:progress="0"
+        app:ringWidth="2dp"
+        app:style="FILL" />
 
 </FrameLayout>

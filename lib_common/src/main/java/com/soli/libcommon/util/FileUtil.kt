@@ -1,12 +1,12 @@
 package com.soli.libcommon.util
 
-import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.ContentValues
 import android.content.Context
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
 import android.media.MediaScannerConnection
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
@@ -26,6 +26,10 @@ import java.math.BigDecimal
 object FileUtil {
 
     const val UserMediaPath = "DCIM/Camera"
+
+    //是否是Android Q以上
+    val isAndroidQorAbove: Boolean
+        get() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 
     private val isExternalMemoryAvailable: Boolean
         get() = Environment.getExternalStorageState().equals(
@@ -287,7 +291,6 @@ object FileUtil {
                         extension = mimeType.replace("image/", "").toLowerCase()
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
             }
         }
 
@@ -439,40 +442,66 @@ object FileUtil {
         ) { path, uri -> Log.d("scanMedia", "${path ?: ""} -->${uri?.toString() ?: ""}") }
     }
 
+
     @TargetApi(Build.VERSION_CODES.Q)
-    fun storeFileInPublicAtTargetQ(ctx: Context, file: File?, storeWhere: String = UserMediaPath) {
+    fun storeFileInPublicAtTargetQ(ctx: Context, file: File?) {
         file ?: return
         if (!file.exists()) return
 
-        val values = ContentValues().apply {
-            put(MediaStore.Images.Media.DESCRIPTION, "Generate from demo app")
-            put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
-            put(MediaStore.Images.Media.RELATIVE_PATH, storeWhere)
-        }
-        val external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+        var external: Uri? = null
 
-        val resolver = ctx.contentResolver
-
-        val inserUri = resolver.insert(external, values)
-
-        var os: OutputStream? = null
         try {
-            if (inserUri != null)
-                os = resolver.openOutputStream(inserUri)
-            val inputStream = FileInputStream(file)
-            val buffer = ByteArray(1444)
-            var byteread = inputStream.read(buffer)
-            while (byteread != -1) {
-                os!!.write(buffer, 0, byteread)
-                byteread = inputStream.read(buffer)
-            }
-            inputStream.close()
+            Thread {
+                val values = when {
+                    isVideoFile(fullPath = file.absolutePath) -> ContentValues().apply {
+                        put(MediaStore.Video.Media.DESCRIPTION, "Generate from demo app")
+                        put(MediaStore.Video.Media.DISPLAY_NAME, file.name)
+                        put(MediaStore.Video.Media.RELATIVE_PATH, UserMediaPath)
+                        external = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                    }
+                    isImageFile(fullPath = file.absolutePath) -> ContentValues().apply {
+                        put(MediaStore.Images.Media.DESCRIPTION, "Generate from demo app")
+                        put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
+                        put(MediaStore.Images.Media.RELATIVE_PATH, UserMediaPath)
+                        external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                    }
+                    isAudioFile(fullPath = file.absolutePath) -> ContentValues().apply {
+                        put(MediaStore.Audio.Media.DISPLAY_NAME, file.name)
+                        put(MediaStore.Audio.Media.RELATIVE_PATH, Environment.DIRECTORY_MUSIC)
+                        external = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI
+                    }
+                    else -> null
+                }
 
-            file.delete()
+                values ?: return@Thread
+                external ?: return@Thread
+
+                val resolver = ctx.contentResolver
+                val inserUri = resolver.insert(external!!, values)
+
+                var os: OutputStream? = null
+                try {
+                    if (inserUri != null)
+                        os = resolver.openOutputStream(inserUri)
+                    val inputStream = FileInputStream(file)
+                    val buffer = ByteArray(1444)
+                    var byteRead = inputStream.read(buffer)
+                    while (byteRead != -1) {
+                        os!!.write(buffer, 0, byteRead)
+                        byteRead = inputStream.read(buffer)
+                    }
+                    inputStream.close()
+
+                    //最后删除源文件
+                    file.delete()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                } finally {
+                    os?.close()
+                }
+            }.start()
         } catch (e: Exception) {
             e.printStackTrace()
-        } finally {
-            os?.close()
         }
     }
 }

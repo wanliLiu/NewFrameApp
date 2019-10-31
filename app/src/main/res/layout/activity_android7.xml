@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     app:alignContent="flex_start"
@@ -26,5 +25,5 @@
         android:id="@+id/tartgetQ"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Android Q 保存图片到公共区域" />
+        android:text="Android Q 保存媒体文件到公共区域" />
 </com.google.android.flexbox.FlexboxLayout>

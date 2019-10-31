@@ -10,7 +10,6 @@ import androidx.core.content.FileProvider
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.download.FileDownloadProcess
 import com.soli.libcommon.util.FileUtil
-import com.soli.libcommon.util.RxJavaUtil
 import com.soli.libcommon.util.ToastUtils
 import com.soli.libcommon.view.root.LoadingType
 import com.soli.permissions.RxPermissions
@@ -39,7 +38,7 @@ class Android7Activity : BaseActivity() {
 
         openDocumentPicker.setOnClickListener {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.type = "image/*"
+            intent.type = "*/*"
             startActivityForResult(intent, 23)
         }
 
@@ -59,15 +58,20 @@ class Android7Activity : BaseActivity() {
         val downlist = arrayListOf(
             "https://s2.showstart.com/img/2019/20191008/bda32d33f5f44168b96742b2fb29a8c3_600_800_733494.0x0.jpg",
             "https://s2.showstart.com/img/2019/20190826/9f10aa7b205d48ec853413f6cdff3d48_600_800_122780.0x0.jpg",
+            "http://img01-xusong.taihe.com/100016_2744ef0477aacf3360de229a61ae4c0c_[720_1280_4865].mp4",
+            "http://img02-xusong.taihe.com/3717fe12434c0f8e1f76571cddc49588_0_0.mp3",
             "https://s2.showstart.com/img/2019/20190809/a2389dcbeb8d42f492c458c4a59b4d3b_600_800_92235.0x0.jpg?",
-            "https://s2.showstart.com/img/2018/20181226/06b037a1383146a89eb7d1537bc86841_1280_900_2350842.0x0.jpg",
-            "http://img01-xusong.taihe.com/100016_2744ef0477aacf3360de229a61ae4c0c_[720_1280_4865].mp4"
+            "http://img02-xusong.taihe.com/8df5a431b99e217ca757d3cddc7b700b_0_0.mp3",
+            "https://s2.showstart.com/img/2018/20181226/06b037a1383146a89eb7d1537bc86841_1280_900_2350842.0x0.jpg"
         )
 
         showProgress(LoadingType.TypeDialog)
+        loadingDialg()?.showNumProgress()
+
         FileDownloadProcess(downlist,
+            downloadProgress = { progress -> loadingDialg()?.setProgress(progress) },
             customSavePath = { url, origin ->
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q)
+                if (!FileUtil.isAndroidQorAbove)
                     File(FileUtil.getUserCanSeeDir(ctx), FileUtil.getFileName("joker_", url))
                 else
                     origin
@@ -75,15 +79,13 @@ class Android7Activity : BaseActivity() {
         { isSuccess, fileInfo ->
             dismissProgress()
             if (isSuccess) {
-                RxJavaUtil.runOnThread {
-                    fileInfo?.forEach { info ->
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                            FileUtil.storeFileInPublicAtTargetQ(
-                                ctx,
-                                File(info.filePath)
-                            ) else
-                            FileUtil.scanMediaForFile(ctx, info.filePath)
-                    }
+                fileInfo?.forEach { info ->
+                    if (FileUtil.isAndroidQorAbove)
+                        FileUtil.storeFileInPublicAtTargetQ(
+                            ctx,
+                            File(info.filePath)
+                        ) else
+                        FileUtil.scanMediaForFile(ctx, info.filePath)
                 }
                 ToastUtils.showShortToast("下载成功")
             } else {

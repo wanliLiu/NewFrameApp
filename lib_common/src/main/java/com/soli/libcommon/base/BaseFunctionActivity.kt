@@ -159,4 +159,9 @@ abstract class BaseFunctionActivity : BaseFixOTranslucentActivity(), BaseInterfa
         return super.onTouchEvent(event)
     }
 
+    /**
+     *
+     */
+    fun loadingDialg() = dialog
+
 }
