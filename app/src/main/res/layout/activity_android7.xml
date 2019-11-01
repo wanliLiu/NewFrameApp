@@ -1,29 +1,74 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.flexbox.FlexboxLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:alignContent="flex_start"
-    app:alignItems="flex_start"
-    app:flexDirection="row"
-    app:flexWrap="wrap"
-    app:justifyContent="flex_start">
+    android:orientation="vertical">
 
-    <Button
-        android:id="@+id/camerText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Android >= 7.0 Camer 测试" />
+    <ImageView
+        android:id="@+id/pickImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:scaleType="centerCrop"
+        app:layout_constraintHorizontal_chainStyle="spread"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toLeftOf="@id/pickImageFresco"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/openDocumentPicker"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="打开文件选择器" />
+    <com.soli.libcommon.view.FrescoImageView
+        android:id="@+id/pickImageFresco"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        app:layout_constraintLeft_toRightOf="@id/pickImage"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:roundedCornerRadius="8dp"
+        app:roundingBorderColor="@color/red"
+        app:roundingBorderWidth="3dp" />
 
-    <Button
-        android:id="@+id/tartgetQ"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Android Q 保存媒体文件到公共区域" />
-</com.google.android.flexbox.FlexboxLayout>
+    <com.soli.libcommon.view.FrescoImageView
+        android:id="@+id/dispImageInner"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pickImage"
+        app:roundedCornerRadius="8dp"
+        app:roundingBorderColor="@color/red"
+        app:roundingBorderWidth="3dp" />
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        app:alignContent="flex_start"
+        app:alignItems="flex_start"
+        app:flexDirection="row"
+        app:flexWrap="wrap"
+        app:justifyContent="flex_start"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/dispImageInner">
+
+        <Button
+            android:id="@+id/camerText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Android >= 7.0 Camer 测试" />
+
+        <Button
+            android:id="@+id/openDocumentPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="打开文件选择器" />
+
+        <Button
+            android:id="@+id/tartgetQ"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Android Q 保存媒体文件到公共区域" />
+    </com.google.android.flexbox.FlexboxLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

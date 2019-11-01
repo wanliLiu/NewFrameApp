@@ -1,5 +1,6 @@
 package com.soli.libcommon.util
 
+import android.annotation.SuppressLint
 import android.annotation.TargetApi
 import android.content.ContentValues
 import android.content.Context
@@ -15,6 +16,8 @@ import android.util.Log
 import android.webkit.MimeTypeMap
 import java.io.*
 import java.math.BigDecimal
+import java.text.SimpleDateFormat
+import java.util.*
 
 /**
  * Android Q版本应用兼容性适配指导
@@ -117,19 +120,16 @@ object FileUtil {
     }
 
     /**
-     * 获取目录
+     * 根据时间来设置照片的名字
      *
-     * @param context
-     * @param name
      * @return
      */
-    fun getDir(context: Context, name: String): File {
-        val file = File(getRootDir(context, true), name)
-        if (!file.exists()) {
-            file.mkdirs()
-        }
+    @SuppressLint("SimpleDateFormat")
+    fun getPictureName(head: String): String {
+        val format = SimpleDateFormat("yyyyMMdd_hhmmss")
+        val date = Date(System.currentTimeMillis())
 
-        return file
+        return head + format.format(date) + ".jpeg"
     }
 
     /**
@@ -138,7 +138,7 @@ object FileUtil {
      * @param isInAndroidDataFile
      * @return
      */
-    fun getDir(context: Context, name: String, isInAndroidDataFile: Boolean): File {
+    fun getDir(context: Context, name: String, isInAndroidDataFile: Boolean = true): File {
         val file = File(getRootDir(context, isInAndroidDataFile), name)
         if (!file.exists()) {
             file.mkdirs()
@@ -155,19 +155,7 @@ object FileUtil {
      * @param fileName
      * @return
      */
-    fun getFile(context: Context, dir: String, fileName: String): File {
-        return File(getDir(context, dir), fileName)
-    }
-
-    /**
-     * 获取文件
-     *
-     * @param context
-     * @param dir
-     * @param fileName
-     * @return
-     */
-    fun getFile(context: Context, dir: String, fileName: String, isInData: Boolean): File {
+    fun getFile(context: Context, dir: String, fileName: String, isInData: Boolean = true): File {
         return File(getDir(context, dir, isInData), fileName)
     }
 
@@ -443,6 +431,12 @@ object FileUtil {
     }
 
 
+    /**
+     * Android 10上，存储文件到公共目录，picture 和video都放到DCIM/Camera  音频放到Musics目录下
+     * 思路就是，app 先下载文件到自己的沙盒地方，然后从沙盒的地方通过ConternResolver拷贝到公共目录
+     *
+     * 类似的需求是，用户下载图片或者拍摄照片或者下载视频、音频
+     */
     @TargetApi(Build.VERSION_CODES.Q)
     fun storeFileInPublicAtTargetQ(ctx: Context, file: File?) {
         file ?: return
@@ -484,12 +478,13 @@ object FileUtil {
                     if (inserUri != null)
                         os = resolver.openOutputStream(inserUri)
                     val inputStream = FileInputStream(file)
-                    val buffer = ByteArray(1444)
+                    val buffer = ByteArray(1024)
                     var byteRead = inputStream.read(buffer)
                     while (byteRead != -1) {
                         os!!.write(buffer, 0, byteRead)
                         byteRead = inputStream.read(buffer)
                     }
+                    os?.close()
                     inputStream.close()
 
                     //最后删除源文件
@@ -503,5 +498,34 @@ object FileUtil {
         } catch (e: Exception) {
             e.printStackTrace()
         }
+    }
+
+    /**
+     * 从公共区域拷贝文件到自己的沙盒，用于后续的文件压缩，处理
+     * @param source 源文件的Uri
+     * @param destfile 需要拷贝的目标文件地址
+     */
+    fun copyFileFromPublicToPrivateAtTargetQ(ctx: Context, source: Uri, destfile: File): File? {
+
+        try {
+            val fileIn = ctx.contentResolver.openInputStream(source)
+            fileIn ?: return null
+
+            val fileOut = FileOutputStream(destfile)
+            val buffer = ByteArray(1024)
+            var byteRead = fileIn.read(buffer)
+            while (byteRead != -1) {
+                fileOut.write(buffer, 0, byteRead)
+                byteRead = fileIn.read(buffer)
+            }
+            fileIn.close()
+            fileOut.close()
+
+            return destfile
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+
+        return null
     }
 }

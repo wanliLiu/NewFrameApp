@@ -2,6 +2,7 @@ package com.soli.libcommon.view
 
 import android.content.Context
 import android.util.AttributeSet
+import androidx.core.content.ContextCompat
 import com.facebook.drawee.generic.RoundingParams
 import com.soli.libcommon.R
 import com.soli.libcommon.util.ImageLoader
@@ -61,10 +62,10 @@ open class HeadImageView : BaseDraweeView {
 
 
             if (hierarchyBuilder!!.placeholderImage == null || fromCode)
-                setPlaceholderImage(resId)
+                setPlaceholderImage(ContextCompat.getDrawable(context, resId), defaultScaleType)
 
             if (hierarchyBuilder!!.failureImage == null || fromCode)
-                setFailureImage(resId)
+                setFailureImage(ContextCompat.getDrawable(context, resId), defaultScaleType)
 
             hierarchy = this
         }
@@ -90,7 +91,7 @@ open class HeadImageView : BaseDraweeView {
     /**
      *
      */
-    fun loadImageByPaht(url: String?) {
+    fun loadImageByPath(url: String?) {
         ImageLoader.loadImageByPath(this, url, defaultSize, defaultSize)
     }
 
@@ -102,27 +103,6 @@ open class HeadImageView : BaseDraweeView {
     fun doLoadImageByPath(url: String?, resId: Int = 0, thumbSize: Int = defaultSize) {
         setPlaceholderImage(resId)
         ImageLoader.loadImageByPath(this, url, thumbSize, thumbSize)
-    }
-
-    /**
-     * 设置边界宽带和原色
-     */
-    fun setBorder(borderWidth: Float, color: Int) {
-        val roundingParams = getRoundingParams()
-        roundingParams.borderWidth = borderWidth
-        roundingParams.borderColor = color
-        hierarchy.roundingParams = roundingParams
-    }
-
-    /**
-     *
-     */
-    private fun getRoundingParams(): RoundingParams {
-        var roundingParams = hierarchy.roundingParams
-        if (roundingParams == null) {
-            roundingParams = RoundingParams()
-        }
-        return roundingParams
     }
 
 }

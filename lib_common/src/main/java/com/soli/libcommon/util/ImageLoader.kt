@@ -33,16 +33,15 @@ object ImageLoader {
      * @param isGifAutoPlay
      * @param isDealNight
      */
-    @JvmOverloads
     fun loadImageByPath(
         image: SimpleDraweeView?,
         path: String?,
-        width: Int,
-        height: Int,
+        width: Int = 0,
+        height: Int = 0,
         isGifAutoPlay: Boolean = false,
         isDealNight: Boolean = false
     ) {
-        loadImage(image, "file://$path", isGifAutoPlay, width, height, isDealNight, null, null)
+        loadImage(image, "file://$path",width,height,isGifAutoPlay,isDealNight)
     }
 
     /**
@@ -80,41 +79,6 @@ object ImageLoader {
             .build()
         image?.controller = draweeController
     }
-
-    /**
-     * @param image
-     * @param url
-     */
-    fun loadImage(image: SimpleDraweeView?, url: String?) {
-
-        if (image == null) return
-
-        val width = image.width
-        val height = image.height
-
-        loadImage(image, url, width, height)
-    }
-
-    /**
-     * @param image
-     * @param url
-     * @param width
-     * @param height
-     */
-    fun loadImage(image: SimpleDraweeView?, url: String?, width: Int, height: Int) {
-        loadImage(image, url, false, width, height, true, null, null)
-    }
-
-    fun loadImage(
-        image: SimpleDraweeView?,
-        url: String?,
-        width: Int,
-        height: Int,
-        controllerListener: ControllerListener<in ImageInfo>
-    ) {
-        loadImage(image, url, false, width, height, true, null, controllerListener)
-    }
-
     /**
      * @param image
      * @param url
@@ -128,12 +92,12 @@ object ImageLoader {
     fun loadImage(
         image: SimpleDraweeView?,
         url: String?,
-        isAutoPlay: Boolean,
-        width: Int,
-        height: Int,
-        dealNight: Boolean,
-        processor: BasePostprocessor?,
-        controllerListener: ControllerListener<in ImageInfo>?
+        width: Int = 0,
+        height: Int = 0,
+        isAutoPlay: Boolean = true,
+        dealNight: Boolean = false,
+        processor: BasePostprocessor? = null,
+        controllerListener: ControllerListener<in ImageInfo>? = null
     ) {
         var width = width
         var height = height
@@ -191,53 +155,7 @@ object ImageLoader {
      */
     fun loadResPic(image: SimpleDraweeView, id: Int) {
         val uri = Uri.parse("res://" + Constant.getContext().packageName + "/" + id)
-        image.setImageURI(uri)
-    }
-
-
-    /**
-     * 获取bitmap
-     */
-    fun getBitmapByUrl(url: String?, width: Int, height: Int, dataSubscriber: BaseBitmapDataSubscriber) {
-        var width = width
-        var height = height
-
-
-        if (TextUtils.isEmpty(url)) {
-            return
-        }
-
-        MLog.d("图片加载", url)
-
-        val defaultSize = TypedValue.applyDimension(
-            TypedValue.COMPLEX_UNIT_DIP,
-            100.0f,
-            Constant.getContext().resources.displayMetrics
-        ).toInt()
-
-        if (width <= 0) {
-            width = defaultSize
-        }
-        if (height <= 0) {
-            height = defaultSize
-        }
-
-        val imageRequest = ImageRequestBuilder.newBuilderWithSource(Uri.parse(url))
-            .setLocalThumbnailPreviewsEnabled(true)
-            .setResizeOptions(ResizeOptions(width, height))
-            .setRotationOptions(RotationOptions.autoRotate())
-
-
-        //        if (ThemeUtil.INSTANCE.isThemeNight()) {
-        //            imageRequest.setPostprocessor(new NightPostprocessor(Utils.INSTANCE.MD5(url)));
-        //        }
-
-        val dataSource = ImagePipelineFactory.getInstance()
-            .imagePipeline
-            .fetchDecodedImage(imageRequest.build(), null)
-
-        dataSource.subscribe(dataSubscriber, UiThreadImmediateExecutorService.getInstance())
-
+        image.setImageURI(uri,image.context)
     }
 
 }

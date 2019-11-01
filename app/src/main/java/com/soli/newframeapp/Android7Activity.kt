@@ -2,14 +2,19 @@ package com.soli.newframeapp
 
 import android.Manifest
 import android.app.Activity
+import android.content.ContentValues
 import android.content.Intent
+import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
+import android.os.Environment
 import android.provider.MediaStore
+import android.util.Log
 import androidx.core.content.FileProvider
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.download.FileDownloadProcess
 import com.soli.libcommon.util.FileUtil
+import com.soli.libcommon.util.ImageLoader
 import com.soli.libcommon.util.ToastUtils
 import com.soli.libcommon.view.root.LoadingType
 import com.soli.permissions.RxPermissions
@@ -18,19 +23,24 @@ import java.io.File
 
 
 /**
- *
+ *  Android 相关文件适配功能测试
  * @author Soli
  * @Time 2018/8/29 09:47
  */
 class Android7Activity : BaseActivity() {
 
+    private val requestSelectFileCode = 32
+    private val requestOpenCamera = 33
+
     private var imagePath: File? = null
+    private var cameraUri: Uri? = null
+
     private val rxPermissions by lazy { RxPermissions(ctx) }
 
     override fun getContentView() = R.layout.activity_android7
 
     override fun initView() {
-        title = "Android >=23 测试"
+        title = "Android >=23 Android Q测试"
     }
 
     override fun initListener() {
@@ -38,8 +48,13 @@ class Android7Activity : BaseActivity() {
 
         openDocumentPicker.setOnClickListener {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
-            intent.type = "*/*"
-            startActivityForResult(intent, 23)
+            intent.type = "image/*"
+
+//            val intent = Intent(Intent.ACTION_GET_CONTENT)
+//            intent.type = "*/*"
+//            intent.addCategory(Intent.CATEGORY_OPENABLE)
+
+            startActivityForResult(intent, requestSelectFileCode)
         }
 
         tartgetQ.setOnClickListener {
@@ -113,37 +128,135 @@ class Android7Activity : BaseActivity() {
     }
 
     /**
+     * Android 调用相机拍照，适配到Android 10
+     * https://juejin.im/post/5d80edb76fb9a06b1c746176
      *
+     * Android 10 加载手机本地图片
+     * https://juejin.im/post/5d80ef726fb9a06aeb10f223
      */
     private fun takePicture() {
         imagePath =
-            FileUtil.getFile(ctx, "capture", "${System.currentTimeMillis()}_picture.jpeg", false)
+            File(FileUtil.getUserCanSeeDir(ctx), "${System.currentTimeMillis()}_picture.jpeg")
         val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         //拍照结果输出到这个uri对应的file中
         intent.putExtra(
-            MediaStore.EXTRA_OUTPUT, if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                //对这个uri进行授权
-                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-                FileProvider.getUriForFile(
-                    ctx,
-                    "${BuildConfig.APPLICATION_ID}.fileProvider",
-                    imagePath!!
-                )
-            } else {
-                Uri.fromFile(imagePath)
+            MediaStore.EXTRA_OUTPUT, when {
+                FileUtil.isAndroidQorAbove -> {
+                    cameraUri =
+                        if (Environment.getExternalStorageState() == Environment.MEDIA_MOUNTED)
+                            contentResolver.insert(
+                                MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+                                ContentValues().apply {
+                                    put(
+                                        MediaStore.Video.Media.RELATIVE_PATH,
+                                        FileUtil.UserMediaPath
+                                    )
+                                }
+                            )
+                        else
+                            contentResolver.insert(
+                                MediaStore.Images.Media.INTERNAL_CONTENT_URI,
+                                ContentValues().apply {
+                                    put(
+                                        MediaStore.Video.Media.RELATIVE_PATH,
+                                        FileUtil.UserMediaPath
+                                    )
+                                }
+                            )
+
+                    cameraUri
+                }
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
+                    //对这个uri进行授权
+                    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+                    FileProvider.getUriForFile(
+                        ctx,
+                        "${BuildConfig.APPLICATION_ID}.fileProvider",
+                        imagePath!!
+                    )
+                }
+                else -> Uri.fromFile(imagePath)
             }
         )
         // 打开Camera
-        startActivityForResult(intent, 21)
+        startActivityForResult(intent, requestOpenCamera)
+    }
+
+    private fun getRealPathFromURI(contentUri: Uri): String? {
+
+        var res: String? = null
+        val proj = arrayListOf(MediaStore.Images.Media.DATA)
+        if (FileUtil.isAndroidQorAbove)
+            proj.add(MediaStore.Images.Media.RELATIVE_PATH)
+        val cursor = contentResolver.query(
+            contentUri,
+            proj.toTypedArray(), null, null, null
+        )
+        if (null != cursor && cursor.moveToFirst()) {
+            res = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA))
+            Log.e("path-belowQ", res)
+            if (FileUtil.isAndroidQorAbove) {
+                val relative_path =
+                    cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Images.Media.RELATIVE_PATH))
+                Log.e("path--Q", relative_path)
+            }
+            cursor.close()
+        }
+
+
+        return res
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == 21 && resultCode == Activity.RESULT_OK) {
-            if (imagePath!!.exists()) {
-                ToastUtils.showShortToast("${imagePath!!.absolutePath} 文件存在")
+        if (resultCode == Activity.RESULT_OK) {
+            when (requestCode) {
+                requestOpenCamera -> {
+                    if (FileUtil.isAndroidQorAbove) {
+                        Log.e("imageUrl", cameraUri?.toString() ?: "Android 10上图片")
+                        pickImageFresco.setImageURI(cameraUri, ctx)
+                        pickImage.setImageURI(cameraUri)
+                        copyFileToPrivateArea(cameraUri)
+                        ToastUtils.showShortToast(cameraUri?.toString() ?: "Android 10上图片")
+                    } else if (imagePath!!.exists()) {
+                        ToastUtils.showShortToast("${imagePath!!.absolutePath} 文件存在")
+                        pickImage.setImageBitmap(BitmapFactory.decodeFile(imagePath!!.absolutePath))
+                        ImageLoader.loadImageByPath(pickImageFresco, imagePath!!.absolutePath)
+                    }
+                }
+                requestSelectFileCode -> {
+                    try {
+                        Log.e("path", Uri.decode(data!!.data!!.toString()))
+                        if (FileUtil.isAndroidQorAbove) {
+                            pickImageFresco.setImageURI(data.data, ctx)
+                            pickImage.setImageURI(data.data)
+                            copyFileToPrivateArea(data.data)
+                        } else {
+                            getRealPathFromURI(data.data!!)?.apply {
+                                pickImage.setImageBitmap(BitmapFactory.decodeFile(this))
+                                ImageLoader.loadImageByPath(pickImageFresco, this)
+                            }
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }
             }
+        }
+    }
+
+    private fun copyFileToPrivateArea(contentUri: Uri?) {
+        contentUri ?: return
+
+        val destFile = FileUtil.copyFileFromPublicToPrivateAtTargetQ(
+            ctx,
+            contentUri,
+            FileUtil.getFile(ctx, "transfer", FileUtil.getPictureName("transfre_"),isInData = false)
+        )
+
+        if (destFile != null && destFile.exists()) {
+            ImageLoader.loadImageByPath(dispImageInner, destFile.absolutePath)
         }
     }
 }
