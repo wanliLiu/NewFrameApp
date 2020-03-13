@@ -3,23 +3,26 @@ package com.soli.newframeapp
 import android.Manifest
 import android.app.Activity
 import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
+import android.content.res.AssetFileDescriptor
+import android.database.Cursor
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.MediaStore.Images.ImageColumns
 import android.util.Log
 import androidx.core.content.FileProvider
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.download.FileDownloadProcess
-import com.soli.libcommon.util.FileUtil
-import com.soli.libcommon.util.ImageLoader
-import com.soli.libcommon.util.ToastUtils
+import com.soli.libcommon.util.*
 import com.soli.libcommon.view.root.LoadingType
 import com.soli.permissions.RxPermissions
 import kotlinx.android.synthetic.main.activity_android7.*
 import java.io.File
+import java.io.FileNotFoundException
 
 
 /**
@@ -60,9 +63,74 @@ class Android7Activity : BaseActivity() {
         tartgetQ.setOnClickListener {
             downloadPicAndSaveInPublicStorage()
         }
+        mediaTarget.setOnClickListener {
+            isSet = false
+            RxJavaUtil.runOnThread { scanSystemMedia() }
+
+        }
     }
 
     override fun initData() {
+    }
+
+    private var isSet = false
+    private fun scanSystemMedia(): MutableList<String> {
+        //查询方式更改
+        val cursor: Cursor? = ctx.contentResolver.query(
+            MediaStore.Images.Media.EXTERNAL_CONTENT_URI,
+            arrayOf(
+                ImageColumns.DATE_ADDED,
+                ImageColumns.SIZE,
+                ImageColumns.DATA,
+                MediaStore.Images.Media._ID
+            ),
+            null,
+            null,
+            ImageColumns.DATE_ADDED
+        )
+        if (cursor == null || !cursor.moveToNext()) return ArrayList()
+
+        val photos = mutableListOf<String>()
+        cursor.moveToLast()
+        do {
+            val path = cursor.getString(cursor.getColumnIndex(ImageColumns.DATA))
+            val id = cursor.getInt(cursor.getColumnIndex(MediaStore.Images.Media._ID))
+            if (FileUtil.isAndroidQorAbove) {
+                val path = MediaStore.Images.Media
+                    .EXTERNAL_CONTENT_URI
+                    .buildUpon()
+                    .appendPath(id.toString()).build().toString()
+                MLog.e("path", path)
+                if (isAndroidQFileExists(this, path)) {
+                    if (!isSet) {
+                        isSet = true
+                        RxJavaUtil.runOnUiThread { pickImageFresco.setImageURI(path, ctx) }
+                    }
+                }
+            } else {
+                if (File(path).exists()) {
+                    photos.add(path)
+                }
+            }
+        } while (cursor.moveToPrevious())
+        cursor.close()
+
+        return photos
+    }
+
+    private fun isAndroidQFileExists(context: Context, path: String?): Boolean {
+        var afd: AssetFileDescriptor? = null
+        val cr = context.contentResolver
+        try {
+            val uri = Uri.parse(path)
+            afd = cr.openAssetFileDescriptor(uri, "r")
+            afd?.close() ?: return false
+        } catch (e: FileNotFoundException) {
+            return false
+        } finally {
+            afd?.close()
+        }
+        return true
     }
 
     /**
@@ -130,6 +198,9 @@ class Android7Activity : BaseActivity() {
     }
 
     /**
+     * Android10填坑适配指南
+     * https://zhuanlan.zhihu.com/p/93947556
+     *
      * Android 调用相机拍照，适配到Android 10
      * https://juejin.im/post/5d80edb76fb9a06b1c746176
      *
