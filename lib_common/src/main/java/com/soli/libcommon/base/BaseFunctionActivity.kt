@@ -84,25 +84,37 @@ abstract class BaseFunctionActivity : BaseFixOTranslucentActivity(), BaseInterfa
     /**
      *
      */
-    fun showProgressDialog() {
-        if (dialog == null) {
-            dialog = LoadingDialog(ctx)
-        }
+    fun showProgressDialog(cancle: Boolean = true) {
 
-        if (!dialog!!.isShowing)
-            dialog!!.show()
+        if (isFinishing)
+            return
+
+        if (dialog == null && ctx != null)
+            dialog = LoadingDialog(ctx)
+
+        dialog?.apply {
+            setCancelable(cancle)
+            setCanceledOnTouchOutside(cancle)
+
+            if (!isShowing)
+                show()
+        }
     }
 
     /**
      *
      */
     fun dissProgressDialog() {
-        if (dialog != null && dialog!!.isShowing) {
-            dialog!!.dismiss()
-            dialog = null
+        dialog?.apply {
+            try {
+                if (isShowing && !isFinishing) {
+                    dismiss()
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
         }
     }
-
     override fun onPause() {
         super.onPause()
         dissProgressDialog()

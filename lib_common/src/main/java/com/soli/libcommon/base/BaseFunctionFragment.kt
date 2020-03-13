@@ -18,28 +18,26 @@ abstract class BaseFunctionFragment : androidx.fragment.app.Fragment(), BaseInte
     private val handler = Handler()
 
 
+
     /**
      *
      */
-    fun showProgressDialog() {
-        if (dialog == null) {
-            dialog = ProgressDialog(ctx)
-            dialog!!.setProgressStyle(ProgressDialog.STYLE_SPINNER)
-        }
-
-        if (!dialog!!.isShowing)
-            dialog!!.show()
+    fun showProgressDialog(cancle: Boolean = true) {
+        val parent = activity
+        if (parent != null && parent is BaseFunctionActivity)
+            parent.showProgressDialog(cancle)
+        childFragmentManager
     }
 
     /**
      *
      */
     fun dissProgressDialog() {
-        if (dialog != null && dialog!!.isShowing) {
-            dialog!!.dismiss()
-            dialog = null
-        }
+        val parent = activity
+        if (parent != null && parent is BaseFunctionActivity)
+            parent.dissProgressDialog()
     }
+
 
     override fun onPause() {
         super.onPause()

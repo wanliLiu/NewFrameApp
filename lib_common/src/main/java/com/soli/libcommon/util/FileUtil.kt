@@ -448,13 +448,13 @@ object FileUtil {
             Thread {
                 val values = when {
                     isVideoFile(fullPath = file.absolutePath) -> ContentValues().apply {
-                        put(MediaStore.Video.Media.DESCRIPTION, "Generate from demo app")
+                        put(MediaStore.Video.Media.DESCRIPTION, "Create from" + ctx.packageName)
                         put(MediaStore.Video.Media.DISPLAY_NAME, file.name)
                         put(MediaStore.Video.Media.RELATIVE_PATH, UserMediaPath)
                         external = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
                     }
                     isImageFile(fullPath = file.absolutePath) -> ContentValues().apply {
-                        put(MediaStore.Images.Media.DESCRIPTION, "Generate from demo app")
+                        put(MediaStore.Images.Media.DESCRIPTION, "Create from" + ctx.packageName)
                         put(MediaStore.Images.Media.DISPLAY_NAME, file.name)
                         put(MediaStore.Images.Media.RELATIVE_PATH, UserMediaPath)
                         external = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
@@ -471,20 +471,24 @@ object FileUtil {
                 external ?: return@Thread
 
                 val resolver = ctx.contentResolver
+                //相同的文件如果已经insert的话，这里这个inserUri会返回null
                 val inserUri = resolver.insert(external!!, values)
 
                 var os: OutputStream? = null
                 try {
                     if (inserUri != null)
                         os = resolver.openOutputStream(inserUri)
+
+                    os ?: return@Thread
+
                     val inputStream = FileInputStream(file)
                     val buffer = ByteArray(1024)
                     var byteRead = inputStream.read(buffer)
                     while (byteRead != -1) {
-                        os!!.write(buffer, 0, byteRead)
+                        os.write(buffer, 0, byteRead)
                         byteRead = inputStream.read(buffer)
                     }
-                    os?.close()
+                    os.close()
                     inputStream.close()
 
                     //最后删除源文件

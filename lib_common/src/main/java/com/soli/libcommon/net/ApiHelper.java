@@ -2,7 +2,9 @@ package com.soli.libcommon.net;
 
 import android.text.TextUtils;
 import android.webkit.MimeTypeMap;
+
 import androidx.annotation.NonNull;
+
 import com.alibaba.fastjson.JSONObject;
 import com.soli.libcommon.base.Constant;
 import com.soli.libcommon.net.cookie.https.HttpsUtils;
@@ -14,14 +16,6 @@ import com.soli.libcommon.util.FileUtil;
 import com.soli.libcommon.util.NetworkUtil;
 import com.soli.libcommon.util.RxJavaUtil;
 import com.soli.libcommon.util.Utils;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import okhttp3.*;
-import okhttp3.logging.HttpLoggingInterceptor;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
 
 import java.io.File;
 import java.net.URLEncoder;
@@ -30,6 +24,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
+
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import okhttp3.Cache;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
+import okhttp3.logging.HttpLoggingInterceptor;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
 
 /**
  * @author Soli
@@ -330,7 +338,8 @@ public class ApiHelper {
         Builder builder = mBuilder;
 
         File file = new File(builder.fileUrl);
-        if (!file.exists()) throw new IllegalArgumentException("上传的文件不存在--->" + file.getAbsolutePath());
+        if (!file.exists())
+            throw new IllegalArgumentException("上传的文件不存在--->" + file.getAbsolutePath());
 //
 //        progressListener = listener;
 
@@ -612,14 +621,16 @@ public class ApiHelper {
      * @param url 添加的url
      */
     private synchronized void removeCall(String url) {
+        if (TextUtils.isEmpty(url)) return;
         synchronized (CALL_MAP) {
             for (String key : CALL_MAP.keySet()) {
-                if (key.contains(url)) {
+                if (!TextUtils.isEmpty(url) && key.contains(url)) {
                     url = key;
                     break;
                 }
             }
-            CALL_MAP.remove(url);
+            if (!TextUtils.isEmpty(url))
+                CALL_MAP.remove(url);
         }
     }
 

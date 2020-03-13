@@ -61,7 +61,7 @@ public class SecondAcitivity extends BaseActivity {
     }
 
     private void loadingErrorTest() {
-        showProgress(LoadingType.TypeDialog);
+        showProgress(true,true,LoadingType.TypeDialog);
         new Handler().postDelayed(() -> {
             dismissProgress();
             addFragment();

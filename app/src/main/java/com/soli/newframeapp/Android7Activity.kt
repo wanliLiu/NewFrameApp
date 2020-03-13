@@ -71,16 +71,17 @@ class Android7Activity : BaseActivity() {
     private fun downloadPicAndSaveInPublicStorage() {
 
         val downlist = arrayListOf(
+            "https://s2.showstart.com/img/2020/20200309/11b861102cb049b487b5f2b99ad011e2_1200_400_101015.0x0.jpg?imageMogr2/thumbnail/!1200x400r/gravity/Center/crop/!1200x400",
             "https://s2.showstart.com/img/2019/20191008/bda32d33f5f44168b96742b2fb29a8c3_600_800_733494.0x0.jpg",
             "https://s2.showstart.com/img/2019/20190826/9f10aa7b205d48ec853413f6cdff3d48_600_800_122780.0x0.jpg",
-            "http://img01-xusong.taihe.com/100016_2744ef0477aacf3360de229a61ae4c0c_[720_1280_4865].mp4",
+            "http://img02-xusong.taihe.com/100016_2744ef0477aacf3360de229a61ae4c0c_[720_1280_4865].mp4",
             "http://img02-xusong.taihe.com/3717fe12434c0f8e1f76571cddc49588_0_0.mp3",
             "https://s2.showstart.com/img/2019/20190809/a2389dcbeb8d42f492c458c4a59b4d3b_600_800_92235.0x0.jpg?",
             "http://img02-xusong.taihe.com/8df5a431b99e217ca757d3cddc7b700b_0_0.mp3",
             "https://s2.showstart.com/img/2018/20181226/06b037a1383146a89eb7d1537bc86841_1280_900_2350842.0x0.jpg"
         )
 
-        showProgress(LoadingType.TypeDialog)
+        showProgress(type = LoadingType.TypeDialog, cancle = false)
         loadingDialg()?.showNumProgress()
 
         FileDownloadProcess(downlist,
@@ -99,7 +100,8 @@ class Android7Activity : BaseActivity() {
                         FileUtil.storeFileInPublicAtTargetQ(
                             ctx,
                             File(info.filePath)
-                        ) else
+                        )
+                    else
                         FileUtil.scanMediaForFile(ctx, info.filePath)
                 }
                 ToastUtils.showShortToast("下载成功")
@@ -114,10 +116,10 @@ class Android7Activity : BaseActivity() {
      */
     private fun checkPermission() {
         val temp = rxPermissions.request(
-            Manifest.permission.CAMERA,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
+                Manifest.permission.CAMERA,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
             .subscribe { pass ->
                 if (pass)
                     takePicture()
@@ -252,7 +254,12 @@ class Android7Activity : BaseActivity() {
         val destFile = FileUtil.copyFileFromPublicToPrivateAtTargetQ(
             ctx,
             contentUri,
-            FileUtil.getFile(ctx, "transfer", FileUtil.getPictureName("transfre_"),isInData = false)
+            FileUtil.getFile(
+                ctx,
+                "transfer",
+                FileUtil.getPictureName("transfre_"),
+                isInData = false
+            )
         )
 
         if (destFile != null && destFile.exists()) {

@@ -77,7 +77,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }
 
         progressDialogTest.setOnClickListener {
-            showProgress(LoadingType.TypeDialog)
+            showProgress(type = LoadingType.TypeDialog)
             Handler().postDelayed({
                 dismissProgress()
             }, 2000)

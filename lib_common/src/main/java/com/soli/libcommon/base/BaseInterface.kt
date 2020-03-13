@@ -7,17 +7,10 @@ import com.soli.libcommon.view.root.LoadingType
  * @Time 18-5-15 上午11:37
  */
 interface BaseInterface {
-
-    fun showProgress(show: Boolean)
     /**
      *
      */
-    fun showProgress()
-
-    /**
-     *
-     */
-    fun showProgress(type: LoadingType)
+    fun showProgress(show: Boolean = true, cancle: Boolean = true, type: LoadingType = LoadingType.TypeInside)
 
     /**
      *

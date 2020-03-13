@@ -78,18 +78,14 @@ abstract class BaseFragment : BaseFunctionFragment() {
     protected abstract fun initListener()
     protected abstract fun initData()
 
-    override fun showProgress(show: Boolean) {
-        if (show) showProgress()
-    }
+    override fun showProgress(show: Boolean, cancle: Boolean, type: LoadingType) {
 
-    override fun showProgress(type: LoadingType) {
+        if (!show) return
+
         loadingType = type
-        showProgress()
-    }
 
-    override fun showProgress() {
         when (loadingType) {
-            LoadingType.TypeDialog -> showProgressDialog()
+            LoadingType.TypeDialog -> showProgressDialog(cancle)
             LoadingType.TypeInside -> rootView.showProgressInside(getProgressView())
             else -> {
             }
@@ -97,12 +93,17 @@ abstract class BaseFragment : BaseFunctionFragment() {
     }
 
     override fun dismissProgress() {
-        rootView.dissShowProgressInside()
-        dissProgressDialog()
-        //恢复到默认值
-        if (loadingType !== defaultLoadingType) {
-            loadingType = defaultLoadingType
+        try {
+            rootView.dissShowProgressInside()
+            dissProgressDialog()
+            //恢复到默认值
+            if (loadingType !== LoadingType.TypeInside) {
+                loadingType = LoadingType.TypeInside
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
+
     }
 
     /**
