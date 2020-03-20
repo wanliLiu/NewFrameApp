@@ -34,20 +34,19 @@ versions.skin_support = "1.+"
 versions.cordova = "1.+"
 
 
-
 def deps = [:]
 
 def support = [:]
 support.app_compat = 'androidx.appcompat:appcompat:1.1.0'
 support.percent = "com.android.support:percent:$versions.support"
-support.recyclerview = 'androidx.recyclerview:recyclerview:1.0.0'
+support.recyclerview = 'androidx.recyclerview:recyclerview:1.1.0'
 support.cardview = 'androidx.cardview:cardview:1.0.0'
 support.design = 'com.google.android.material:material:1.1.0'
 support.gridlayout = "com.android.support:gridlayout-v7:$versions.support"
 support.media = "com.android.support:support-media-compat:$versions.support"
-support.multidex = 'androidx.multidex:multidex:2.0.0'
-support.vector = 'androidx.vectordrawable:vectordrawable:1.0.0'
-support.animate_vector = 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
+support.multidex = 'androidx.multidex:multidex:2.0.1'
+support.vector = 'androidx.vectordrawable:vectordrawable:1.1.0'
+support.animate_vector = 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
 support.palette = 'androidx.palette:palette:1.0.0'
 deps.support = support
 
@@ -140,11 +139,13 @@ deps.cordova = "org.apache:cordova:$versions.cordova"
 //FlycoTabLayout_Lib
 deps.flycoTab = "com.taihe.tablayout:flycotablayout:2.+"
 
+deps.toolargetool = "com.gu.android:toolargetool:0.2.1@aar"
+
 ext.deps = deps
 
 //编译版本
 def build_versions = [:]
-build_versions.min_sdk = 21
+build_versions.min_sdk = 23
 build_versions.target_sdk = 29
 build_versions.build_tools = "29.0.3"
 ext.build_versions = build_versions
@@ -161,6 +162,9 @@ def addRepos(RepositoryHandler handler) {
     handler.google()
     //Add the JitPack repository
 //    handler.maven { url 'http://10.20.120.200:8081/nexus/content/repositories/taiheRepo/' }
+
+    handler.maven { url 'https://dl.bintray.com/guardian/android' }
+
 }
 
 ext.addRepos = this.&addRepos

@@ -4,6 +4,7 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
+import com.gu.toolargetool.TooLargeTool
 import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.MLog
@@ -26,8 +27,11 @@ abstract class BaseApplication : MultiDexApplication() {
 
         initSkin()
 
-        if (Constant.Debug)
+        if (Constant.Debug) {
             Stetho.initializeWithDefaults(this)
+            TooLargeTool.startLogging(this)
+        }
+
 
         FrescoUtil.Init(this)
 

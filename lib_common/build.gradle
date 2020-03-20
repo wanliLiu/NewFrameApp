@@ -102,4 +102,6 @@ dependencies {
     //flycoTab
 //    api deps.flycoTab
     api deps.swipelayout
+
+    implementation deps.toolargetool
 }

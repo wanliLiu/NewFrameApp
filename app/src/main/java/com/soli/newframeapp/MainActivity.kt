@@ -11,7 +11,6 @@ import com.soli.libcommon.net.ResultCode
 import com.soli.libcommon.util.NetworkUtil
 import com.soli.libcommon.util.RSAUtils
 import com.soli.libcommon.util.ToastUtils
-import com.soli.libcommon.util.openActivity
 import com.soli.libcommon.view.root.LoadingType
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
@@ -25,6 +24,7 @@ import com.soli.newframeapp.pubu.PubuTestActivity
 import com.soli.newframeapp.span.SpecialSpanActivity
 import com.soli.newframeapp.toast.CustomToastActivity
 import com.soli.permissions.RxPermissions
+import com.soli.libcommon.util.openActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), View.OnClickListener {
