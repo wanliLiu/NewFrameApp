@@ -1,6 +1,10 @@
 package com.soli.newframeapp.pic
 
 import android.graphics.*
+import android.renderscript.Allocation
+import android.renderscript.Element
+import android.renderscript.RenderScript
+import android.renderscript.ScriptIntrinsicBlur
 import android.widget.SeekBar
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.util.FrescoUtil
@@ -8,6 +12,7 @@ import com.soli.libcommon.util.MLog
 import com.soli.newframeapp.R
 import io.reactivex.android.schedulers.AndroidSchedulers
 import kotlinx.android.synthetic.main.activity_pic_deal.*
+
 
 /**
  *
@@ -18,6 +23,7 @@ class PicDealActivity : BaseActivity() {
 
     private val MAX_VALUE = 255
     private val MID_VALUE = 127
+
     private var mLum = 1f
     private var mHue = 0f
     private var mSaturation = 1f
@@ -44,6 +50,22 @@ class PicDealActivity : BaseActivity() {
         seek3.progress = MID_VALUE
         seek3.setOnSeekBarChangeListener(onSeekChange)
 
+        seek4.max = MAX_VALUE
+        seek4.progress = MAX_VALUE
+        blurCover.imageAlpha = 0
+        seek4.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                blurCover.imageAlpha = MAX_VALUE - progress
+                desc.text = "毛玻璃效果"
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {
+            }
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {
+            }
+
+        })
     }
 
     override fun initListener() {
@@ -57,6 +79,9 @@ class PicDealActivity : BaseActivity() {
                 .subscribe { mb ->
                     bitmap = mb
                     imageview.setImageBitmap(bitmap)
+
+                    blurCover.setImageBitmap(bitmap)
+                    blurImageview.setImageBitmap(blur(bitmap!!, 25f))
                 }
 
 //        ImageLoader.loadResPic(headImage1, R.mipmap.icon_avatar_default)
@@ -96,10 +121,30 @@ class PicDealActivity : BaseActivity() {
     }
 
 
+    private fun blur(bitmap: Bitmap, radius: Float): Bitmap? {
+        val output = Bitmap.createBitmap(bitmap) // 创建输出图片
+        val rs = RenderScript.create(this) // 构建一个RenderScript对象
+        val gaussianBlue = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs)) //
+        // 创建高斯模糊脚本
+        val allIn = Allocation.createFromBitmap(rs, bitmap) // 开辟输入内存
+        val allOut = Allocation.createFromBitmap(rs, output) // 开辟输出内存
+        gaussianBlue.setRadius(radius) // 设置模糊半径，范围0f<radius<=25f
+        gaussianBlue.setInput(allIn) // 设置输入内存
+        gaussianBlue.forEach(allOut) // 模糊编码，并将内存填入输出内存
+        allOut.copyTo(output) // 将输出内存编码为Bitmap，图片大小必须注意
+        rs.destroy() // 关闭RenderScript对象，API>=23则使用rs.releaseAllContexts()
+        return output
+    }
+
     /**
      *
      */
-    private fun handleImageEffect(bitmap: Bitmap, hue: Float, saturation: Float, lum: Float): Bitmap {
+    private fun handleImageEffect(
+        bitmap: Bitmap,
+        hue: Float,
+        saturation: Float,
+        lum: Float
+    ): Bitmap {
         //传进来的bitmap默认不能修改  所以再创建一个bm
         val bm = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
         //画布
