@@ -30,6 +30,6 @@ abstract class BaseFragmentActivity : BaseActivity() {
     override fun onBackPressed() {
         super.onBackPressed()
         if (supportFragmentManager.fragments.isEmpty())
-            finish()
+            super.onBackPressed()
     }
 }
