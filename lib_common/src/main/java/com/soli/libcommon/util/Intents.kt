@@ -7,8 +7,13 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.text.TextUtils
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
+import androidx.fragment.app.FragmentTransaction
+import androidx.fragment.app.commit
+import com.soli.libcommon.R
 
 /**
  *
@@ -16,6 +21,23 @@ import androidx.fragment.app.Fragment
 inline fun <reified T : Activity> Context.openActivity(vararg params: Pair<String, Any?>) =
     Internals.internalStartActivity(this, T::class.java, params)
 
+/**
+ *
+ */
+inline fun <reified T : Fragment> FragmentActivity.openFragment(args: Bundle? = null, backStack: Boolean = true, showAnimation: Boolean = true){
+    supportFragmentManager.commit {
+        val tag = T::class.java.simpleName
+        val fragment = supportFragmentManager.fragmentFactory.instantiate(
+            classLoader,
+            T::class.java.name
+        ).also { if (args != null) it.arguments = args }
+        if (showAnimation)
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+        replace(R.id.fragmentRoot, fragment, tag)
+        if (backStack)
+            addToBackStack(tag)
+    }
+}
 /**
  *
  */

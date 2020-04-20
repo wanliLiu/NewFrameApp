@@ -125,4 +125,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="RSA加解密" />
+
+    <Button
+        android:id="@+id/fragmentFramework"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Fragment框架" />
 </com.google.android.flexbox.FlexboxLayout>

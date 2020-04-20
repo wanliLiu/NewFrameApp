@@ -54,7 +54,7 @@ abstract class BaseFragment : BaseFunctionFragment() {
     /**
      *
      */
-    private fun setContentViews(view: View) {
+    open fun setContentViews(view: View) {
         rootView = RootView(ctx as Activity, view, getContentView(), needTopToolbar())
     }
 

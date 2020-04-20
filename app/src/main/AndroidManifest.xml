@@ -37,14 +37,15 @@
         <activity android:name=".Android7Activity" />
         <activity android:name=".download.DownloadTestActivity" />
         <activity android:name=".WebsocketActivity" />
-        <activity android:name=".pic.PicDealActivity"/>
-        <activity android:name=".bottomsheet.BottomSheetTestActivity"/>
-        <activity android:name=".autowrap.AutoWrapLayoutTestActivity"/>
-        <activity android:name=".demo.TestTopSpecialActivity"/>
-        <activity android:name=".pubu.PubuTestActivity"/>
-        <activity android:name=".toast.CustomToastActivity"/>
-        <activity android:name=".palette.PaletteActivity"/>
-        <activity android:name=".span.SpecialSpanActivity"/>
+        <activity android:name=".pic.PicDealActivity" />
+        <activity android:name=".bottomsheet.BottomSheetTestActivity" />
+        <activity android:name=".autowrap.AutoWrapLayoutTestActivity" />
+        <activity android:name=".demo.TestTopSpecialActivity" />
+        <activity android:name=".pubu.PubuTestActivity" />
+        <activity android:name=".toast.CustomToastActivity" />
+        <activity android:name=".palette.PaletteActivity" />
+        <activity android:name=".span.SpecialSpanActivity" />
+        <activity android:name=".fragment.FragmentMainActivity" />
 
         <service android:name=".download.DownloadService" />
     </application>

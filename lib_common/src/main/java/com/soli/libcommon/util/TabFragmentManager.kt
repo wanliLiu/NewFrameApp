@@ -16,7 +16,12 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
 
     private val mtabs: LinkedHashMap<String, TabInfo> = LinkedHashMap()
 
-    private data class TabInfo(val tag: String, val clss: Class<out BaseFragment>, val args: Bundle? = null, var fragment: BaseFragment? = null)
+    private data class TabInfo(
+        val tag: String,
+        val clss: Class<out BaseFragment>,
+        val args: Bundle? = null,
+        var fragment: BaseFragment? = null
+    )
 
     /**
      * 添加tab
@@ -57,7 +62,10 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
         mtabs[id.toString()]?.apply {
             val ft = mActivity.supportFragmentManager.beginTransaction()
             if (fragment == null) {
-                fragment = androidx.fragment.app.Fragment.instantiate(mActivity, clss.name, args) as BaseFragment
+                fragment = mActivity.supportFragmentManager.fragmentFactory.instantiate(
+                    mActivity.classLoader,
+                    clss.name
+                ).also { if (args != null) it.arguments = args } as BaseFragment
                 ft.add(mContainerId, fragment!!, tag)
                 fragment!!.Resume()
             } else {

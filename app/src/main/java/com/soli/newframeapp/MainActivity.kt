@@ -25,6 +25,7 @@ import com.soli.newframeapp.span.SpecialSpanActivity
 import com.soli.newframeapp.toast.CustomToastActivity
 import com.soli.permissions.RxPermissions
 import com.soli.libcommon.util.openActivity
+import com.soli.newframeapp.fragment.FragmentMainActivity
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : BaseActivity(), View.OnClickListener {
@@ -68,6 +69,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         palette.setOnClickListener(this)
         richText.setOnClickListener(this)
         rsaTest.setOnClickListener(this)
+        fragmentFramework.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -123,6 +125,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.palette -> openActivity<PaletteActivity>()
             R.id.richText -> openActivity<SpecialSpanActivity>()
             R.id.rsaTest -> rsaTest()
+            R.id.fragmentFramework -> openActivity<FragmentMainActivity>()
         }
     }
 

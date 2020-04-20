@@ -94,8 +94,8 @@ class Toolbar(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int =
             id = R.id.id_toolbar_custom
 
             val params =
-                FrameLayout.LayoutParams(
-                    FrameLayout.LayoutParams.WRAP_CONTENT,
+                LayoutParams(
+                    LayoutParams.WRAP_CONTENT,
                     ctx.resources.getDimensionPixelOffset(R.dimen.toolbar_height)
                 )
                     .apply {
