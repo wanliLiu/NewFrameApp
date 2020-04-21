@@ -26,4 +26,14 @@
             <enum name="FILL" value="1" />
         </attr>
     </declare-styleable>
+
+    <declare-styleable name="SvgImageView">
+        <!--原色-->
+        <attr name="svg_color" format="color" />
+        <attr name="tint" format="color" />
+        <attr name="android:tint" format="color" />
+        <!--图片-->
+        <attr name="android:src" />
+        <attr name="srcCompat" />
+    </declare-styleable>
 </resources>

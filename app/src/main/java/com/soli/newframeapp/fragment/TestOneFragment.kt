@@ -2,7 +2,6 @@ package com.soli.newframeapp.fragment
 
 import android.graphics.Color
 import androidx.core.os.bundleOf
-import com.soli.libcommon.util.openFragment
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.test_fragment_view.*
 import java.util.*
@@ -12,7 +11,7 @@ import java.util.*
  * @author Soli
  * @Time 2020/4/20 14:31
  */
-class TestFragment : BaseToolbarFragment() {
+class TestOneFragment : BaseToolbarFragment() {
 
     companion object{
         var index = 0
@@ -27,15 +26,15 @@ class TestFragment : BaseToolbarFragment() {
 
     override fun initListener() {
 
-        displayText.setOnClickListener {
-            openFragment<TestOneFragment>(
-                bundleOf(
-                    "title" to "标题${index}",
-                    "content" to "我是内容"
-                )
-            )
-            index++
-        }
+//        displayText.setOnClickListener {
+//            openFragment<TestOneFragment>(
+//                bundleOf(
+//                    "title" to "标题${index}",
+//                    "content" to "我是内容"
+//                )
+//            )
+//            index++
+//        }
     }
 
     private fun getRandColor(): String? {

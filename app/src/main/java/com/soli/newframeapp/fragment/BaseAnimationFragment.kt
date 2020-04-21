@@ -1,23 +1,49 @@
-package com.soli.libcommon.base
+package com.soli.newframeapp.fragment
 
-import android.view.View
+import android.os.Bundle
 import android.view.animation.Animation
 import android.view.animation.TranslateAnimation
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-
+import com.soli.libcommon.R
+import com.soli.libcommon.base.BaseFragment
+import com.soli.libcommon.util.openFragment
 
 /**
- *  如果用于作为Framgnet框架的话，就需要顶部的状态栏
+ *
  * @author Soli
- * @Time 2020/4/20 14:33
+ * @Time 2020/4/21 11:05
  */
-abstract class BaseToolbarFragment : BaseFragment() {
 
-    override fun needTopToolbar() = true
+abstract class BaseAnimationFragment : BaseFragment() {
 
-    override fun setContentViews(view: View) {
-        super.setContentViews(view)
-        rootView.judgeToolBarOffset()
+
+    /**
+     *
+     */
+    inline fun <reified T : Fragment> openFragment(
+        args: Bundle? = null,
+        backStack: Boolean = true,
+        showAnimation: Boolean = true
+    ) {
+        if (activity is LaunchUIHome) {
+            (activity as LaunchUIHome).apply {
+//               val tes =  supportFragmentManager.findFragmentById(R.id.id_main_container)
+//                if (tes != null)
+//                {
+//                    supportFragmentManager.beginTransaction().hide(tes).commit()
+//                }
+                openFragment<T>(
+                    R.id.id_main_container,
+                    args,
+                    backStack,
+                    showAnimation
+                )
+                showTabBar(false)
+
+
+            }
+        }
     }
 
     override fun onCreateAnimation(transit: Int, enter: Boolean, nextAnim: Int): Animation? {

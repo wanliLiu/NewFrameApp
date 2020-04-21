@@ -13,7 +13,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
-import com.soli.libcommon.R
 
 /**
  *
@@ -24,7 +23,12 @@ inline fun <reified T : Activity> Context.openActivity(vararg params: Pair<Strin
 /**
  *
  */
-inline fun <reified T : Fragment> FragmentActivity.openFragment(args: Bundle? = null, backStack: Boolean = true, showAnimation: Boolean = true){
+inline fun <reified T : Fragment> FragmentActivity.openFragment(
+    containerViewId: Int,
+    args: Bundle? = null,
+    backStack: Boolean = true,
+    showAnimation: Boolean = true
+) {
     supportFragmentManager.commit {
         val tag = T::class.java.simpleName
         val fragment = supportFragmentManager.fragmentFactory.instantiate(
@@ -33,11 +37,12 @@ inline fun <reified T : Fragment> FragmentActivity.openFragment(args: Bundle? = 
         ).also { if (args != null) it.arguments = args }
         if (showAnimation)
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-        replace(R.id.fragmentRoot, fragment, tag)
+        replace(containerViewId, fragment, tag)
         if (backStack)
             addToBackStack(tag)
     }
 }
+
 /**
  *
  */

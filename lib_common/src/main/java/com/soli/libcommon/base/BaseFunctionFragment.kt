@@ -1,8 +1,10 @@
 package com.soli.libcommon.base
 
 import android.app.ProgressDialog
+import android.os.Bundle
 import android.os.Handler
 import androidx.fragment.app.Fragment
+import com.soli.libcommon.R
 
 /**
  * @author Soli
@@ -17,7 +19,6 @@ abstract class BaseFunctionFragment : Fragment(), BaseInterface {
     private var dialog: ProgressDialog? = null
 
     private val handler = Handler()
-
 
 
     /**

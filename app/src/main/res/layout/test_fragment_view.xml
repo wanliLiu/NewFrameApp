@@ -28,12 +28,12 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="测试数据" />
 
-    <EditText
-        android:layout_width="match_parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        android:layout_height="@dimen/toolbar_height"
-        android:background="@color/A1"
-        app:layout_constraintRight_toRightOf="parent" />
+<!--    <EditText-->
+<!--        android:layout_width="match_parent"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintLeft_toLeftOf="parent"-->
+<!--        android:layout_height="@dimen/toolbar_height"-->
+<!--        android:background="@color/A1"-->
+<!--        app:layout_constraintRight_toRightOf="parent" />-->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -20,9 +20,10 @@
     <color name="A2">#191919</color>
     <color name="A3">#FCC200</color>
     <!--文字原色-->
-    <color name="C1">#191919</color>
+    <color name="C1">#333333</color>
     <color name="C2">#666666</color>
     <color name="C3">#999999</color>
+
     <color name="C4">#B2B2B2</color>
     <color name="C5">#ffffff</color>
     <color name="C6">#CCCCCC</color>
