@@ -2,6 +2,7 @@ package com.soli.libcommon.util
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.commit
 import com.soli.libcommon.base.BaseFragment
 
 /**
@@ -43,10 +44,10 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
         mtabs.forEach {
             val tabinfo = it.value
             if (it.key != id.toString() && tabinfo.fragment != null) {
-                val ft = mActivity.supportFragmentManager.beginTransaction()
-                tabinfo.fragment!!.onPause()
-                ft.hide(tabinfo.fragment!!)
-                ft.commitAllowingStateLoss()
+                mActivity.supportFragmentManager.commit(true) {
+                    tabinfo.fragment!!.onPause()
+                    hide(tabinfo.fragment!!)
+                }
             }
         }
         showTab(id)

@@ -1,6 +1,8 @@
 package com.soli.newframeapp.fragment
 
 import android.view.View
+import android.view.ViewGroup
+import com.soli.newframeapp.R
 
 
 /**
@@ -15,6 +17,10 @@ abstract class BaseToolbarFragment : BaseAnimationFragment() {
     override fun setContentViews(view: View) {
         super.setContentViews(view)
         rootView.judgeToolBarOffset()
+//        (rootView.getContentView()?.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+//            bottomMargin =
+//                ctx!!.resources.getDimensionPixelOffset(R.dimen.home_mini_bar_height)
+//        }
     }
 
 }

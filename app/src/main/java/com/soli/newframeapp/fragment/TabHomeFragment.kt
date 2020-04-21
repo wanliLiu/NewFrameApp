@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.fragment_home_view.*
  * @author Soli
  * @Time 2020/4/21 10:13
  */
-class TabHomeFragment : BaseAnimationFragment() ,OnDoubleClickListener{
+class TabHomeFragment : BaseTabHomeFragment(){
     override fun getContentView() = R.layout.fragment_home_view
 
     override fun initView() {
@@ -25,8 +25,5 @@ class TabHomeFragment : BaseAnimationFragment() ,OnDoubleClickListener{
                 bundleOf("title" to "第一个", "content" to "我是第一个内容")
             )
         }
-    }
-
-    override fun onDoubleClickHappen() {
     }
 }

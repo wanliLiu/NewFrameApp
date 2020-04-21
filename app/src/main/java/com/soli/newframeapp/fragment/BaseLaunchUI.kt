@@ -37,7 +37,7 @@ abstract class BaseLaunchUI : BaseActivity() {
      */
     fun isBackToHome(): Boolean {
         val fragment = supportFragmentManager.findFragmentById(R.id.id_main_container)
-        return fragment == null //&& (fragment is HomeFragment)
+        return fragment != null && (fragment is HomeFragment)
     }
 
 
@@ -56,7 +56,7 @@ abstract class BaseLaunchUI : BaseActivity() {
                         return true
                     }
                     1 -> {
-                        onBackPressed()
+                        finish()
                         return true
                     }
                     else -> {

@@ -9,7 +9,7 @@ import kotlinx.android.synthetic.main.fragment_me_view.*
  * @author Soli
  * @Time 2020/4/21 10:13
  */
-class TabMeFragment : BaseAnimationFragment(), OnDoubleClickListener {
+class TabMeFragment : BaseTabHomeFragment() {
     override fun getContentView() = R.layout.fragment_me_view
 
     override fun initView() {
@@ -26,6 +26,4 @@ class TabMeFragment : BaseAnimationFragment(), OnDoubleClickListener {
     override fun initData() {
     }
 
-    override fun onDoubleClickHappen() {
-    }
 }
