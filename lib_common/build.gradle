@@ -104,4 +104,8 @@ dependencies {
     api deps.swipelayout
 
     implementation deps.toolargetool
+
+    api deps.fragmentationx_core
+    api deps.fragmentationx_swipeback
+//    api deps.fragmentationx_eventbus
 }

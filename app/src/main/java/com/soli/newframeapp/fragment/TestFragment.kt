@@ -28,12 +28,12 @@ class TestFragment : BaseToolbarFragment() {
     override fun initListener() {
 
         displayText.setOnClickListener {
-            openFragment<TestOneFragment>(
-                bundleOf(
+            start(TestOneFragment().apply {
+                arguments =  bundleOf(
                     "title" to "标题${index}",
                     "content" to "我是内容"
                 )
-            )
+            })
             index++
         }
     }

@@ -6,7 +6,7 @@ ext.deps = [:]
 
 def versions = [:]
 versions.android_gradle_plugin = '3.6.3'
-versions.kotlin = "1.3.71"
+versions.kotlin = "1.3.72"
 versions.support = "29.0.3"//28.0.0-alpha3
 versions.multidex = "1.0.3"
 versions.constraint_layout = "1.+"
@@ -32,6 +32,7 @@ versions.arouter_api = "1.+"
 versions.skin_support = "1.+"
 
 versions.cordova = "1.+"
+versions.fragmentation = "1.0.2"
 
 
 def deps = [:]
@@ -125,6 +126,13 @@ deps.swipelayout = "com.daimajia.swipelayout:library:1.2.0"
 //---------------------------------------------和业务相关的第三方东西，比如友盟 统计，支付，登录啥的  放到下面
 
 deps.nimSDklib = 'com.netease.nimlib:basesdk:5.7.0'
+
+//fragmentation  单Activity + 多Fragment框架
+//https://github.com/YoKeyword/Fragmentation
+deps.fragmentationx = "me.yokeyword:fragmentationx:$versions.fragmentation"
+deps.fragmentationx_core = "me.yokeyword:fragmentationx-core:$versions.fragmentation"
+deps.fragmentationx_swipeback = "me.yokeyword:fragmentationx-swipeback:$versions.fragmentation"
+deps.fragmentationx_eventbus = "me.yokeyword:eventbus-activity-scope:1.1.0"
 
 //skin support
 deps.skin_support = "skin.android.support:skin-support:$versions.skin_support"

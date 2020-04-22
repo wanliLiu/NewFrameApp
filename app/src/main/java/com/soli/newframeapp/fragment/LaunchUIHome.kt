@@ -1,10 +1,8 @@
 package com.soli.newframeapp.fragment
 
 import android.animation.ValueAnimator
-import android.widget.RelativeLayout
-import androidx.core.animation.doOnEnd
-import androidx.core.animation.doOnStart
-import com.soli.libcommon.util.openFragment
+import android.widget.Toast
+import androidx.core.app.ActivityCompat
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.home_entrance.*
 
@@ -20,28 +18,44 @@ class LaunchUIHome : BaseLaunchUI() {
     override fun getContentView() = R.layout.home_entrance
 
     override fun initView() {
+        val frag = findFragment(HomeFragment::class.java)
+        if (frag == null)
+            loadRootFragment(R.id.id_main_container, HomeFragment())
     }
 
 
     override fun initData() {
-        openFragment<HomeFragment>(R.id.id_main_container, backStack = false, showAnimation = false)
+
     }
 
     override fun initListener() {
 
     }
 
+    // 再点一次退出程序时间设置
+    private val WAIT_TIME = 2000L
+    private var TOUCH_TIME: Long = 0
 
-    override fun onBackPressed() {
-        super.onBackPressed()
-        if (isBackToHome())
-            showTabBar(true)
+
+    override fun onBackPressedSupport() {
+        if (supportFragmentManager.backStackEntryCount > 1) {
+            if (supportFragmentManager.backStackEntryCount == 2)
+                animationMiniBar(true)
+            pop()
+        } else {
+            if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
+                ActivityCompat.finishAfterTransition(this)
+            } else {
+                TOUCH_TIME = System.currentTimeMillis()
+                Toast.makeText(ctx, "再按一次退出程序！", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     /**
      *
      */
-    fun showTabBar(show: Boolean) {
+    fun animationMiniBar(show: Boolean) {
 
         if (show && showTabBar) return
         if (!show && !showTabBar) return

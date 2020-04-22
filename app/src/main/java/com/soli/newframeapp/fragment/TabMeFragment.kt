@@ -17,9 +17,9 @@ class TabMeFragment : BaseTabHomeFragment() {
 
     override fun initListener() {
         displayText.setOnClickListener {
-            openFragment<TestFragment>(
-                bundleOf("title" to "第一个", "content" to "我是第一个内容")
-            )
+            (parentFragment as? HomeFragment)?.start(TestFragment().apply {
+                arguments = bundleOf("title" to "第一个", "content" to "我是第一个内容")
+            })
         }
     }
 

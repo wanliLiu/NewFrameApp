@@ -19,40 +19,20 @@ abstract class BaseFragment : BaseFunctionFragment() {
     private var loadingType = defaultLoadingType
     protected lateinit var rootView: RootView
 
-    private var topView: View? = null
-    private var isDesrotyView = false
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        if (topView == null) {
-            topView = inflater.inflate(R.layout.activity_root_view, container, false)
-        }
-        return topView
+        return inflater.inflate(R.layout.activity_root_view, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        if (!isDesrotyView) {
-            setContentViews(view)
-            initView()
-            initListener()
-            initData()
-        } else isDesrotyView = false
-    }
-
-    override fun onDestroyView() {
-        super.onDestroyView()
-        isDesrotyView = true
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        topView = null
-        isDesrotyView = false
+        setContentViews(view)
+        initView()
+        initListener()
+        initData()
     }
 
     /**

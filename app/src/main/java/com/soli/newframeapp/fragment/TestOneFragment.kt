@@ -26,15 +26,15 @@ class TestOneFragment : BaseToolbarFragment() {
 
     override fun initListener() {
 
-//        displayText.setOnClickListener {
-//            openFragment<TestOneFragment>(
-//                bundleOf(
-//                    "title" to "标题${index}",
-//                    "content" to "我是内容"
-//                )
-//            )
-//            index++
-//        }
+        displayText.setOnClickListener {
+            start(TestFragment().apply {
+                arguments =  bundleOf(
+                    "title" to "标题${index}",
+                    "content" to "我是内容"
+                )
+            })
+            index++
+        }
     }
 
     private fun getRandColor(): String? {

@@ -1,6 +1,7 @@
 package com.soli.libcommon
 
 import android.os.Build
+import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
@@ -9,6 +10,7 @@ import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.MLog
 import io.reactivex.plugins.RxJavaPlugins
+import me.yokeyword.fragmentation.Fragmentation
 
 /**
  * @author Soli
@@ -37,6 +39,18 @@ abstract class BaseApplication : MultiDexApplication() {
 
         //Rxjava error handler  捕获Rxjava抛出的异常
         setRxJavaErrorHandler()
+
+        initFragmentation()
+    }
+
+    private fun initFragmentation() {
+        Fragmentation.builder()
+            .stackViewMode(Fragmentation.BUBBLE)
+            .debug(BuildConfig.DEBUG)
+            .handleException {
+                Log.e("fragment", it.message)
+            }
+            .install()
     }
 
 

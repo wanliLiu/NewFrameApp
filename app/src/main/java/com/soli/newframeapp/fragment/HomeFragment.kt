@@ -3,32 +3,29 @@ package com.soli.newframeapp.fragment
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
-import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
-import com.soli.libcommon.util.TabFragmentManager
+import com.soli.libcommon.base.BaseFragmentationFragment
 import com.soli.libcommon.util.ViewListener
 import com.soli.libcommon.view.SvgImageView
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.main_entrance_view.*
+import me.yokeyword.fragmentation.ISupportFragment
 
 /**
  *
  * @author Soli
  * @Time 2020/4/21 16:43
  */
-class HomeFragment : BaseAnimationFragment() {
+class HomeFragment : BaseFragmentationFragment() {
 
     private var index = 0
     private var lastIndex = -1
 
-    private val tabManager by lazy {
-        val tab = TabFragmentManager(ctx!! as AppCompatActivity, R.id.homeContainer)
-        tab.addTab(0, TabHomeFragment::class.java, null)
-        tab.addTab(1, TabMeFragment::class.java, null)
-        tab
-    }
+    private val tabSize = 2
+    private val tabFragments = arrayOfNulls<ISupportFragment>(tabSize)
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         index = savedInstanceState?.getInt("index") ?: index
         super.onCreate(savedInstanceState)
     }
@@ -49,17 +46,39 @@ class HomeFragment : BaseAnimationFragment() {
     override fun getContentView() = R.layout.main_entrance_view
 
     override fun initView() {
+        val firstFragment = findChildFragment(TabHomeFragment::class.java)
+        if (firstFragment == null) {
+            tabFragments[0] = TabHomeFragment()
+            tabFragments[1] = TabMeFragment()
+            loadMultipleRootFragment(R.id.homeContainer, index, *tabFragments)
+        } else {
+            tabFragments[0] = firstFragment
+            tabFragments[1] = findChildFragment(TabMeFragment::class.java)
+        }
     }
 
 
     override fun initListener() {
         registerDoubleClickListener(tabHome)
         registerDoubleClickListener(tabMe)
-
     }
 
     override fun initData() {
         checkItem()
+    }
+
+    /**
+     *
+     */
+    private fun animationMiniBar() {
+        if (_mActivity is LaunchUIHome) {
+            (_mActivity as LaunchUIHome).animationMiniBar(false)
+        }
+    }
+
+    override fun start(toFragment: ISupportFragment?) {
+        super.start(toFragment)
+        animationMiniBar()
     }
 
     /**
@@ -73,7 +92,7 @@ class HomeFragment : BaseAnimationFragment() {
         if (!isDoubleClick) {
             checkItem()
         } else {
-            tabManager.getFragment(index)?.apply {
+            tabFragments[index]?.apply {
                 if (this is OnDoubleClickListener)
                     (this as OnDoubleClickListener).onDoubleClickHappen()
             }
@@ -112,15 +131,11 @@ class HomeFragment : BaseAnimationFragment() {
         selectTab(tabMeIcon, tabMeText, index == 1)
 
         if (lastIndex != index) {
+            showHideFragment(
+                tabFragments[index]!!,
+                if (lastIndex == -1) tabFragments[index]!! else tabFragments[lastIndex]!!
+            )
             lastIndex = index
-            tabManager.setCurrentTab(index)
-        }
-    }
-
-    override fun onResume() {
-        super.onResume()
-        tabManager.getFragment(index)?.apply {
-            this.Resume()
         }
     }
 }
