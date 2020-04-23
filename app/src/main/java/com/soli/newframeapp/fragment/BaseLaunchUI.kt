@@ -1,12 +1,7 @@
 package com.soli.newframeapp.fragment
 
-import android.os.Bundle
-import android.util.Log
 import com.soli.libcommon.base.BaseFragmentationActivity
 import com.soli.libcommon.util.StatusBarUtil
-import com.soli.newframeapp.BuildConfig
-import com.soli.newframeapp.R
-import me.yokeyword.fragmentation.Fragmentation
 import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator
 import me.yokeyword.fragmentation.anim.FragmentAnimator
 

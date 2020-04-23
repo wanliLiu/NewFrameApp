@@ -18,10 +18,6 @@ abstract class BaseToolbarFragment : BaseFragmentationFragment() {
     override fun setContentViews(view: View) {
         super.setContentViews(view)
         rootView.judgeToolBarOffset()
-//        (rootView.getContentView()?.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-//            bottomMargin =
-//                ctx!!.resources.getDimensionPixelOffset(R.dimen.home_mini_bar_height)
-//        }
     }
 
 }
