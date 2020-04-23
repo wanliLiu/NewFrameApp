@@ -5,6 +5,7 @@ import android.content.Context
 import android.os.Bundle
 import android.view.View
 import android.view.animation.Animation
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import me.yokeyword.fragmentation.ExtraTransaction
 import me.yokeyword.fragmentation.ISupportFragment
@@ -18,7 +19,7 @@ import me.yokeyword.fragmentation.anim.FragmentAnimator
  * @author Soli
  * @Time 2020/4/22 15:05
  */
-abstract class BaseFragmentationFragment : BaseFragment(), ISupportFragment {
+abstract class BaseFragmentationFragment : Fragment(), ISupportFragment {
 
     private val mDelegate = SupportFragmentDelegate(this)
     protected var _mActivity: FragmentActivity? = null

@@ -2,6 +2,7 @@ package com.soli.libcommon.base
 
 import android.os.Bundle
 import android.view.MotionEvent
+import androidx.appcompat.app.AppCompatActivity
 import me.yokeyword.fragmentation.*
 import me.yokeyword.fragmentation.ISupportFragment.LaunchMode
 import me.yokeyword.fragmentation.anim.FragmentAnimator
@@ -12,7 +13,7 @@ import me.yokeyword.fragmentation.anim.FragmentAnimator
  * @author Soli
  * @Time 2020/4/22 15:05
  */
-abstract class BaseFragmentationActivity : BaseActivity(), ISupportActivity {
+abstract class BaseFragmentationActivity : AppCompatActivity(), ISupportActivity {
 
     private val mDelegate = SupportActivityDelegate(this)
     override fun getSupportDelegate(): SupportActivityDelegate {
@@ -28,8 +29,8 @@ abstract class BaseFragmentationActivity : BaseActivity(), ISupportActivity {
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        mDelegate.onCreate(savedInstanceState)
         super.onCreate(savedInstanceState)
+        mDelegate.onCreate(savedInstanceState)
     }
 
     override fun onPostCreate(savedInstanceState: Bundle?) {

@@ -1,9 +1,7 @@
 package com.soli.newframeapp.fragment
 
 import android.view.View
-import android.view.ViewGroup
-import com.soli.libcommon.base.BaseFragmentationFragment
-import com.soli.newframeapp.R
+import com.soli.libcommon.base.BaseFragment
 
 
 /**
@@ -11,7 +9,7 @@ import com.soli.newframeapp.R
  * @author Soli
  * @Time 2020/4/20 14:33
  */
-abstract class BaseToolbarFragment : BaseFragmentationFragment() {
+abstract class BaseToolbarFragment : BaseFragment() {
 
     override fun needTopToolbar() = true
 

@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import com.soli.libcommon.base.BaseFragmentationFragment
+import com.soli.libcommon.base.BaseFragment
 import com.soli.libcommon.util.ViewListener
 import com.soli.libcommon.view.SvgImageView
 import com.soli.newframeapp.R
@@ -16,7 +16,7 @@ import me.yokeyword.fragmentation.ISupportFragment
  * @author Soli
  * @Time 2020/4/21 16:43
  */
-class HomeFragment : BaseFragmentationFragment() {
+class HomeFragment : BaseFragment() {
 
     private var index = 0
     private var lastIndex = -1

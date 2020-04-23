@@ -40,19 +40,7 @@ abstract class BaseApplication : MultiDexApplication() {
         //Rxjava error handler  捕获Rxjava抛出的异常
         setRxJavaErrorHandler()
 
-        initFragmentation()
     }
-
-    private fun initFragmentation() {
-        Fragmentation.builder()
-            .stackViewMode(Fragmentation.BUBBLE)
-            .debug(BuildConfig.DEBUG)
-            .handleException {
-                Log.e("fragment", it.message)
-            }
-            .install()
-    }
-
 
     /**
      * 初始化皮肤框架

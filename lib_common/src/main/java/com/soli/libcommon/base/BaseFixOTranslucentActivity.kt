@@ -15,7 +15,7 @@ import com.soli.libcommon.util.MLog
  * @author Soli
  * @Time 2019/4/2 09:55
  */
-open class BaseFixOTranslucentActivity : AppCompatActivity() {
+open class BaseFixOTranslucentActivity : BaseFragmentationActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {

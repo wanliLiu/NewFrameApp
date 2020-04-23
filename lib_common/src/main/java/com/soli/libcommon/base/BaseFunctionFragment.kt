@@ -10,7 +10,7 @@ import com.soli.libcommon.R
  * @author Soli
  * @Time 18-5-16 上午11:10
  */
-abstract class BaseFunctionFragment : Fragment(), BaseInterface {
+abstract class BaseFunctionFragment : BaseFragmentationFragment(), BaseInterface {
     /**
      * 上下午context
      */
