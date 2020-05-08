@@ -34,6 +34,7 @@ import okhttp3.OkHttpClient;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import okhttp3.logging.HttpLoggingInterceptor;
+import okhttp3.logging.LoggingEventListener;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -104,6 +105,7 @@ public class ApiHelper {
 
         if (Constant.Debug) {
             client.addInterceptor((new HttpLoggingInterceptor()).setLevel(HttpLoggingInterceptor.Level.BODY));
+            client.eventListenerFactory(new LoggingEventListener.Factory());
             //for stetho 在网页调试页看网络日志
 //            client.addNetworkInterceptor(new StethoInterceptor());
         }

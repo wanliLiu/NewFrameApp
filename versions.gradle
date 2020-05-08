@@ -56,6 +56,7 @@ def retrofit = [:]
 retrofit.runtime = "com.squareup.retrofit2:retrofit:$versions.retrofit"
 retrofit.adapter = "com.squareup.retrofit2:adapter-rxjava2:$versions.retrofi"
 retrofit.gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
+retrofit.leakcanary = "com.squareup.leakcanary:leakcanary-android:2.+"
 deps.retrofit = retrofit
 
 
@@ -113,7 +114,7 @@ deps.stethoOkhttp3 = "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
 deps.event_bus = "org.greenrobot:eventbus:$versions.event_bus"
 deps.gson = "com.google.code.gson:gson:$versions.gson"
 //deps.fastjson = "com.alibaba:fastjson:$versions.fastjson"
-deps.fastjson = "com.alibaba:fastjson:1.1.70.android"
+deps.fastjson = "com.alibaba:fastjson:1.1.71.android"
 deps.arouter_api = "com.alibaba:arouter-api:$versions.arouter_api"
 deps.arouter_compiler = "com.alibaba:arouter-compiler:$versions.arouter_compiler"
 deps.materialishPro = "com.pnikosis:materialish-progress:$versions.mterialprogress"
