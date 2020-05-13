@@ -41,6 +41,7 @@ def support = [:]
 support.app_compat = 'androidx.appcompat:appcompat:1.1.0'
 support.percent = "com.android.support:percent:$versions.support"
 support.recyclerview = 'androidx.recyclerview:recyclerview:1.1.0'
+support.recyclerview_snaphelper = 'com.github.rubensousa:gravitysnaphelper:2.2.0'
 support.cardview = 'androidx.cardview:cardview:1.0.0'
 support.design = 'com.google.android.material:material:1.1.0'
 support.gridlayout = "com.android.support:gridlayout-v7:$versions.support"
@@ -64,6 +65,8 @@ def kotlin = [:]
 kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
 kotlin.test = "org.jetbrains.kotlin:kotlin-test-junit:$versions.kotlin"
 kotlin.plugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+kotlin.coroutines_core = 'org.jetbrains.kotlinx:kotlinx-coroutines-core:1.+'
+kotlin.coroutines_android = 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.+'
 deps.kotlin = kotlin
 
 //view
