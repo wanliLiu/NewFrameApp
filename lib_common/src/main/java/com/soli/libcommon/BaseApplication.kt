@@ -59,10 +59,13 @@ abstract class BaseApplication : MultiDexApplication() {
         RxJavaPlugins.setErrorHandler { MLog.e("Rxjava", it?.message ?: "Rxjava出现错误") }
     }
 
+    /**
+     * fragment框架
+     */
     private fun initFragmentation() {
         Fragmentation.builder()
             .stackViewMode(Fragmentation.BUBBLE)
-            .debug(BuildConfig.DEBUG)
+            .debug(Constant.Debug)
             .handleException {
                 MLog.e("fragment", it.message)
             }
