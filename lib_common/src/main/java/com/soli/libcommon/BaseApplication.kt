@@ -1,7 +1,6 @@
 package com.soli.libcommon
 
 import android.os.Build
-import android.util.Log
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
@@ -40,6 +39,8 @@ abstract class BaseApplication : MultiDexApplication() {
         //Rxjava error handler  捕获Rxjava抛出的异常
         setRxJavaErrorHandler()
 
+        initFragmentation()
+
     }
 
     /**
@@ -56,5 +57,15 @@ abstract class BaseApplication : MultiDexApplication() {
      */
     private fun setRxJavaErrorHandler() {
         RxJavaPlugins.setErrorHandler { MLog.e("Rxjava", it?.message ?: "Rxjava出现错误") }
+    }
+
+    private fun initFragmentation() {
+        Fragmentation.builder()
+            .stackViewMode(Fragmentation.BUBBLE)
+            .debug(BuildConfig.DEBUG)
+            .handleException {
+                MLog.e("fragment", it.message)
+            }
+            .install()
     }
 }

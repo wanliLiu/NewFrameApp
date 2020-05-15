@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <FrameLayout
-            android:id="@+id/id_main_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+        android:id="@+id/id_main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
     <LinearLayout
-            android:id="@+id/minibar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:orientation="vertical">
+        android:id="@+id/minibar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
 
         <TextView
-                android:id="@+id/musicMiniBar"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/home_mini_bar_height"
-                android:background="#96000000"
-                android:gravity="center"
-                android:text="我是播放音乐mini bar"
-                android:textColor="@color/C5" />
+            android:id="@+id/musicMiniBar"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/home_mini_bar_height"
+            android:background="#96000000"
+            android:gravity="center"
+            android:text="我是播放音乐mini bar"
+            android:textColor="@color/C5" />
 
         <Space
-                android:id="@+id/emptySpace"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/home_tab_bar_height" />
+            android:id="@+id/emptySpace"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/home_tab_bar_height" />
     </LinearLayout>
 </RelativeLayout>

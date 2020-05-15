@@ -1,6 +1,7 @@
 package com.soli.newframeapp.fragment
 
 import androidx.core.os.bundleOf
+import com.soli.libcommon.event.openFragment
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.fragment_me_view.*
 
@@ -17,7 +18,7 @@ class TabMeFragment : BaseTabHomeFragment() {
 
     override fun initListener() {
         displayText.setOnClickListener {
-            (parentFragment as? HomeFragment)?.start(TestFragment().apply {
+            openFragment(TestFragment().apply {
                 arguments = bundleOf("title" to "第一个", "content" to "我是第一个内容")
             })
         }

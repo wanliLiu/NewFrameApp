@@ -1,10 +1,21 @@
 package com.soli.newframeapp.fragment
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
+import android.os.Bundle
+import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isVisible
+import com.soli.libcommon.base.BaseSwipeBackFragment
+import com.soli.libcommon.event.OpenFragmentEvent
+import com.soli.libcommon.event.ShowMiniBarEvent
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.home_entrance.*
+import me.yokeyword.fragmentation.ISupportFragment
+import org.greenrobot.eventbus.Subscribe
+import org.greenrobot.eventbus.ThreadMode
 
 /**
  *
@@ -13,7 +24,20 @@ import kotlinx.android.synthetic.main.home_entrance.*
  */
 class LaunchUIHome : BaseLaunchUI() {
 
+    // 再点一次退出程序时间设置
+    private val WAIT_TIME = 2000L
+    private var TOUCH_TIME: Long = 0
+
     private var showTabBar = true
+    private var isFirstSwipe = false
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        savedInstanceState?.apply {
+            showTabBar = getBoolean("showTabBar", showTabBar)
+            isFirstSwipe = getBoolean("isFirstSwipe", isFirstSwipe)
+        }
+        super.onCreate(savedInstanceState)
+    }
 
     override fun getContentView() = R.layout.home_entrance
 
@@ -24,23 +48,28 @@ class LaunchUIHome : BaseLaunchUI() {
     }
 
 
-    override fun initData() {
+    override fun initData() = Unit
 
+    override fun initListener() = Unit
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("isFirstSwipe", isFirstSwipe)
+        outState.putBoolean("showTabBar", showTabBar)
+        super.onSaveInstanceState(outState)
     }
 
-    override fun initListener() {
-
+    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+        super.onRestoreInstanceState(savedInstanceState)
+        savedInstanceState?.apply {
+            showTabBar = getBoolean("showTabBar", showTabBar)
+            isFirstSwipe = getBoolean("isFirstSwipe", isFirstSwipe)
+        }
     }
-
-    // 再点一次退出程序时间设置
-    private val WAIT_TIME = 2000L
-    private var TOUCH_TIME: Long = 0
-
 
     override fun onBackPressedSupport() {
         if (supportFragmentManager.backStackEntryCount > 1) {
             if (supportFragmentManager.backStackEntryCount == 2)
-                animationMiniBar(true)
+                animationMiniBar()
             pop()
         } else {
             if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
@@ -52,15 +81,50 @@ class LaunchUIHome : BaseLaunchUI() {
         }
     }
 
+
+    /**
+     *
+     * 所有打开Fragment地方都是通过这个来打开，通过发送事件
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun openNewFragmentEvent(event: OpenFragmentEvent) {
+        if (event.isPopEvent) {
+            animationMiniBar()
+        } else {
+            start(event.fragment, event.launchMode)
+            whenOpenNewTakeSomething(event.fragment)
+        }
+    }
+
     /**
      *
      */
-    fun animationMiniBar(show: Boolean) {
+    private fun whenOpenNewTakeSomething(toFragment: ISupportFragment?) {
+        animationMiniBar(false)
+        if (!isFirstSwipe && toFragment is BaseSwipeBackFragment) {
+            if (toFragment.needSwipeBack()) {
+                isFirstSwipe = true
+                toFragment.dragStateCallBack = {
+                    animationMiniBar()
+                }
+            }
+        }
+    }
 
-        if (show && showTabBar) return
-        if (!show && !showTabBar) return
+    /**
+     *
+     */
+    private fun animationMiniBar(show: Boolean = true) {
+
+        if ((show && showTabBar) || (!show && !showTabBar)) return
+
+        if (show) {
+            takeActionToMiniBar(show)
+        }
 
         showTabBar = show
+
+        isFirstSwipe = false
 
         ValueAnimator.ofFloat(0f, 1f).setDuration(300).apply {
             addUpdateListener {
@@ -68,24 +132,35 @@ class LaunchUIHome : BaseLaunchUI() {
                     ctx.resources.getDimensionPixelOffset(R.dimen.home_tab_bar_height)
                 val value = (tabBarHeight * it.animatedValue as Float).toInt()
                 emptySpace.layoutParams.height = if (show) value else tabBarHeight - value
-//                (id_main_container.layoutParams as RelativeLayout.LayoutParams).bottomMargin =
-//                    if (show) tabBarHeight - value else value
                 minibar.requestLayout()
             }
-//            (id_main_container.layoutParams as RelativeLayout.LayoutParams).also { params ->
-//                if (show) {
-//                    doOnStart {
-//                        params.removeRule(RelativeLayout.ABOVE)
-//                        id_main_container.layoutParams = params
-//                    }
-//                } else
-//                    doOnEnd {
-//                        params.addRule(RelativeLayout.ABOVE, R.id.minibar)
-//                        id_main_container.layoutParams = params
-//                    }
-//
-//            }
             start()
         }
+    }
+
+    /**
+     * 有些界面不需要显示minibar
+     */
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    fun whetherShowMiniBarEvent(event: ShowMiniBarEvent) {
+        takeActionToMiniBar(event.show)
+    }
+
+    /**
+     *
+     */
+    private fun takeActionToMiniBar(show: Boolean) {
+        if ((show && minibar.isVisible) || (!show && !minibar.isVisible)) return
+
+        minibar.visibility = View.VISIBLE
+        minibar.alpha = if (show) 0.0f else 1.0f
+
+        minibar.animate().alpha(1.0f - minibar.alpha)
+            .setListener(object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator?) {
+                    super.onAnimationEnd(animation)
+                    if (!show) minibar.visibility = View.GONE
+                }
+            }).start()
     }
 }

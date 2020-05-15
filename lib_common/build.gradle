@@ -38,6 +38,8 @@ dependencies {
     api fileTree(dir: 'libs', include: ['*.jar'])
     //kotlin support
     api deps.kotlin.stdlib
+    api deps.kotlin.coroutines_core
+    api deps.kotlin.coroutines_android
 
     //android support
     api deps.support.multidex
@@ -86,7 +88,7 @@ dependencies {
     api deps.materialishPro
     api deps.pullupdown
 //    api deps.nineOld
-    api deps.silder
+//    api deps.silder
 
     api deps.nineoldandroids
 
@@ -105,7 +107,8 @@ dependencies {
 
     implementation deps.toolargetool
 
-    api deps.fragmentationx_core
+    api deps.fragmentationx
+//    api deps.fragmentationx_core
     api deps.fragmentationx_swipeback
 //    api deps.fragmentationx_eventbus
 }

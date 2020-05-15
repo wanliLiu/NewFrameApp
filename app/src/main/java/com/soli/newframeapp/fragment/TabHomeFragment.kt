@@ -1,6 +1,7 @@
 package com.soli.newframeapp.fragment
 
 import androidx.core.os.bundleOf
+import com.soli.libcommon.event.openFragment
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.fragment_home_view.*
 
@@ -21,9 +22,9 @@ class TabHomeFragment : BaseTabHomeFragment() {
     override fun initData() {
 
         displayText.setOnClickListener {
-            (parentFragment as? HomeFragment)?.start(TestFragment().apply {
-                arguments = bundleOf("title" to "第一个", "content" to "我是第一个内容")
-            })
+           openFragment(TestFragment().apply {
+               arguments = bundleOf("title" to "第一个", "content" to "我是第一个内容")
+           })
         }
     }
 }

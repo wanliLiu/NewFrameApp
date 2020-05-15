@@ -1,16 +1,14 @@
 package com.soli.libcommon.base
 
 import android.app.ProgressDialog
-import android.os.Bundle
 import android.os.Handler
-import androidx.fragment.app.Fragment
-import com.soli.libcommon.R
+import me.yokeyword.fragmentation_swipeback.SwipeBackFragment
 
 /**
  * @author Soli
  * @Time 18-5-16 上午11:10
  */
-abstract class BaseFunctionFragment : BaseFragmentationFragment(), BaseInterface {
+abstract class BaseFunctionFragment : SwipeBackFragment(), BaseInterface {
     /**
      * 上下午context
      */

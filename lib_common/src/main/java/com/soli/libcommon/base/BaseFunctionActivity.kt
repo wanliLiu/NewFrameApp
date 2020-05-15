@@ -4,7 +4,6 @@ import android.content.Context
 import android.os.Bundle
 import android.view.MotionEvent
 import android.view.inputmethod.InputMethodManager
-import com.r0adkll.slidr.Slidr
 import com.soli.libcommon.R
 import com.soli.libcommon.util.KeyBoardUtils
 import com.soli.libcommon.util.StatusBarUtil
@@ -41,9 +40,10 @@ abstract class BaseFunctionActivity : BaseFixOTranslucentActivity(), BaseInterfa
      */
     protected fun setStatusBarColor() {
         val needSilder = needRightSild()
-        if (needSilder) {
-            Slidr.attach(this)
-        }
+//        if (needSilder) {
+//            Slidr.attach(this)
+//        }
+        setSwipeBackEnable(needSilder)
 
         if (needActioinStatusBarColor()) {
             val color = resources.getColor(R.color.B2)

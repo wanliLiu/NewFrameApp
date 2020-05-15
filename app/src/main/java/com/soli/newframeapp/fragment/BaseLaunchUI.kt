@@ -1,13 +1,13 @@
 package com.soli.newframeapp.fragment
 
 import android.os.Bundle
-import android.util.Log
-import com.soli.libcommon.BuildConfig
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.util.StatusBarUtil
-import me.yokeyword.fragmentation.Fragmentation
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator
 import me.yokeyword.fragmentation.anim.FragmentAnimator
+import org.greenrobot.eventbus.EventBus
 
 /**
  * @author Soli
@@ -17,18 +17,8 @@ abstract class BaseLaunchUI : BaseActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        initFragmentation()
+        GlobalScope.launch { EventBus.getDefault().register(ctx) }
         super.onCreate(savedInstanceState)
-    }
-
-    private fun initFragmentation() {
-        Fragmentation.builder()
-            .stackViewMode(Fragmentation.BUBBLE)
-            .debug(BuildConfig.DEBUG)
-            .handleException {
-                Log.e("fragment", it.message)
-            }
-            .install()
     }
 
     override fun needTopToolbar() = false
@@ -42,6 +32,11 @@ abstract class BaseLaunchUI : BaseActivity() {
 
     override fun onCreateFragmentAnimator(): FragmentAnimator {
         return DefaultHorizontalAnimator()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        EventBus.getDefault().unregister(ctx)
     }
 
 }

@@ -2,6 +2,8 @@ package com.soli.newframeapp.fragment
 
 import android.graphics.Color
 import androidx.core.os.bundleOf
+import com.soli.libcommon.base.BaseToolbarFragment
+import com.soli.libcommon.event.openFragment
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.test_fragment_view.*
 import java.util.*
@@ -13,9 +15,10 @@ import java.util.*
  */
 class TestOneFragment : BaseToolbarFragment() {
 
-    companion object{
+    companion object {
         var index = 0
     }
+
     override fun getContentView() = R.layout.test_fragment_view
 
     override fun initView() {
@@ -27,8 +30,8 @@ class TestOneFragment : BaseToolbarFragment() {
     override fun initListener() {
 
         displayText.setOnClickListener {
-            start(TestFragment().apply {
-                arguments =  bundleOf(
+            openFragment(TestFragment().apply {
+                arguments = bundleOf(
                     "title" to "标题${index}",
                     "content" to "我是内容"
                 )

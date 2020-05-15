@@ -5,8 +5,8 @@ import android.content.pm.ActivityInfo
 import android.content.res.TypedArray
 import android.os.Build
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatActivity
 import com.soli.libcommon.util.MLog
+import me.yokeyword.fragmentation_swipeback.SwipeBackActivity
 
 
 /**
@@ -15,12 +15,15 @@ import com.soli.libcommon.util.MLog
  * @author Soli
  * @Time 2019/4/2 09:55
  */
-open class BaseFixOTranslucentActivity : BaseFragmentationActivity() {
+open class BaseFixOTranslucentActivity : SwipeBackActivity() {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O && isTranslucentOrFloating()) {
-            MLog.e("fixOrientation", "onCreate fixOrientation when Oreo, result = ${fixOrientation()}")
+            MLog.e(
+                "fixOrientation",
+                "onCreate fixOrientation when Oreo, result = ${fixOrientation()}"
+            )
         }
 
         super.onCreate(savedInstanceState)
@@ -59,9 +62,13 @@ open class BaseFixOTranslucentActivity : BaseFragmentationActivity() {
         var isTranslucentOrFloating = false
         try {
             val styleableRes =
-                Class.forName("com.android.internal.R\$styleable").getField("Window").get(null) as IntArray
+                Class.forName("com.android.internal.R\$styleable").getField("Window")
+                    .get(null) as IntArray
             val ta = obtainStyledAttributes(styleableRes)
-            val m = ActivityInfo::class.java.getMethod("isTranslucentOrFloating", TypedArray::class.java)
+            val m = ActivityInfo::class.java.getMethod(
+                "isTranslucentOrFloating",
+                TypedArray::class.java
+            )
             m.isAccessible = true
             isTranslucentOrFloating = m.invoke(null, ta) as Boolean
             m.isAccessible = false

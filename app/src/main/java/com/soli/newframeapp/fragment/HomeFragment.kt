@@ -67,19 +67,6 @@ class HomeFragment : BaseFragment() {
         checkItem()
     }
 
-    /**
-     *
-     */
-    private fun animationMiniBar() {
-        if (_mActivity is LaunchUIHome) {
-            (_mActivity as LaunchUIHome).animationMiniBar(false)
-        }
-    }
-
-    override fun start(toFragment: ISupportFragment?) {
-        super.start(toFragment)
-        animationMiniBar()
-    }
 
     /**
      *
