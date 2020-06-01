@@ -1,46 +1,59 @@
-package com.soli.newframeapp
+package com.soli.newframeapp.main
 
 import android.Manifest
 import android.os.Handler
 import android.util.Log
 import android.view.View
+import android.widget.Toast
+import androidx.core.view.forEach
 import com.dhh.rxlifecycle2.RxLifecycle
-import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.base.BaseToolbarFragment
+import com.soli.libcommon.event.openFragment
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
-import com.soli.libcommon.util.NetworkUtil
-import com.soli.libcommon.util.RSAUtils
-import com.soli.libcommon.util.ToastUtils
+import com.soli.libcommon.util.*
 import com.soli.libcommon.view.root.LoadingType
+import com.soli.newframeapp.*
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.demo.TestTopSpecialActivity
 import com.soli.newframeapp.download.DownloadTestActivity
+import com.soli.newframeapp.fragment.LaunchUIHome
+import com.soli.newframeapp.motion.MotionLayoutFragment
 import com.soli.newframeapp.net.NetWorkTestActivity
 import com.soli.newframeapp.net.WebviewActivity
 import com.soli.newframeapp.palette.PaletteActivity
-import com.soli.newframeapp.pic.PicDealActivity
+import com.soli.newframeapp.pic.PicDealFragment
 import com.soli.newframeapp.pubu.PubuTestActivity
 import com.soli.newframeapp.span.SpecialSpanActivity
 import com.soli.newframeapp.toast.CustomToastActivity
 import com.soli.permissions.RxPermissions
-import com.soli.libcommon.util.openActivity
-import com.soli.newframeapp.fragment.LaunchUIHome
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.fragment_main.*
 
-class MainActivity : BaseActivity(), View.OnClickListener {
+/**
+ *
+ * @author Soli
+ * @Time 2020/6/1 13:55
+ */
+class MainFragment : BaseToolbarFragment() {
 
     private val retryIndex: Int = 1
     private var retry: Int = 0
-    private val rxPermissions by lazy { RxPermissions(ctx) }
+    private val rxPermissions by lazy { RxPermissions(childFragmentManager) }
 
 
-    override fun needSliderActivity() = false
+    override fun needSwipeBack() = false
 
-    override fun getContentView() = R.layout.activity_main
+    override fun getContentView() = R.layout.fragment_main
 
     override fun initView() {
-        title = "New Frame"
+        setTitle("New Frame")
+        homeLayout.forEach {
+            val click: (View) -> Unit = { child ->
+                onHomeClick(child)
+            }
+            it.clickView(click)
+        }
     }
 
     override fun setTitle(title: CharSequence) {
@@ -52,24 +65,6 @@ class MainActivity : BaseActivity(), View.OnClickListener {
     }
 
     override fun initListener() {
-
-        fragmentTest.setOnClickListener(this)
-        LauchActivity.setOnClickListener(this)
-        netWorkTest.setOnClickListener(this)
-        fileDownload.setOnClickListener(this)
-        webViewTest.setOnClickListener(this)
-        _23Test.setOnClickListener(this)
-        websocket.setOnClickListener(this)
-        btnColorMatrix.setOnClickListener(this)
-        btnBottomSheet.setOnClickListener(this)
-        btnCustFlex.setOnClickListener(this)
-        btnSpecialDemo.setOnClickListener(this)
-        btnpubo.setOnClickListener(this)
-        myToast.setOnClickListener(this)
-        palette.setOnClickListener(this)
-        richText.setOnClickListener(this)
-        rsaTest.setOnClickListener(this)
-        fragmentFramework.setOnClickListener(this)
 
         progressInTest.setOnClickListener {
             showProgress()
@@ -107,8 +102,11 @@ class MainActivity : BaseActivity(), View.OnClickListener {
         }, 2000)
     }
 
-    override fun onClick(v: View?) {
-        when (v?.id) {
+    /**
+     *
+     */
+    private fun onHomeClick(v: View) {
+        when (v.id) {
             R.id.LauchActivity -> openActivity<SecondAcitivity>()
             R.id.fragmentTest -> openActivity<FragmentTestActivity>()
             R.id.netWorkTest -> openActivity<NetWorkTestActivity>()
@@ -116,7 +114,7 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.webViewTest -> openActivity<WebviewActivity>()
             R.id._23Test -> openActivity<Android7Activity>()
             R.id.websocket -> openActivity<WebsocketActivity>()
-            R.id.btnColorMatrix -> openActivity<PicDealActivity>()
+            R.id.btnColorMatrix -> openFragment(PicDealFragment(),useEventBus = false)
             R.id.btnBottomSheet -> openActivity<BottomSheetTestActivity>()
             R.id.btnCustFlex -> openActivity<AutoWrapLayoutTestActivity>()
             R.id.btnSpecialDemo -> openActivity<TestTopSpecialActivity>()
@@ -126,6 +124,8 @@ class MainActivity : BaseActivity(), View.OnClickListener {
             R.id.richText -> openActivity<SpecialSpanActivity>()
             R.id.rsaTest -> rsaTest()
             R.id.fragmentFramework -> openActivity<LaunchUIHome>()
+            R.id.motionLayout -> openFragment(MotionLayoutFragment(),useEventBus = false)
+            else -> Toast.makeText(ctx, "没有需要点击打开的", Toast.LENGTH_SHORT).show()
         }
     }
 

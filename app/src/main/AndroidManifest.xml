@@ -20,7 +20,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
-        <activity android:name=".MainActivity">
+        <activity android:name=".main.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,7 +37,6 @@
         <activity android:name=".Android7Activity" />
         <activity android:name=".download.DownloadTestActivity" />
         <activity android:name=".WebsocketActivity" />
-        <activity android:name=".pic.PicDealActivity" />
         <activity android:name=".bottomsheet.BottomSheetTestActivity" />
         <activity android:name=".autowrap.AutoWrapLayoutTestActivity" />
         <activity android:name=".demo.TestTopSpecialActivity" />

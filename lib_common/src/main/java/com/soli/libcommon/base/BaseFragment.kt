@@ -6,6 +6,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.soli.libcommon.R
+import com.soli.libcommon.net.ApiResult
+import com.soli.libcommon.util.ToastUtils
 import com.soli.libcommon.view.root.LoadingType
 import com.soli.libcommon.view.root.RootView
 
@@ -130,6 +132,16 @@ abstract class BaseFragment : BaseFunctionFragment() {
     fun errorHappen(listener: () -> Unit) {
         rootView.errorHappen(listener, R.layout.error_trouble_layout, R.id.btnRetry)
 //        TODO("可以根据情况实际做相应的调整，这里只是case")
+    }
+
+    /**
+     *
+     */
+    fun errorHappen(pageNo: Int = 1, result: ApiResult<Any>, listener: () -> Unit) {
+        if (pageNo == 1)
+            rootView.errorHappen(listener, R.layout.error_trouble_layout, R.id.btnRetry)
+        else
+            ToastUtils.showShortToast(result.errormsg)
     }
 
     /**

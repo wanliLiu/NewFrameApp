@@ -2,6 +2,7 @@ package com.soli.libcommon.event
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatDialogFragment
+import com.soli.libcommon.base.common.CommonActivity
 import me.yokeyword.fragmentation.ISupportFragment
 import me.yokeyword.fragmentation.SupportFragment
 import org.greenrobot.eventbus.EventBus
@@ -20,11 +21,19 @@ data class OpenFragmentEvent(
 /**
  *
  */
-inline fun SupportFragment.openFragment(
+fun SupportFragment.openFragment(
     fragment: SupportFragment,
-    launchMode: Int = ISupportFragment.STANDARD
+    launchMode: Int = ISupportFragment.STANDARD,
+    //重新开一个Activity来装载Fragment
+    useEventBus: Boolean = true,
+    newActivity: Boolean = false
 ) {
-    EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
+    when {
+        newActivity -> CommonActivity.startFragment(requireActivity(), fragment)
+        requireActivity() is CommonActivity -> start(fragment, launchMode)
+        useEventBus -> EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
+        else -> start(fragment, launchMode)
+    }
 }
 
 /**
@@ -38,11 +47,17 @@ inline fun SupportFragment.popFragment() {
 /**
  *
  */
-inline fun Context.openFragment(
+fun Context.openFragment(
     fragment: SupportFragment,
-    launchMode: Int = ISupportFragment.STANDARD
+    launchMode: Int = ISupportFragment.STANDARD,
+    //重新开一个Activity来装载Fragment
+    newActivity: Boolean = false
 ) {
-    EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
+    when {
+        newActivity -> CommonActivity.startFragment(this, fragment)
+        this is CommonActivity -> start(fragment, launchMode)
+        else -> EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
+    }
 }
 
 /**
@@ -50,9 +65,13 @@ inline fun Context.openFragment(
  */
 inline fun AppCompatDialogFragment.openFragment(
     fragment: SupportFragment,
-    launchMode: Int = ISupportFragment.STANDARD
+    launchMode: Int = ISupportFragment.STANDARD,
+    newActivity: Boolean = false
 ) {
-    EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
+    if (newActivity)
+        CommonActivity.startFragment(requireActivity(), fragment)
+    else
+        EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
 }
 
 /**

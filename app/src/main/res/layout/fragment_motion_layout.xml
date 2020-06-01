@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.motion.widget.MotionLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/B2"
+    app:layoutDescription="@xml/fragment_motion_layout_scene"
+    app:showPaths="true">
+
+    <View
+        android:id="@+id/head"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/back"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:src="@color/A1"
+        app:layout_constraintBottom_toBottomOf="@id/head"
+        app:layout_constraintStart_toStartOf="@id/head"
+        app:layout_constraintTop_toTopOf="@id/head" />
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="个人资料"
+        android:textColor="@color/A1"
+        android:textSize="20sp"
+        app:layout_constraintBottom_toTopOf="@id/guideline"
+        app:layout_constraintEnd_toEndOf="@id/head"
+        app:layout_constraintStart_toStartOf="@id/head" />
+
+    <Button
+        android:id="@+id/sure"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="确定"
+        app:layout_constraintBottom_toBottomOf="@id/head"
+        app:layout_constraintEnd_toEndOf="@id/head"
+        app:layout_constraintTop_toTopOf="@id/head" />
+
+    <FrameLayout
+        android:id="@+id/motionContent"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:background="@color/actionbar_color"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/guideline" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintGuide_percent="0.2" />
+
+</androidx.constraintlayout.motion.widget.MotionLayout>

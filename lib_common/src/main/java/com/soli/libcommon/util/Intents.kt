@@ -47,7 +47,7 @@ inline fun <reified T : Fragment> FragmentActivity.openFragment(
  *
  */
 inline fun <reified T : Activity> Fragment.openActivity(vararg params: Pair<String, Any?>) =
-    Internals.internalStartActivity(context!!, T::class.java, params)
+    Internals.internalStartActivity(requireActivity(), T::class.java, params)
 
 /**
  *

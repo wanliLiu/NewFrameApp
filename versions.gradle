@@ -70,7 +70,7 @@ kotlin.coroutines_android = 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.
 deps.kotlin = kotlin
 
 //view
-deps.constraint_layout = 'androidx.constraintlayout:constraintlayout:1.+'
+deps.constraint_layout = 'androidx.constraintlayout:constraintlayout:2.+'
 deps.corektx = 'androidx.core:core-ktx:1.+'
 deps.fragmentktx = 'androidx.fragment:fragment-ktx:1.+'
 

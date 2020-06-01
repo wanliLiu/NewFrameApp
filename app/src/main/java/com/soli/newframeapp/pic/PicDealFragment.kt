@@ -6,7 +6,7 @@ import android.renderscript.Element
 import android.renderscript.RenderScript
 import android.renderscript.ScriptIntrinsicBlur
 import android.widget.SeekBar
-import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.MLog
 import com.soli.newframeapp.R
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_pic_deal.*
  * @author Soli
  * @Time 2018/11/12 09:38
  */
-class PicDealActivity : BaseActivity() {
+class PicDealFragment : BaseToolbarFragment() {
 
     private val MAX_VALUE = 255
     private val MID_VALUE = 127
@@ -35,7 +35,7 @@ class PicDealActivity : BaseActivity() {
 
     override fun initView() {
 
-        title = "ColorMatrix"
+        setTitle("ColorMatrix")
 
         seek1.max = MAX_VALUE
         seek1.progress = MID_VALUE
@@ -123,7 +123,7 @@ class PicDealActivity : BaseActivity() {
 
     private fun blur(bitmap: Bitmap, radius: Float): Bitmap? {
         val output = Bitmap.createBitmap(bitmap) // 创建输出图片
-        val rs = RenderScript.create(this) // 构建一个RenderScript对象
+        val rs = RenderScript.create(_mActivity) // 构建一个RenderScript对象
         val gaussianBlue = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs)) //
         // 创建高斯模糊脚本
         val allIn = Allocation.createFromBitmap(rs, bitmap) // 开辟输入内存

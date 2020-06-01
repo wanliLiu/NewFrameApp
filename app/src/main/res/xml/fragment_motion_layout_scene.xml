@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MotionScene xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ConstraintSet android:id="@+id/start">
+        <Constraint
+            android:id="@+id/guideline"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="50dp" />
+
+        <Constraint
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="0dp"
+            app:layout_constraintBottom_toBottomOf="@id/head"
+            app:layout_constraintEnd_toEndOf="@id/head"
+            app:layout_constraintStart_toStartOf="@id/head"
+            app:layout_constraintTop_toTopOf="@id/head">
+            <CustomAttribute
+                app:attributeName="textColor"
+                app:customColorValue="@color/A1" />
+        </Constraint>
+    </ConstraintSet>
+
+    <ConstraintSet android:id="@+id/end">
+        <Constraint
+            android:id="@+id/guideline"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_percent="0.3" />
+
+        <Constraint
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="20dp"
+            android:scaleX="2"
+            android:scaleY="2"
+            app:layout_constraintBottom_toTopOf="@id/guideline"
+            app:layout_constraintEnd_toEndOf="@id/head"
+            app:layout_constraintStart_toStartOf="@id/head">
+            <CustomAttribute
+                app:attributeName="textColor"
+                app:customColorValue="@color/accent" />
+        </Constraint>
+
+        <Constraint android:id="@+id/sure">
+            <PropertySet android:alpha="0" />
+        </Constraint>
+    </ConstraintSet>
+
+    <Transition
+        app:constraintSetEnd="@id/start"
+        app:constraintSetStart="@+id/end"
+        app:duration="1000"
+        app:motionInterpolator="linear">
+        <OnSwipe
+            app:dragDirection="dragDown"
+            app:touchAnchorId="@+id/motionContent" />
+        <OnClick
+            app:clickAction="toggle"
+            app:targetId="@id/title" />
+
+        <KeyFrameSet>
+            <KeyPosition
+                app:framePosition="50"
+                app:keyPositionType="pathRelative"
+                app:motionTarget="@id/title"
+                app:percentY="0.8" />
+            <KeyAttribute
+                android:rotation="90"
+                app:framePosition="50"
+                app:motionTarget="@id/title" />
+
+        </KeyFrameSet>
+    </Transition>
+</MotionScene>
