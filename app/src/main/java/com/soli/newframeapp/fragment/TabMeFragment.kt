@@ -1,7 +1,7 @@
 package com.soli.newframeapp.fragment
 
 import androidx.core.os.bundleOf
-import com.soli.libcommon.event.openFragment
+import com.soli.newframeapp.event.openFragment
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.fragment_me_view.*
 

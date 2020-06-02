@@ -8,7 +8,7 @@ import android.widget.Toast
 import androidx.core.view.forEach
 import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libcommon.base.BaseToolbarFragment
-import com.soli.libcommon.event.openFragment
+import com.soli.newframeapp.event.openFragment
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
 import com.soli.libcommon.util.*

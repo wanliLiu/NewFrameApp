@@ -1,9 +1,12 @@
-package com.soli.libcommon.event
+package com.soli.newframeapp.event
 
 import android.content.Context
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.soli.libcommon.base.common.CommonActivity
+import com.soli.libcommon.util.ToastUtils
+import com.soli.newframeapp.fragment.BaseLaunchUI
 import me.yokeyword.fragmentation.ISupportFragment
+import me.yokeyword.fragmentation.SupportActivity
 import me.yokeyword.fragmentation.SupportFragment
 import org.greenrobot.eventbus.EventBus
 
@@ -21,27 +24,32 @@ data class OpenFragmentEvent(
 /**
  *
  */
-fun SupportFragment.openFragment(
-    fragment: SupportFragment,
-    launchMode: Int = ISupportFragment.STANDARD,
-    //重新开一个Activity来装载Fragment
-    useEventBus: Boolean = true,
-    newActivity: Boolean = false
-) {
-    when {
-        newActivity -> CommonActivity.startFragment(requireActivity(), fragment)
-        requireActivity() is CommonActivity -> start(fragment, launchMode)
-        useEventBus -> EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
-        else -> start(fragment, launchMode)
-    }
+inline fun SupportFragment.popFragment() {
+    requireContext().popFragment()
 }
 
 /**
  *
  */
-inline fun SupportFragment.popFragment() {
-    EventBus.getDefault().post(OpenFragmentEvent(isPopEvent = true))
-    pop()
+inline fun Context.popFragment() {
+
+    if (this is BaseLaunchUI)
+        EventBus.getDefault().post(OpenFragmentEvent(isPopEvent = true))
+
+    if (this is SupportActivity)
+        onBackPressed()
+}
+
+/**
+ *
+ */
+fun SupportFragment.openFragment(
+    fragment: SupportFragment,
+    launchMode: Int = ISupportFragment.STANDARD,
+    //重新开一个Activity来装载Fragment
+    newActivity: Boolean = false
+) {
+    requireActivity().openFragment(fragment, launchMode, newActivity)
 }
 
 /**
@@ -56,7 +64,10 @@ fun Context.openFragment(
     when {
         newActivity -> CommonActivity.startFragment(this, fragment)
         this is CommonActivity -> start(fragment, launchMode)
-        else -> EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
+        this is BaseLaunchUI -> EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
+        else -> {
+            ToastUtils.showShortToast("你要要开那个地方")
+        }
     }
 }
 
@@ -68,17 +79,14 @@ inline fun AppCompatDialogFragment.openFragment(
     launchMode: Int = ISupportFragment.STANDARD,
     newActivity: Boolean = false
 ) {
-    if (newActivity)
-        CommonActivity.startFragment(requireActivity(), fragment)
-    else
-        EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
+    requireContext().openFragment(fragment, launchMode, newActivity)
 }
 
 /**
  * 是否需要显示底部的minbar
  */
-data class ShowMiniBarEvent(val show: Boolean)
+data class ShowMiniBarEvent(val show: Boolean, val animation: Boolean = false)
 
 inline fun SupportFragment.whetherShowMiniBar(show: Boolean = true) {
-    EventBus.getDefault().post(ShowMiniBarEvent(show))
+    EventBus.getDefault().post(ShowMiniBarEvent(show, true))
 }

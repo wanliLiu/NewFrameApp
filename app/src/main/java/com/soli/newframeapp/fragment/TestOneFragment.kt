@@ -3,7 +3,7 @@ package com.soli.newframeapp.fragment
 import android.graphics.Color
 import androidx.core.os.bundleOf
 import com.soli.libcommon.base.BaseToolbarFragment
-import com.soli.libcommon.event.openFragment
+import com.soli.newframeapp.event.openFragment
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.test_fragment_view.*
 import java.util.*

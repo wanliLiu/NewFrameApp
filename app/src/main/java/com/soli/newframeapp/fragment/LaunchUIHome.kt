@@ -9,8 +9,8 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.view.isVisible
 import com.soli.libcommon.base.BaseSwipeBackFragment
-import com.soli.libcommon.event.OpenFragmentEvent
-import com.soli.libcommon.event.ShowMiniBarEvent
+import com.soli.newframeapp.event.OpenFragmentEvent
+import com.soli.newframeapp.event.ShowMiniBarEvent
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.home_entrance.*
 import me.yokeyword.fragmentation.ISupportFragment
