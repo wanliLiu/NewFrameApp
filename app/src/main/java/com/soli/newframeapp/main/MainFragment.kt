@@ -8,7 +8,6 @@ import android.widget.Toast
 import androidx.core.view.forEach
 import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libcommon.base.BaseToolbarFragment
-import com.soli.newframeapp.event.openFragment
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
 import com.soli.libcommon.util.*
@@ -18,6 +17,7 @@ import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.demo.TestTopSpecialActivity
 import com.soli.newframeapp.download.DownloadTestActivity
+import com.soli.newframeapp.event.openFragment
 import com.soli.newframeapp.fragment.LaunchUIHome
 import com.soli.newframeapp.motion.MotionLayoutFragment
 import com.soli.newframeapp.net.NetWorkTestActivity
@@ -114,7 +114,7 @@ class MainFragment : BaseToolbarFragment() {
             R.id.webViewTest -> openActivity<WebviewActivity>()
             R.id._23Test -> openActivity<Android7Activity>()
             R.id.websocket -> openActivity<WebsocketActivity>()
-            R.id.btnColorMatrix -> openFragment(PicDealFragment(),useEventBus = false)
+            R.id.btnColorMatrix -> openFragment(PicDealFragment(),newActivity = true)
             R.id.btnBottomSheet -> openActivity<BottomSheetTestActivity>()
             R.id.btnCustFlex -> openActivity<AutoWrapLayoutTestActivity>()
             R.id.btnSpecialDemo -> openActivity<TestTopSpecialActivity>()
@@ -124,7 +124,7 @@ class MainFragment : BaseToolbarFragment() {
             R.id.richText -> openActivity<SpecialSpanActivity>()
             R.id.rsaTest -> rsaTest()
             R.id.fragmentFramework -> openActivity<LaunchUIHome>()
-            R.id.motionLayout -> openFragment(MotionLayoutFragment(),useEventBus = false)
+            R.id.motionLayout -> start(MotionLayoutFragment())
             else -> Toast.makeText(ctx, "没有需要点击打开的", Toast.LENGTH_SHORT).show()
         }
     }

@@ -47,9 +47,11 @@ fun SupportFragment.openFragment(
     fragment: SupportFragment,
     launchMode: Int = ISupportFragment.STANDARD,
     //重新开一个Activity来装载Fragment
+    //重新开一个Activity来装载Fragment
+    useEventBus: Boolean = true,
     newActivity: Boolean = false
 ) {
-    requireActivity().openFragment(fragment, launchMode, newActivity)
+    requireActivity().openFragment(fragment, launchMode, useEventBus,newActivity)
 }
 
 /**
@@ -59,12 +61,13 @@ fun Context.openFragment(
     fragment: SupportFragment,
     launchMode: Int = ISupportFragment.STANDARD,
     //重新开一个Activity来装载Fragment
+    useEventBus: Boolean = true,
     newActivity: Boolean = false
 ) {
     when {
         newActivity -> CommonActivity.startFragment(this, fragment)
         this is CommonActivity -> start(fragment, launchMode)
-        this is BaseLaunchUI -> EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
+        useEventBus -> EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
         else -> {
             ToastUtils.showShortToast("你要要开那个地方")
         }

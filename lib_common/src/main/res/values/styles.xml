@@ -1,22 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/primary</item>
+        <item name="colorPrimaryDark">@color/primary_dark</item>
+        <item name="colorAccent">@color/accent</item>
+        <!--<item name="android:windowBackground">@color/color_bg</item>-->
+        <!--<item name="android:selectableItemBackground">@color/color_white</item>-->
+        <item name="android:textColorPrimary">@color/primary_text</item>
+        <item name="android:textColorSecondary">@color/secondary_text</item>
 
-    <!--这个地方 只是因为使用Toolbar才放到这个地方,具体视情况而定,不一定放大这里-->
+        <!--<item name="android:divider">@color/divider</item>-->
+        <item name="android:textAllCaps">false</item>
 
-    <!--&lt;!&ndash; toolbar菜单样式 &ndash;&gt;-->
-    <!--<style name="ToolbarTheme" parent="@style/ThemeOverlay.AppCompat.ActionBar">-->
-        <!--&lt;!&ndash;<item name="actionMenuTextColor">@android:color/white</item>&ndash;&gt;-->
-        <!--<item name="android:textColorPrimary">#ffffff</item>-->
-    <!--</style>-->
-    <!--&lt;!&ndash; toolbar弹出菜单样式 &ndash;&gt;-->
-    <!--<style name="ToolbarPopupTheme" parent="@style/ThemeOverlay.AppCompat">-->
-        <!--<item name="android:textColorPrimary">#212121</item>-->
-        <!--<item name="android:textColorSecondary">#757575</item>-->
-    <!--</style>-->
-    <!--<style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />-->
-    <!--<style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />-->
 
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+
+    </style>
+
+    <style name="AppTheme.Common" parent="@style/AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
 
     <style name="CustomProgressDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowContentOverlay">@null</item>
