@@ -4,22 +4,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.activity_span.*
+import kotlinx.android.synthetic.main.fragment_span.*
 
 /**
  *
  * @author Soli
  * @Time 2019-08-08 18:04
  */
-class SpecialSpanActivity : BaseActivity() {
+class SpecialSpanFragment : BaseToolbarFragment() {
 
-    override fun getContentView() = R.layout.activity_span
+    override fun getContentView() = R.layout.fragment_span
 
     override fun initView() {
 
-        title = "富文本测试"
+        setTitle("富文本测试")
         testSelect.anotherTest()
 
         demoList.visibility = View.GONE
@@ -31,11 +31,9 @@ class SpecialSpanActivity : BaseActivity() {
 //        })
     }
 
-    override fun initListener() {
-    }
+    override fun initListener()  = Unit
 
-    override fun initData() {
-    }
+    override fun initData()  = Unit
 
     private class DemoAdapte : RecyclerView.Adapter<DemoAdapte.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

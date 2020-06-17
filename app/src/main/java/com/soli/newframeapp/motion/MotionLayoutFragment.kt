@@ -10,12 +10,7 @@ import com.soli.newframeapp.R
  */
 class MotionLayoutFragment : BaseToolbarFragment() {
     override fun getContentView() = R.layout.fragment_motion_layout
-    override fun initView() {
-    }
-
-    override fun initListener() {
-    }
-
-    override fun initData() {
-    }
+    override fun initView() = Unit
+    override fun initListener()  = Unit
+    override fun initData()  = Unit
 }

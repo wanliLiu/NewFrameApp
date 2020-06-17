@@ -107,8 +107,12 @@ dependencies {
 
     implementation deps.toolargetool
 
-    api deps.fragmentationx
+//    api deps.fragmentationx
 //    api deps.fragmentationx_core
-    api deps.fragmentationx_swipeback
+//    api deps.fragmentationx_swipeback
 //    api deps.fragmentationx_eventbus
+
+    api (name: 'fragmentation-1.0.3', ext: 'aar')
+    api (name: 'fragmentation_core-1.0.3', ext: 'aar')
+    api (name: 'fragmentation_swipeback-1.0.3', ext: 'aar')
 }

@@ -25,7 +25,7 @@ import com.soli.newframeapp.net.WebviewActivity
 import com.soli.newframeapp.palette.PaletteActivity
 import com.soli.newframeapp.pic.PicDealFragment
 import com.soli.newframeapp.pubu.PubuTestActivity
-import com.soli.newframeapp.span.SpecialSpanActivity
+import com.soli.newframeapp.span.SpecialSpanFragment
 import com.soli.newframeapp.toast.CustomToastActivity
 import com.soli.permissions.RxPermissions
 import kotlinx.android.synthetic.main.fragment_main.*
@@ -114,14 +114,14 @@ class MainFragment : BaseToolbarFragment() {
             R.id.webViewTest -> openActivity<WebviewActivity>()
             R.id._23Test -> openActivity<Android7Activity>()
             R.id.websocket -> openActivity<WebsocketActivity>()
-            R.id.btnColorMatrix -> openFragment(PicDealFragment(),newActivity = true)
+            R.id.btnColorMatrix -> openFragment(PicDealFragment(), newActivity = true)
             R.id.btnBottomSheet -> openActivity<BottomSheetTestActivity>()
             R.id.btnCustFlex -> openActivity<AutoWrapLayoutTestActivity>()
             R.id.btnSpecialDemo -> openActivity<TestTopSpecialActivity>()
             R.id.btnpubo -> openActivity<PubuTestActivity>()
             R.id.myToast -> openActivity<CustomToastActivity>()
             R.id.palette -> openActivity<PaletteActivity>()
-            R.id.richText -> openActivity<SpecialSpanActivity>()
+            R.id.richText -> start(SpecialSpanFragment())
             R.id.rsaTest -> rsaTest()
             R.id.fragmentFramework -> openActivity<LaunchUIHome>()
             R.id.motionLayout -> start(MotionLayoutFragment())

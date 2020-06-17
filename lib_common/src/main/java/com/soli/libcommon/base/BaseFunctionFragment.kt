@@ -48,6 +48,12 @@ abstract class BaseFunctionFragment : SwipeBackFragment(), BaseInterface {
         return handler
     }
 
+
+    override fun onStop() {
+        resetPreFragmentView()
+        super.onStop()
+    }
+
     protected fun postRunnable(runnable: Runnable) {
         handler.post(Runnable {
             // validate

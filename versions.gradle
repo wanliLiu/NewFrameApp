@@ -177,6 +177,7 @@ def addRepos(RepositoryHandler handler) {
 
     handler.maven { url 'https://dl.bintray.com/guardian/android' }
 
+    handler.flatDir { dirs project(':lib_common').file('libs') }
 }
 
 ext.addRepos = this.&addRepos

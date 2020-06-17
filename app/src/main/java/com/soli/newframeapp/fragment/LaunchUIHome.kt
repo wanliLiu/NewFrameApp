@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.soli.libcommon.base.BaseSwipeBackFragment
 import com.soli.newframeapp.event.OpenFragmentEvent
@@ -104,11 +105,33 @@ class LaunchUIHome : BaseLaunchUI() {
         if (!isFirstSwipe && toFragment is BaseSwipeBackFragment) {
             if (toFragment.needSwipeBack()) {
                 isFirstSwipe = true
-                toFragment.dragStateCallBack = {
-                    animationMiniBar()
+                toFragment.dragStateCallBack = { done, progress ->
+                    isFirstSwipe = !done
+                    swipeAnimationMiniBar(progress)
                 }
             }
         }
+    }
+
+    /**
+     * 滑动退出的minibar的动画
+     */
+    private fun swipeAnimationMiniBar(proress: Float) {
+
+        if (showTabBar || minibar.isInvisible) return
+
+        if (proress >= 1f)
+            showTabBar = true
+
+        if (proress <= 0f)
+            showTabBar = false
+
+
+        val tabBarHeight =
+            ctx.resources.getDimensionPixelOffset(R.dimen.home_tab_bar_height)
+        val value = (tabBarHeight * proress).toInt()
+        emptySpace.layoutParams.height = value
+        minibar.requestLayout()
     }
 
     /**

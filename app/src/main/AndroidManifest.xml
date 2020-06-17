@@ -43,7 +43,6 @@
         <activity android:name=".pubu.PubuTestActivity" />
         <activity android:name=".toast.CustomToastActivity" />
         <activity android:name=".palette.PaletteActivity" />
-        <activity android:name=".span.SpecialSpanActivity" />
         <activity android:name=".fragment.LaunchUIHome" />
 
         <service android:name=".download.DownloadService" />
