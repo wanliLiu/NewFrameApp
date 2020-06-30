@@ -39,7 +39,7 @@ class MainFragment : BaseToolbarFragment() {
 
     private val retryIndex: Int = 1
     private var retry: Int = 0
-    private val rxPermissions by lazy { RxPermissions(childFragmentManager) }
+    private val rxPermissions by lazy { RxPermissions(this) }
 
 
     override fun needSwipeBack() = false

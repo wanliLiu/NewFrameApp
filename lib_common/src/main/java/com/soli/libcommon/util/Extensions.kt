@@ -5,6 +5,8 @@ import android.content.Context
 import android.content.Intent
 import android.util.TypedValue
 import android.view.View
+import java.lang.reflect.InvocationHandler
+import java.lang.reflect.Proxy
 
 /**
  *
@@ -47,4 +49,17 @@ fun Context.start(intent: Intent, requestCode: Int) {
         startActivity(intent)
     else if (this is Activity)
         this.startActivityForResult(intent, requestCode)
+}
+
+/**
+ * 用来那些不需要全部继承方法的
+ */
+inline fun <reified T : Any> noOpDelegate(): T {
+    val javaClass = T::class.java
+    val noOpHandler = InvocationHandler { _, _, _ ->
+        // no op
+    }
+    return Proxy.newProxyInstance(
+        javaClass.classLoader, arrayOf(javaClass), noOpHandler
+    ) as T
 }

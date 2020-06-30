@@ -6,6 +6,7 @@ import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.gu.toolargetool.TooLargeTool
 import com.soli.libcommon.base.Constant
+import com.soli.libcommon.util.ActivityStackRecord
 import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.MLog
 import io.reactivex.plugins.RxJavaPlugins
@@ -23,6 +24,7 @@ abstract class BaseApplication : MultiDexApplication() {
         super.onCreate()
 
         Constant.init(this)
+        ActivityStackRecord.getInstance()
 
         beforeLaunch()
 
@@ -40,6 +42,7 @@ abstract class BaseApplication : MultiDexApplication() {
         setRxJavaErrorHandler()
 
         initFragmentation()
+
 
     }
 
