@@ -19,7 +19,6 @@ abstract class BaseActivity : BaseFunctionActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         setContentViews()
         initView()
         initListener()

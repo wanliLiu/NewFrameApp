@@ -2,13 +2,14 @@ package com.soli.libcommon
 
 import android.os.Build
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.multidex.MultiDexApplication
+import com.bytedance.boost_multidex.BoostMultiDexApplication
 import com.facebook.stetho.Stetho
 import com.gu.toolargetool.TooLargeTool
 import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.ActivityStackRecord
 import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.MLog
+import com.soli.libcommon.util.setCustomDensity
 import io.reactivex.plugins.RxJavaPlugins
 import me.yokeyword.fragmentation.Fragmentation
 
@@ -16,15 +17,16 @@ import me.yokeyword.fragmentation.Fragmentation
  * @author Soli
  * @Time 18-5-15 上午11:07
  */
-abstract class BaseApplication : MultiDexApplication() {
+abstract class BaseApplication : BoostMultiDexApplication() {
 
     protected abstract fun beforeLaunch()
 
     override fun onCreate() {
+        setCustomDensity()
         super.onCreate()
 
         Constant.init(this)
-        ActivityStackRecord.getInstance()
+        ActivityStackRecord.init()
 
         beforeLaunch()
 

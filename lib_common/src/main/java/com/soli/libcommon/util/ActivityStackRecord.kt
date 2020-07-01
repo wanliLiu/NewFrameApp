@@ -2,6 +2,7 @@ package com.soli.libcommon.util
 
 import android.app.Activity
 import android.app.Application
+import android.content.Context
 import android.os.Bundle
 import com.soli.libcommon.base.Constant
 import java.util.*
@@ -20,17 +21,28 @@ class ActivityStackRecord private constructor(app: Application) :
         /**
          * Actvity存储栈
          */
-        private var mActivityStack: Stack<Activity>? = null
+        private val mActivityStack: Stack<Activity> = Stack()
 
         @Volatile
         private var instance: ActivityStackRecord? = null
 
-        fun getInstance(app: Application = Constant.getContext() as Application): ActivityStackRecord =
+        val stackRecord: ActivityStackRecord
+            get() {
+                require(instance != null) { "Please ActivityStackRecord.init() first in Application.onCreate" }
+                return instance!!
+            }
+
+        /**
+         *
+         */
+        fun init(app: Application = Constant.getContext() as Application) {
             instance ?: synchronized(this) {
                 instance ?: ActivityStackRecord(app).also {
                     instance = it
                 }
             }
+        }
+
     }
 
     init {
@@ -41,7 +53,7 @@ class ActivityStackRecord private constructor(app: Application) :
      * 获取栈顶Activity（堆栈中最后一个压入的）
      */
     val topActivity: Activity?
-        get() = if (mActivityStack != null && mActivityStack!!.size > 0) mActivityStack!!.lastElement() else null
+        get() = if (mActivityStack.size > 0) mActivityStack.lastElement() else null
 
     /**
      * 获取堆栈中第一个activity
@@ -49,10 +61,10 @@ class ActivityStackRecord private constructor(app: Application) :
      * @return
      */
     val bottomActivity: Activity?
-        get() = if (mActivityStack != null && mActivityStack!!.size > 0) mActivityStack!!.firstElement() else null
+        get() = if (mActivityStack.size > 0) mActivityStack.firstElement() else null
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        addActivity(activity)
+        mActivityStack.add(activity)
     }
 
     override fun onActivityResumed(activity: Activity) {
@@ -66,27 +78,8 @@ class ActivityStackRecord private constructor(app: Application) :
     }
 
     override fun onActivityDestroyed(activity: Activity) {
-        remove(activity)
-    }
-
-    /**
-     * 添加Activity到堆栈
-     */
-    private fun addActivity(activity: Activity) {
-        if (mActivityStack == null) {
-            mActivityStack = Stack()
-        }
-        mActivityStack!!.add(activity)
-    }
-
-    /**
-     * 从栈里删除activity
-     *
-     * @param activity
-     */
-    private fun remove(activity: Activity?) {
-        if (activity != null && mActivityStack != null && mActivityStack!!.contains(activity)) {
-            mActivityStack!!.remove(activity)
+        if (mActivityStack.contains(activity)) {
+            mActivityStack.remove(activity)
         }
     }
 
@@ -94,10 +87,7 @@ class ActivityStackRecord private constructor(app: Application) :
      * 结束栈顶Activity（堆栈中最后一个压入的）
      */
     fun killTopActivity() {
-        val activity = topActivity
-        if (activity != null) {
-            killActivity(activity)
-        }
+        topActivity?.let { killActivity(it) }
     }
 
     /**
@@ -105,8 +95,8 @@ class ActivityStackRecord private constructor(app: Application) :
      */
     fun killActivity(activity: Activity?) {
         if (activity != null) {
-            mActivityStack!!.remove(activity)
-            activity.finish()
+            mActivityStack.remove(activity)
+            activity.onBackPressed()
         }
     }
 
@@ -116,13 +106,13 @@ class ActivityStackRecord private constructor(app: Application) :
     @Synchronized
     fun killActivity(vararg calsses: Class<*>) {
 
-        if (mActivityStack == null || mActivityStack!!.isEmpty())
+        if (mActivityStack.isEmpty())
             return
 
         val activities = ArrayList<Activity>()
 
         for (cls in calsses) {
-            for (activity in mActivityStack!!) {
+            for (activity in mActivityStack) {
                 if (activity.javaClass == cls) {
                     activities.add(activity)
                 }
@@ -132,25 +122,18 @@ class ActivityStackRecord private constructor(app: Application) :
         for (activity in activities) {
             killActivity(activity)
         }
-
     }
 
     /**
      * 结束所有Activity
      */
     fun killAllActivity() {
-        if (mActivityStack == null || mActivityStack!!.isEmpty()) {
+        if (mActivityStack.isEmpty()) {
             return
         }
-        var i = 0
-        val size = mActivityStack!!.size
-        while (i < size) {
-            if (null != mActivityStack!![i]) {
-                mActivityStack!![i].finish()
-            }
-            i++
-        }
-        mActivityStack!!.clear()
+
+        mActivityStack.forEach { it.onBackPressed() }
+        mActivityStack.clear()
     }
 
     /**
@@ -162,16 +145,10 @@ class ActivityStackRecord private constructor(app: Application) :
         if (activity == null) {
             return
         }
-        var i = 0
-        val size = mActivityStack!!.size
-        while (i < size) {
-            if (null != mActivityStack!![i] && activity !== mActivityStack!![i]) {
-                mActivityStack!![i].finish()
-            }
-            i++
-        }
-        mActivityStack!!.clear()
-        mActivityStack!!.add(activity)
+
+        mActivityStack.forEach { if (it !== activity) it.onBackPressed() }
+        mActivityStack.clear()
+        mActivityStack.add(activity)
     }
 
     /**
@@ -191,20 +168,8 @@ class ActivityStackRecord private constructor(app: Application) :
      * @param className
      * @return
      */
-    fun getActivityByName(className: String): Activity? {
-        var activity: Activity? = null
-        var i = 0
-        val size = mActivityStack!!.size
-        while (i < size) {
-            if (null != mActivityStack!![i]) {
-                if (mActivityStack!![i].javaClass.name == className) {
-                    activity = mActivityStack!![i]
-                }
-            }
-            i++
-        }
-        return activity
-    }
+    fun getActivityByName(className: String): Activity? =
+        mActivityStack.find { it.javaClass.name == className }
 
     /**
      * 删除并结束掉Activity
@@ -212,25 +177,18 @@ class ActivityStackRecord private constructor(app: Application) :
      * @param activity
      */
     fun removeActivity(activity: Activity?) {
+        activity ?: return
 
-        var pos = -1
-        if (activity != null && mActivityStack != null) {
-            var i = 0
-            val size = mActivityStack!!.size
-            while (i < size) {
-                if (null != mActivityStack!![i]) {
-                    if (activity === mActivityStack!![i]) {
-                        pos = i
-                        activity.finish()
-                    }
-                }
-                i++
-            }
-            if (pos != -1) {
-                mActivityStack!!.removeAt(pos)
-            }
+        val index = mActivityStack.indexOf(activity)
+        if (index > -1) {
+            mActivityStack.removeAt(index)
+            activity.onBackPressed()
         }
     }
-
-
 }
+
+inline val Context.activityStackRecord: ActivityStackRecord
+    get() = ActivityStackRecord.stackRecord
+
+inline val Activity.activityStackRecord: ActivityStackRecord
+    get() = ActivityStackRecord.stackRecord

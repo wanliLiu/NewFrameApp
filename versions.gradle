@@ -123,6 +123,7 @@ deps.arouter_compiler = "com.alibaba:arouter-compiler:$versions.arouter_compiler
 deps.materialishPro = "com.pnikosis:materialish-progress:$versions.mterialprogress"
 deps.flexbox = "com.google.android:flexbox:$versions.flexbox"
 deps.rxpermissions = "com.soli.lib:rxpermissions:latest.release"
+deps.boost_multidex = 'com.bytedance.boost_multidex:boost_multidex:latest.release'
 deps.pullupdown = 'com.soli.refresh:pull_up_down:1.0.1'
 deps.nineOld = 'com.nineoldandroids:library:2.4.0'
 deps.silder = 'com.r0adkll:slidableactivity:2.0.6'

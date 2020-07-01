@@ -42,7 +42,9 @@ dependencies {
     api deps.kotlin.coroutines_android
 
     //android support
-    api deps.support.multidex
+//    api deps.support.multidex
+    api deps.boost_multidex
+
     api deps.support.app_compat
     api deps.support.recyclerview
     api deps.support.design

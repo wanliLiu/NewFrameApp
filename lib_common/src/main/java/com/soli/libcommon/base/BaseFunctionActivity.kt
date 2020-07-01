@@ -7,6 +7,7 @@ import android.view.inputmethod.InputMethodManager
 import com.soli.libcommon.R
 import com.soli.libcommon.util.KeyBoardUtils
 import com.soli.libcommon.util.StatusBarUtil
+import com.soli.libcommon.util.setCustomDensity
 import com.soli.libcommon.view.root.LoadingDialog
 
 /**
@@ -22,12 +23,9 @@ abstract class BaseFunctionActivity : BaseFixOTranslucentActivity(), BaseInterfa
 
     private var dialog: LoadingDialog? = null
 
-    @JvmField
-    protected var savedInstanceState: Bundle? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
+        setCustomDensity()
         super.onCreate(savedInstanceState)
-        this.savedInstanceState = savedInstanceState
     }
 
     /**
