@@ -1,15 +1,13 @@
 package com.soli.libcommon
 
 import android.os.Build
+import android.webkit.WebView
 import androidx.appcompat.app.AppCompatDelegate
 import com.bytedance.boost_multidex.BoostMultiDexApplication
 import com.facebook.stetho.Stetho
 import com.gu.toolargetool.TooLargeTool
 import com.soli.libcommon.base.Constant
-import com.soli.libcommon.util.ActivityStackRecord
-import com.soli.libcommon.util.FrescoUtil
-import com.soli.libcommon.util.MLog
-import com.soli.libcommon.util.setCustomDensity
+import com.soli.libcommon.util.*
 import io.reactivex.plugins.RxJavaPlugins
 import me.yokeyword.fragmentation.Fragmentation
 
@@ -30,23 +28,71 @@ abstract class BaseApplication : BoostMultiDexApplication() {
 
         beforeLaunch()
 
-        initSkin()
+        FrescoUtil.Init(this)
 
+        initForProcess()
+    }
+
+
+    /**
+     * 根据进程来选择性初始化
+     */
+    private fun initForProcess() {
+        val processName = ProcessName.getCurrentProcessName()
+        setWebViewSuffix(processName)
+        MLog.e("当前运行的进程", processName)
+        when (processName) {
+            ProcessName.MainProcess -> initForMainProcess()
+            ProcessName.NimCoreProcess -> initForNimCoreProcess()
+            ProcessName.JpusCoreProcess -> initForJpusCoreProcess()
+        }
+    }
+
+
+    /**
+     * 主进程初始
+     */
+    open fun initForMainProcess() {
         if (Constant.Debug) {
             Stetho.initializeWithDefaults(this)
             TooLargeTool.startLogging(this)
         }
 
-
-        FrescoUtil.Init(this)
-
-        //Rxjava error handler  捕获Rxjava抛出的异常
-        setRxJavaErrorHandler()
+        initSkin()
 
         initFragmentation()
 
+        //Rxjava error handler  捕获Rxjava抛出的异常
+        setRxJavaErrorHandler()
+    }
+
+    /**
+     * 聊天进程需要的初始化
+     */
+    open fun initForNimCoreProcess() {
 
     }
+
+    /**
+     * 推送后台进程
+     */
+    open fun initForJpusCoreProcess() {
+
+    }
+
+    /**
+     *Android P 以及之后版本不支持同时从多个进程使用具有相同数据目录的WebView
+     */
+    private fun setWebViewSuffix(processName: String) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
+            MLog.e("setWebViewSuffix: $processName")
+            if (processName != packageName) {
+                MLog.e("setWebViewSuffix: $processName---real")
+                WebView.setDataDirectorySuffix(processName)
+            }
+        }
+    }
+
 
     /**
      * 初始化皮肤框架
