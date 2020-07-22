@@ -3,7 +3,9 @@ package com.soli.libcommon.view
 import android.content.Context
 import android.util.AttributeSet
 import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.content.ContextCompat
 import com.google.android.material.appbar.AppBarLayout
+import com.soli.libcommon.R
 
 /**
  *
@@ -19,6 +21,12 @@ class FixAppBarLayout : AppBarLayout, CoordinatorLayout.AttachedBehavior {
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+
+
+//    init {
+        //设置背景色为透明，不然会用colorPrimary，AppBarLayout默认用colorPrimary
+//        setBackgroundColor(ContextCompat.getColor(context, R.color.transparent))
+//    }
 
 
     override fun getBehavior(): CoordinatorLayout.Behavior<AppBarLayout> {

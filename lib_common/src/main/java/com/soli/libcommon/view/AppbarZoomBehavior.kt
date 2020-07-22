@@ -1,16 +1,17 @@
 package com.soli.libcommon.view
 
+import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewConfiguration
+import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
-import com.soli.libcommon.R
-import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.MLog
+import com.soli.libcommon.util.noOpDelegate
+import kotlin.math.max
+import kotlin.math.min
 
 /*
  * @author soli
@@ -18,12 +19,23 @@ import com.soli.libcommon.util.MLog
  */
 class AppbarZoomBehavior : AppBarLayout.Behavior {
 
+    private val Tag = "AppbarZoomBehavior"
+
+    private val TAG = "zoomImage"
+    private val TAG_MIDDLE = "middle"
+
     private var mImageView: View? = null
+    private var middleLayout: View? = null
+
     private var mAppbarHeight = 0//记录AppbarLayout原始高度
     private var mImageViewHeight = 0//记录ImageView原始高度
+    private var mMiddleHeight = 0
+
     private var mTotalDy = 0f//手指在Y轴滑动的总距离
     private var mScaleValue = 0f//图片缩放比例
     private var mLastBottom = 0//Appbar的变化高度
+
+    private var isInit = false
 
     private val MAX_ZOOM_HEIGHT = 800f//放大最大高度
 
@@ -31,16 +43,10 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
 
     private var valueAnimator: ValueAnimator? = null
 
-    private var canDetect: Boolean = false
+    private var lastRefreshTime = 0L
+    private var refresDuration = 10//ms
 
-    private val mTouchSlop by lazy {
-        ViewConfiguration.get(Constant.getContext()).scaledTouchSlop
-    }
-    private var mLastMotionY: Float = 0.0f
-
-    private var mIsBeingDragged: Boolean = false
-
-    private var dragDistance: Float = 0.0f
+    private var userRequestLayout = false
 
     constructor()
 
@@ -48,61 +54,14 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs)
 
 
-    override fun onInterceptTouchEvent(parent: androidx.coordinatorlayout.widget.CoordinatorLayout, child: AppBarLayout, ev: MotionEvent): Boolean {
-        MLog.e("event","onInterceptTouchEvent")
-//        if (child.bottom >= mAppbarHeight) {
-//            val action = ev.action
-//
-//            if (action == MotionEvent.ACTION_MOVE && mIsBeingDragged)
-//                return true
-//
-//            val y = ev.y
-//            when (ev.action) {
-//                MotionEvent.ACTION_DOWN -> {
-//                    mIsBeingDragged = false
-//                    mLastMotionY = y
-//                    dragDistance = 0.0f
-//                }
-//                MotionEvent.ACTION_MOVE -> {
-//                    val ydiff = y - mLastMotionY
-//                    mIsBeingDragged = ydiff > 0 //&& ydiff >= mTouchSlop
-//                    dragDistance = ydiff
-//                }
-//                MotionEvent.ACTION_CANCEL -> mIsBeingDragged = false
-//            }
-//
-//            return true
-//        }
-
-        return super.onInterceptTouchEvent(parent, child, ev)
-    }
-
-    override fun onTouchEvent(parent: androidx.coordinatorlayout.widget.CoordinatorLayout, child: AppBarLayout, ev: MotionEvent): Boolean {
-        MLog.e("event","onTouchEvent")
-//        if (child.bottom >= mAppbarHeight) {
-//            val y = ev.y
-//            when (ev.action) {
-//                MotionEvent.ACTION_DOWN -> {
-//                    mLastMotionY = y
-//                }
-//                MotionEvent.ACTION_MOVE -> {
-//                    val ydiff = y - mLastMotionY
-//                    dragDistance += ydiff
-//                    Log.e("distance", dragDistance.toString())
-//                    Log.e("ydiff", ydiff.toString())
-//                    zoomHeaderImageView(child, ydiff.toInt())
-//                    mLastMotionY = y
-//                }
-//                MotionEvent.ACTION_UP, MotionEvent.ACTION_CANCEL -> recovery(child)
-//            }
-//            return true
-//        }
-        return super.onTouchEvent(parent, child, ev)
-    }
-
-    override fun onLayoutChild(parent: androidx.coordinatorlayout.widget.CoordinatorLayout, abl: AppBarLayout, layoutDirection: Int): Boolean {
+    override fun onLayoutChild(
+        parent: androidx.coordinatorlayout.widget.CoordinatorLayout,
+        abl: AppBarLayout,
+        layoutDirection: Int
+    ): Boolean {
         val handled = super.onLayoutChild(parent, abl, layoutDirection)
-        init(abl)
+        if (!isInit)
+            init(abl)
         return handled
     }
 
@@ -112,11 +71,17 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      * @param abl
      */
     private fun init(abl: AppBarLayout) {
+        isInit = true
         abl.clipChildren = false
         mAppbarHeight = abl.height
-        mImageView = abl.findViewById(R.id.zoom_image)
+        middleLayout = abl.findViewWithTag(TAG_MIDDLE)
+        mImageView = abl.findViewWithTag(TAG)
         if (mImageView != null) {
             mImageViewHeight = mImageView!!.height
+        }
+
+        if (middleLayout != null) {
+            mMiddleHeight = middleLayout!!.height
         }
     }
 
@@ -129,7 +94,17 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         type: Int
     ): Boolean {
         isAnimate = true
-        return super.onStartNestedScroll(parent, child, directTargetChild, target, nestedScrollAxes, type)
+
+        if (target is TransparentEventView) return true
+
+        return super.onStartNestedScroll(
+            parent,
+            child,
+            directTargetChild,
+            target,
+            nestedScrollAxes,
+            type
+        )
     }
 
     /**
@@ -166,7 +141,15 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
                 zoomHeaderImageView(child, dy)
             } else {
                 if (valueAnimator == null || !valueAnimator!!.isRunning) {
-                    super.onNestedPreScroll(coordinatorLayout, child, target, dx, dy, consumed, type)
+                    super.onNestedPreScroll(
+                        coordinatorLayout,
+                        child,
+                        target,
+                        dx,
+                        dy,
+                        consumed,
+                        type
+                    )
                 }
 
             }
@@ -182,14 +165,32 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      * @param dy
      */
     private fun zoomHeaderImageView(abl: AppBarLayout, dy: Int) {
-        mTotalDy += -dy
-        mTotalDy = Math.min(mTotalDy, MAX_ZOOM_HEIGHT)
-        mScaleValue = Math.max(1f, 1f + mTotalDy / MAX_ZOOM_HEIGHT)
-        MLog.e("scale", "mScaleValue:$mScaleValue mTotalDy:$mTotalDy")
-        mImageView!!.scaleX = mScaleValue
-        mImageView!!.scaleY = mScaleValue
-        mLastBottom = mAppbarHeight + (mImageViewHeight / 2 * (mScaleValue - 1)).toInt()
-        abl.bottom = mLastBottom
+
+        if (userRequestLayout) {
+            mTotalDy += -dy
+            mTotalDy = min(mTotalDy, MAX_ZOOM_HEIGHT)
+
+            val displayHeight = mImageViewHeight + mTotalDy
+            MLog.d(
+                Tag,
+                "dy= $dy mTotalDy = $mTotalDy  mImageViewHeight = $mImageViewHeight  displayHeihgt = $displayHeight"
+            )
+
+            refreshParams(displayHeight.toInt())
+        } else {
+
+            mTotalDy += -dy
+            mTotalDy = min(mTotalDy, MAX_ZOOM_HEIGHT)
+            mScaleValue = max(1f, 1f + mTotalDy / MAX_ZOOM_HEIGHT)
+            MLog.e("scale", "mScaleValue:$mScaleValue mTotalDy:$mTotalDy")
+            mImageView!!.scaleX = mScaleValue
+            mImageView!!.scaleY = mScaleValue
+            mLastBottom = mAppbarHeight + (mImageViewHeight / 2 * (mScaleValue - 1)).toInt()
+            abl.bottom = mLastBottom
+
+            middleLayout?.top = mLastBottom - mMiddleHeight
+            middleLayout?.bottom = mLastBottom
+        }
     }
 
 
@@ -225,7 +226,12 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      * @param target
      * @param type
      */
-    override fun onStopNestedScroll(coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout, abl: AppBarLayout, target: View, type: Int) {
+    override fun onStopNestedScroll(
+        coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout,
+        abl: AppBarLayout,
+        target: View,
+        type: Int
+    ) {
         recovery(abl)
         super.onStopNestedScroll(coordinatorLayout, abl, target, type)
     }
@@ -239,20 +245,55 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         if (mTotalDy > 0) {
             mTotalDy = 0f
             if (isAnimate) {
-                valueAnimator = ValueAnimator.ofFloat(mScaleValue, 1f).setDuration(220)
+
+                valueAnimator =
+                    ValueAnimator.ofFloat(
+                        if (userRequestLayout) mImageView!!.height.toFloat() else mScaleValue,
+                        if (userRequestLayout) mImageViewHeight.toFloat() else 1f
+                    ).setDuration(220)
                 valueAnimator!!.addUpdateListener { animation ->
                     val value = animation.animatedValue as Float
-                    MLog.e("Update", "value:${animation.animatedValue}  animatedFraction:${animation.animatedFraction}")
-                    mImageView!!.scaleX = value
-                    mImageView!!.scaleY = value
-                    abl.bottom = (mLastBottom - (mLastBottom - mAppbarHeight) * animation.animatedFraction).toInt()
+                    MLog.e(
+                        Tag,
+                        "value:${animation.animatedValue}  animatedFraction:${animation.animatedFraction}"
+                    )
+
+                    if (userRequestLayout)
+                        refreshParams(value.toInt())
+                    else {
+                        mImageView!!.scaleX = value
+                        mImageView!!.scaleY = value
+                        abl.bottom =
+                            (mLastBottom - (mLastBottom - mAppbarHeight) * animation.animatedFraction).toInt()
+
+                        middleLayout?.top =
+                            (mLastBottom - (mLastBottom - mAppbarHeight) * animation.animatedFraction - mMiddleHeight).toInt()
+                    }
                 }
+                valueAnimator!!.addListener(object : Animator.AnimatorListener by noOpDelegate() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        lastRefreshTime = 0L
+                    }
+                })
                 valueAnimator!!.start()
             } else {
-                mImageView!!.scaleX = 1f
-                mImageView!!.scaleY = 1f
-                abl.bottom = mAppbarHeight
+                if (userRequestLayout)
+                    refreshParams(mImageViewHeight)
+                else {
+                    mImageView!!.scaleX = 1f
+                    mImageView!!.scaleY = 1f
+                    abl.bottom = mAppbarHeight
+                    middleLayout?.top = mAppbarHeight - mMiddleHeight
+                }
             }
         }
+    }
+
+    private fun refreshParams(height: Int) {
+        mImageView?.layoutParams?.height = height
+//        if (lastRefreshTime == 0L || System.currentTimeMillis() - lastRefreshTime >= refresDuration) {
+//            lastRefreshTime = System.currentTimeMillis()
+        mImageView?.requestLayout()
+//        }
     }
 }
