@@ -1,6 +1,5 @@
 package com.soli.libcommon.view.nest
 
-import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
@@ -8,7 +7,6 @@ import android.view.View
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.soli.libcommon.util.MLog
-import com.soli.libcommon.util.noOpDelegate
 import kotlin.math.max
 import kotlin.math.min
 
@@ -22,13 +20,16 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
 
     private val TAG = "zoomImage"
     private val TAG_MIDDLE = "middle"
+    private val TAG_STICK = "stick"
 
     private var mImageView: View? = null
     private var middleLayout: View? = null
+    private var stickLayout: View? = null
 
     private var mAppbarHeight = 0//记录AppbarLayout原始高度
     private var mImageViewHeight = 0//记录ImageView原始高度
     private var mMiddleHeight = 0
+    private var mStickLayoutHeight = 0
 
     private var mTotalDy = 0f//手指在Y轴滑动的总距离
     private var mScaleValue = 0f//图片缩放比例
@@ -44,8 +45,6 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
 
     private var lastRefreshTime = 0L
     private var refresDuration = 10//ms
-
-    private var userRequestLayout = false
 
     constructor()
 
@@ -74,6 +73,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         abl.clipChildren = false
         mAppbarHeight = abl.height
         middleLayout = abl.findViewWithTag(TAG_MIDDLE)
+        stickLayout = abl.findViewWithTag(TAG_STICK)
         mImageView = abl.findViewWithTag(TAG)
         if (mImageView != null) {
             mImageViewHeight = mImageView!!.height
@@ -81,6 +81,10 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
 
         if (middleLayout != null) {
             mMiddleHeight = middleLayout!!.height
+        }
+
+        if (stickLayout != null) {
+            mStickLayoutHeight = stickLayout!!.height
         }
     }
 
@@ -128,7 +132,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
     ) {
 
         MLog.e(
-            "位置",
+            Tag,
             "dx:$dx --- dy:$dy child.bottom:${child.bottom}  mAppbarHeight:$mAppbarHeight topImageMinHeight:$mImageViewHeight"
         )
 
@@ -164,31 +168,22 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      * @param dy
      */
     private fun zoomHeaderImageView(abl: AppBarLayout, dy: Int) {
+        mTotalDy += -dy
+        mTotalDy = min(mTotalDy, MAX_ZOOM_HEIGHT)
+        mScaleValue = max(1f, 1f + mTotalDy / MAX_ZOOM_HEIGHT)
+        MLog.e(Tag, "mScaleValue:$mScaleValue mTotalDy:$mTotalDy")
+        mImageView!!.scaleX = mScaleValue
+        mImageView!!.scaleY = mScaleValue
+        mLastBottom = mAppbarHeight + (mImageViewHeight / 2 * (mScaleValue - 1)).toInt()
+        abl.bottom = mLastBottom
 
-        if (userRequestLayout) {
-            mTotalDy += -dy
-            mTotalDy = min(mTotalDy, MAX_ZOOM_HEIGHT)
+        middleLayout?.top =
+            if (stickLayout != null) mLastBottom - mStickLayoutHeight - mMiddleHeight else mLastBottom - mMiddleHeight
+        middleLayout?.bottom =
+            if (stickLayout != null) mLastBottom - mStickLayoutHeight else mLastBottom
 
-            val displayHeight = mImageViewHeight + mTotalDy
-            MLog.d(
-                Tag,
-                "dy= $dy mTotalDy = $mTotalDy  mImageViewHeight = $mImageViewHeight  displayHeihgt = $displayHeight"
-            )
-
-            refreshParams(displayHeight.toInt())
-        } else {
-            mTotalDy += -dy
-            mTotalDy = min(mTotalDy, MAX_ZOOM_HEIGHT)
-            mScaleValue = max(1f, 1f + mTotalDy / MAX_ZOOM_HEIGHT)
-            MLog.e("scale", "mScaleValue:$mScaleValue mTotalDy:$mTotalDy")
-            mImageView!!.scaleX = mScaleValue
-            mImageView!!.scaleY = mScaleValue
-            mLastBottom = mAppbarHeight + (mImageViewHeight / 2 * (mScaleValue - 1)).toInt()
-            abl.bottom = mLastBottom
-
-            middleLayout?.top = mLastBottom - mMiddleHeight
-            middleLayout?.bottom = mLastBottom
-        }
+        stickLayout?.top = mLastBottom - mStickLayoutHeight
+        stickLayout?.bottom = mLastBottom
     }
 
 
@@ -245,10 +240,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
             if (isAnimate) {
 
                 valueAnimator =
-                    ValueAnimator.ofFloat(
-                        if (userRequestLayout) mImageView!!.height.toFloat() else mScaleValue,
-                        if (userRequestLayout) mImageViewHeight.toFloat() else 1f
-                    ).setDuration(220)
+                    ValueAnimator.ofFloat(mScaleValue, 1f).setDuration(220)
                 valueAnimator!!.addUpdateListener { animation ->
                     val value = animation.animatedValue as Float
                     MLog.e(
@@ -256,42 +248,34 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
                         "value:${animation.animatedValue}  animatedFraction:${animation.animatedFraction}"
                     )
 
-                    if (userRequestLayout)
-                        refreshParams(value.toInt())
-                    else {
-                        mImageView!!.scaleX = value
-                        mImageView!!.scaleY = value
-                        abl.bottom =
-                            (mLastBottom - (mLastBottom - mAppbarHeight) * animation.animatedFraction).toInt()
+                    mImageView!!.scaleX = value
+                    mImageView!!.scaleY = value
 
-                        middleLayout?.top =
-                            (mLastBottom - (mLastBottom - mAppbarHeight) * animation.animatedFraction - mMiddleHeight).toInt()
-                    }
+                    val fraction =
+                        mLastBottom - (mLastBottom - mAppbarHeight) * animation.animatedFraction
+
+                    abl.bottom = fraction.toInt()
+
+                    middleLayout?.top =
+                        (if (stickLayout != null) fraction - mStickLayoutHeight - mMiddleHeight else fraction - mMiddleHeight).toInt()
+                    middleLayout?.bottom =
+                        (if (stickLayout != null) fraction - mStickLayoutHeight else fraction).toInt()
+
+                    stickLayout?.top = (fraction - mStickLayoutHeight).toInt()
+                    stickLayout?.bottom = fraction.toInt()
                 }
-                valueAnimator!!.addListener(object : Animator.AnimatorListener by noOpDelegate() {
-                    override fun onAnimationEnd(animation: Animator?) {
-                        lastRefreshTime = 0L
-                    }
-                })
                 valueAnimator!!.start()
             } else {
-                if (userRequestLayout)
-                    refreshParams(mImageViewHeight)
-                else {
-                    mImageView!!.scaleX = 1f
-                    mImageView!!.scaleY = 1f
-                    abl.bottom = mAppbarHeight
-                    middleLayout?.top = mAppbarHeight - mMiddleHeight
-                }
+                mImageView!!.scaleX = 1f
+                mImageView!!.scaleY = 1f
+                abl.bottom = mAppbarHeight
+                middleLayout?.top =
+                    if (stickLayout != null) mAppbarHeight - mStickLayoutHeight - mMiddleHeight else mAppbarHeight - mMiddleHeight
+                middleLayout?.bottom =
+                    if (stickLayout != null) mAppbarHeight - mStickLayoutHeight else mAppbarHeight
+                stickLayout?.top = mAppbarHeight - mStickLayoutHeight
+                stickLayout?.bottom = mAppbarHeight
             }
         }
-    }
-
-    private fun refreshParams(height: Int) {
-        mImageView?.layoutParams?.height = height
-//        if (lastRefreshTime == 0L || System.currentTimeMillis() - lastRefreshTime >= refresDuration) {
-//            lastRefreshTime = System.currentTimeMillis()
-        mImageView?.requestLayout()
-//        }
     }
 }

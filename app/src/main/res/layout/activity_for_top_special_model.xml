@@ -30,10 +30,29 @@
                 android:tag="zoomImage"
                 app:collapseMode="parallax"
                 app:collapseParallaxMultiplier="0.5"
-                app:viewAspectRatio="1.5" />
+                app:viewAspectRatio="1" />
 
             <!--            </com.soli.libcommon.view.TransparentTouchEventView>-->
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:tag="middle"
+                android:orientation="vertical">
+
+                <com.facebook.drawee.view.SimpleDraweeView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:tag="zoomImage"
+                    app:collapseMode="parallax"
+                    app:collapseParallaxMultiplier="0.5"
+                    app:viewAspectRatio="1" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:background="@color/A3"
+                    android:layout_height="100dp"/>
+            </LinearLayout>
 
             <!--app:collapseMode="parallax"-->
             <!--app:collapseParallaxMultiplier="0.8"-->
@@ -53,7 +72,7 @@
             android:layout_height="48dp"
             android:background="@color/A1"
             android:gravity="center"
-            android:tag="middle"
+            android:tag="stick"
             android:text="滑动顶部固定----具体更换布局"
             android:textColor="@color/C5"
             android:textSize="18sp" />
