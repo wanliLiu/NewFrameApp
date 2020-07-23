@@ -1,4 +1,4 @@
-package com.soli.libcommon.view
+package com.soli.libcommon.view.nest
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -10,6 +10,7 @@ import androidx.annotation.RequiresApi
 import com.google.android.material.appbar.AppBarLayout
 import com.soli.libcommon.R
 import com.soli.libcommon.util.StatusBarUtil
+import kotlin.math.roundToInt
 
 /**
  *  事件的驱动来源于AppBarlayout, 事件触发者--->CoordinatorLayout-->AppBarLayout-->CollapsingToolbarLayout
@@ -114,11 +115,19 @@ class CollapsingToolbarLayout : FrameLayout {
 
 
     override fun generateDefaultLayoutParams(): FrameLayout.LayoutParams =
-        LayoutParams(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT)
+        LayoutParams(
+            FrameLayout.LayoutParams.MATCH_PARENT,
+            FrameLayout.LayoutParams.MATCH_PARENT
+        )
 
-    override fun generateLayoutParams(attrs: AttributeSet): FrameLayout.LayoutParams = LayoutParams(context, attrs)
+    override fun generateLayoutParams(attrs: AttributeSet): FrameLayout.LayoutParams =
+        LayoutParams(
+            context,
+            attrs
+        )
 
-    override fun generateLayoutParams(p: ViewGroup.LayoutParams): FrameLayout.LayoutParams = LayoutParams(p)
+    override fun generateLayoutParams(p: ViewGroup.LayoutParams): FrameLayout.LayoutParams =
+        LayoutParams(p)
 
 
     private class LayoutParams : FrameLayout.LayoutParams {
@@ -145,16 +154,20 @@ class CollapsingToolbarLayout : FrameLayout {
             const val COLLAPSE_MODE_PARALLAX = 2
         }
 
-        var collapseMode = COLLAPSE_MODE_OFF
+        var collapseMode =
+            COLLAPSE_MODE_OFF
 
-        var parallaxMultiplier = DEFAULT_PARALLAX_MULTIPLIER
+        var parallaxMultiplier =
+            DEFAULT_PARALLAX_MULTIPLIER
 
         /**
          * @hide
          */
         constructor(c: Context, attrs: AttributeSet) : super(c, attrs) {
             val a = c.obtainStyledAttributes(attrs, R.styleable.CollapsingToolbarLayout)
-            collapseMode = a.getInt(R.styleable.CollapsingToolbarLayout_collapseMode, COLLAPSE_MODE_OFF)
+            collapseMode = a.getInt(R.styleable.CollapsingToolbarLayout_collapseMode,
+                COLLAPSE_MODE_OFF
+            )
             parallaxMultiplier = a.getFloat(
                 R.styleable.CollapsingToolbarLayout_collapseParallaxMultiplier,
                 DEFAULT_PARALLAX_MULTIPLIER
@@ -214,7 +227,7 @@ class CollapsingToolbarLayout : FrameLayout {
                             getMaxOffsetForPinChild(child)
                         )
                     )
-                    LayoutParams.COLLAPSE_MODE_PARALLAX -> offsetHelper.setTopAndBottomOffset(Math.round(-verticalOffset * lp.parallaxMultiplier))
+                    LayoutParams.COLLAPSE_MODE_PARALLAX -> offsetHelper.setTopAndBottomOffset((-verticalOffset * lp.parallaxMultiplier).roundToInt())
                 }
             }
             //            int scrollRangle = layout.getTotalScrollRange();

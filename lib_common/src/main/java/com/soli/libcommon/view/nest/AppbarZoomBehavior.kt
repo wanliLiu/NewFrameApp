@@ -1,11 +1,10 @@
-package com.soli.libcommon.view
+package com.soli.libcommon.view.nest
 
 import android.animation.Animator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.soli.libcommon.util.MLog
@@ -95,7 +94,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
     ): Boolean {
         isAnimate = true
 
-        if (target is TransparentEventView) return true
+        if (target is TransparentTouchEvent) return true
 
         return super.onStartNestedScroll(
             parent,
@@ -178,7 +177,6 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
 
             refreshParams(displayHeight.toInt())
         } else {
-
             mTotalDy += -dy
             mTotalDy = min(mTotalDy, MAX_ZOOM_HEIGHT)
             mScaleValue = max(1f, 1f + mTotalDy / MAX_ZOOM_HEIGHT)

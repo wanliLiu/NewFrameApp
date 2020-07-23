@@ -6,34 +6,33 @@
 
     <!--顶部滑动 联动效果  统一模板   CoordinatorLayout-->
 
-    <com.soli.libcommon.view.FixAppBarLayout
+    <com.soli.libcommon.view.nest.ZoomFixAppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:elevation="0dp">
 
-        <com.soli.libcommon.view.CollapsingToolbarLayout
+        <com.soli.libcommon.view.nest.CollapsingToolbarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <!--CollapsingToolbarLayout  是  FrameLayout-->
 
-            <com.soli.libcommon.view.TransparentEventView
+            <!--            <com.soli.libcommon.view.TransparentTouchEventView-->
+            <!--                android:layout_width="match_parent"-->
+            <!--                android:layout_height="wrap_content">-->
+
+            <!--头部的内容-->
+            <com.facebook.drawee.view.SimpleDraweeView
+                android:id="@+id/zoom_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                >
+                android:tag="zoomImage"
+                app:collapseMode="parallax"
+                app:collapseParallaxMultiplier="0.5"
+                app:viewAspectRatio="1.5" />
 
-                <!--头部的内容-->
-                <com.facebook.drawee.view.SimpleDraweeView
-                    android:id="@+id/zoom_image"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:tag="zoomImage"
-                    app:collapseMode="parallax"
-                    app:collapseParallaxMultiplier="1"
-                    app:viewAspectRatio="1.5" />
-
-            </com.soli.libcommon.view.TransparentEventView>
+            <!--            </com.soli.libcommon.view.TransparentTouchEventView>-->
 
 
             <!--app:collapseMode="parallax"-->
@@ -47,7 +46,7 @@
                 android:layout_height="wrap_content"
                 app:collapseMode="pin" />
 
-        </com.soli.libcommon.view.CollapsingToolbarLayout>
+        </com.soli.libcommon.view.nest.CollapsingToolbarLayout>
 
         <TextView
             android:layout_width="match_parent"
@@ -59,7 +58,7 @@
             android:textColor="@color/C5"
             android:textSize="18sp" />
 
-    </com.soli.libcommon.view.FixAppBarLayout>
+    </com.soli.libcommon.view.nest.ZoomFixAppBarLayout>
 
 
     <!--具体需要滑动的视图，父视图必须指明 layout_behavior 为@string/appbar_scrolling_view_behavior -->
@@ -70,7 +69,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@drawable/test_shape"
-        android:paddingTop="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <LinearLayout
