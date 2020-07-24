@@ -3,7 +3,9 @@ package com.soli.libcommon.view.nest
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.view.MotionEvent
 import android.view.View
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.ViewCompat
 import com.google.android.material.appbar.AppBarLayout
 import com.soli.libcommon.util.MLog
@@ -35,16 +37,11 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
     private var mScaleValue = 0f//图片缩放比例
     private var mLastBottom = 0//Appbar的变化高度
 
-    private var isInit = false
-
     private val MAX_ZOOM_HEIGHT = 800f//放大最大高度
 
     private var isAnimate: Boolean = false//是否做动画标志
 
     private var valueAnimator: ValueAnimator? = null
-
-    private var lastRefreshTime = 0L
-    private var refresDuration = 10//ms
 
     constructor()
 
@@ -53,13 +50,12 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
 
 
     override fun onLayoutChild(
-        parent: androidx.coordinatorlayout.widget.CoordinatorLayout,
+        parent: CoordinatorLayout,
         abl: AppBarLayout,
         layoutDirection: Int
     ): Boolean {
         val handled = super.onLayoutChild(parent, abl, layoutDirection)
-        if (!isInit)
-            init(abl)
+        init(abl)
         return handled
     }
 
@@ -69,27 +65,29 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      * @param abl
      */
     private fun init(abl: AppBarLayout) {
-        isInit = true
         abl.clipChildren = false
         mAppbarHeight = abl.height
+
         middleLayout = abl.findViewWithTag(TAG_MIDDLE)
         stickLayout = abl.findViewWithTag(TAG_STICK)
         mImageView = abl.findViewWithTag(TAG)
-        if (mImageView != null) {
-            mImageViewHeight = mImageView!!.height
-        }
 
-        if (middleLayout != null) {
-            mMiddleHeight = middleLayout!!.height
-        }
+        mImageViewHeight = mImageView?.height ?: 0
+        mMiddleHeight = middleLayout?.height ?: 0
+        mStickLayoutHeight = stickLayout?.height ?: 0
+    }
 
-        if (stickLayout != null) {
-            mStickLayoutHeight = stickLayout!!.height
-        }
+    //这个地方很重要，不用父的，也就是不走之前的那种滑动，采用嵌套传递的那种滑动
+    override fun onInterceptTouchEvent(
+        parent: CoordinatorLayout,
+        child: AppBarLayout,
+        ev: MotionEvent
+    ): Boolean {
+        return false
     }
 
     override fun onStartNestedScroll(
-        parent: androidx.coordinatorlayout.widget.CoordinatorLayout,
+        parent: CoordinatorLayout,
         child: AppBarLayout,
         directTargetChild: View,
         target: View,
@@ -122,7 +120,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      * @param type
      */
     override fun onNestedPreScroll(
-        coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout,
+        coordinatorLayout: CoordinatorLayout,
         child: AppBarLayout,
         target: View,
         dx: Int,
@@ -144,6 +142,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
                 zoomHeaderImageView(child, dy)
             } else {
                 if (valueAnimator == null || !valueAnimator!!.isRunning) {
+                    MLog.e(Tag, " super.onNestedPreScroll")
                     super.onNestedPreScroll(
                         coordinatorLayout,
                         child,
@@ -198,7 +197,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      * @return
      */
     override fun onNestedPreFling(
-        coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout,
+        coordinatorLayout: CoordinatorLayout,
         child: AppBarLayout,
         target: View,
         velocityX: Float,
@@ -207,6 +206,11 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         if (velocityY > 100) {
             isAnimate = false
         }
+
+        MLog.e(
+            TAG,
+            "onNestedPreFling --> child : ${child.javaClass.simpleName}  target : ${target.javaClass.simpleName}  velocityX ：$velocityX  velocityY : $velocityY"
+        )
         return super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY)
     }
 
@@ -220,7 +224,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      * @param type
      */
     override fun onStopNestedScroll(
-        coordinatorLayout: androidx.coordinatorlayout.widget.CoordinatorLayout,
+        coordinatorLayout: CoordinatorLayout,
         abl: AppBarLayout,
         target: View,
         type: Int
@@ -238,9 +242,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         if (mTotalDy > 0) {
             mTotalDy = 0f
             if (isAnimate) {
-
-                valueAnimator =
-                    ValueAnimator.ofFloat(mScaleValue, 1f).setDuration(220)
+                valueAnimator = ValueAnimator.ofFloat(mScaleValue, 1f).setDuration(220)
                 valueAnimator!!.addUpdateListener { animation ->
                     val value = animation.animatedValue as Float
                     MLog.e(
@@ -266,6 +268,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
                 }
                 valueAnimator!!.start()
             } else {
+                MLog.e(Tag, "recovery---结束未执行动画")
                 mImageView!!.scaleX = 1f
                 mImageView!!.scaleY = 1f
                 abl.bottom = mAppbarHeight

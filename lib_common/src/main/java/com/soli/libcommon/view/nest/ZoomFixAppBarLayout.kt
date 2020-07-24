@@ -7,10 +7,6 @@ import android.view.View
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.view.NestedScrollingParent3
 import com.google.android.material.appbar.AppBarLayout
-import com.soli.libcommon.view.nest.AppbarZoomBehavior
-import com.soli.libcommon.view.nest.DealTransparentTouchEvent
-import com.soli.libcommon.view.nest.FixAppBarLayout
-import com.soli.libcommon.view.nest.TransparentTouchEvent
 
 /**
  *
@@ -41,10 +37,13 @@ class ZoomFixAppBarLayout : FixAppBarLayout, NestedScrollingParent3,
     }
 
 
-    /**------------------------------------------需要添加的部分--------------------------**/
-    override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        dealTool.dispatchTouchEvent(ev)
-        return super.dispatchTouchEvent(ev)
+    override fun computeScroll() {
+        dealTool.computeScroll()
+    }
+
+    override fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+        dealTool.requestDisallowInterceptTouchEvent(disallowIntercept)
+        super.requestDisallowInterceptTouchEvent(disallowIntercept)
     }
 
     override fun onInterceptTouchEvent(ev: MotionEvent): Boolean {

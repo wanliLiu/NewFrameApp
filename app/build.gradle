@@ -63,10 +63,17 @@ android {
     }
 }
 
+repositories {
+    flatDir {
+        dirs 'libs'
+    }
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':lib_common')
 
+    implementation(name: 'flycotablayout-2.1.5', ext: 'aar')
 //    implementation deps.okhttp_mockwebserver
     implementation deps.rxbinding
     implementation deps.rxlifecycleAndroid_kotlin

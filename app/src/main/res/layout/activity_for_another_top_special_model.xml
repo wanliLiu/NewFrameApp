@@ -18,10 +18,6 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
             <!--CollapsingToolbarLayout  是  FrameLayout-->
 
-            <!--            <com.soli.libcommon.view.TransparentTouchEventView-->
-            <!--                android:layout_width="match_parent"-->
-            <!--                android:layout_height="wrap_content">-->
-
             <!--头部的内容-->
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/zoom_image"
@@ -30,9 +26,7 @@
                 android:tag="zoomImage"
                 app:collapseMode="parallax"
                 app:collapseParallaxMultiplier="0.5"
-                app:viewAspectRatio="1" />
-
-            <!--            </com.soli.libcommon.view.TransparentTouchEventView>-->
+                app:viewAspectRatio="0.8" />
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -43,7 +37,8 @@
                 <com.facebook.drawee.view.SimpleDraweeView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    app:viewAspectRatio="1" />
+                    app:viewAspectRatio="0.8" />
+
                 <FrameLayout
                     android:layout_width="match_parent"
                     android:layout_height="100dp"
@@ -59,10 +54,12 @@
                         android:textSize="30sp"
                         android:textStyle="bold" />
                 </FrameLayout>
+
             </LinearLayout>
 
             <!--app:collapseMode="parallax"-->
             <!--app:collapseParallaxMultiplier="0.8"-->
+
 
             <!--Toolbar 放到最下面 这种布局Toolbar统一指定 id为 tool_bar-->
             <com.soli.libcommon.view.root.Toolbar
@@ -73,16 +70,24 @@
 
         </com.soli.libcommon.view.nest.CollapsingToolbarLayout>
 
-        <!--        <TextView-->
-        <!--            android:layout_width="match_parent"-->
-        <!--            android:layout_height="48dp"-->
-        <!--            android:background="@color/A1"-->
-        <!--            android:gravity="center"-->
-        <!--            android:tag="stick"-->
-        <!--            android:text="滑动顶部固定&#45;&#45;&#45;&#45;具体更换布局"-->
-        <!--            android:textColor="@color/C5"-->
-        <!--            android:textSize="18sp" />-->
-
+        <com.flyco.tablayout.CommonTabLayout
+            android:id="@+id/tabLayout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/accent"
+            android:paddingStart="15dp"
+            android:tag="stick"
+            app:tl_indicator_color="@color/A1"
+            app:tl_indicator_corner_radius="1.5dp"
+            app:tl_indicator_height="2dp"
+            app:tl_indicator_width="20dp"
+            app:tl_tab_padding="15dp"
+            app:tl_textAllCaps="false"
+            app:tl_textBold="SELECT"
+            app:tl_textSelectColor="@color/A1"
+            app:tl_textUnselectColor="@color/A2"
+            app:tl_textsize="14sp"
+            app:tl_unselecttextsize="14sp" />
     </com.soli.libcommon.view.nest.ZoomFixAppBarLayout>
 
 
@@ -90,6 +95,11 @@
     <!--app:layout_behavior="@string/appbar_scrolling_view_behavior"-->
 
     <!--    app:behavior_overlapTop="40dp"-->
-    <include layout="@layout/view_test" />
+    <androidx.viewpager2.widget.ViewPager2
+        android:id="@+id/artViewPager2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/A3"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -2,6 +2,7 @@ package com.soli.libcommon.view.nest
 
 import android.content.Context
 import android.view.*
+import android.widget.OverScroller
 import androidx.core.view.*
 import java.lang.Math.abs
 
@@ -54,10 +55,11 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
     private val mScrollConsumed = IntArray(2)
     private var mNestedYOffset = 0
 
+    private var mLastScrollerY = 0
+
+    private val mScroller = OverScroller(context)
     private val mParentHelper: NestedScrollingParentHelper
     private val mChildHelper: NestedScrollingChildHelper
-
-    var needDealTransparentTouch = true
 
     private val childCount: Int
         get() = dealView.childCount
@@ -65,9 +67,14 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
     private val scrollY: Int
         get() = dealView.scrollY
 
+    private val scrollX: Int
+        get() = dealView.scrollX
+
+    private val scrollRange: Int
+        get() = dealView.height
+
     init {
 
-        requestDisallowParentInterceptEvent(true)
         dealView.apply {
             isFocusable = true
             descendantFocusability = ViewGroup.FOCUS_AFTER_DESCENDANTS
@@ -85,11 +92,30 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
     }
 
     /**
-     *
+     * 惯性滑动的时候任然，分发事件
      */
-    fun dispatchTouchEvent(ev: MotionEvent?) {
-        if (needDealTransparentTouch)
-            requestDisallowParentInterceptEvent(true)
+    fun computeScroll() {
+        if (mScroller.isFinished) {
+            return
+        }
+        mScroller.computeScrollOffset()
+        val y = mScroller.currY
+        var unconsumed: Int = y - mLastScrollerY
+        mLastScrollerY = y
+
+        // Nested Scrolling Pre Pass
+        mScrollConsumed[1] = 0
+        dispatchNestedPreScroll(
+            0, unconsumed, mScrollConsumed, null,
+            ViewCompat.TYPE_NON_TOUCH
+        )
+        unconsumed -= mScrollConsumed[1]
+
+        if (!mScroller.isFinished) {
+            ViewCompat.postInvalidateOnAnimation(dealView)
+        } else {
+            stopNestedScroll(ViewCompat.TYPE_NON_TOUCH)
+        }
     }
 
     /**
@@ -138,38 +164,39 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
                             initVelocityTrackerIfNotExists()
                             mVelocityTracker!!.addMovement(ev)
                             mNestedYOffset = 0
+                            requestDisallowParentInterceptEvent(true)
                         }
                     }
                 }
             }
             MotionEvent.ACTION_DOWN -> {
                 val y = ev.y.toInt()
-                if (!inChild(ev.x.toInt(), y)) {
-                    mIsBeingDragged = false
-                    recycleVelocityTracker()
-                } else {
-                    /*
-                 * Remember location of down touch.
-                 * ACTION_DOWN always refers to pointer index 0.
-                 */
-                    mLastMotionY = y
-                    mActivePointerId = ev.getPointerId(0)
-                    initOrResetVelocityTracker()
-                    mVelocityTracker!!.addMovement(ev)
-                    /*
-                 * If being flinged and user touches the screen, initiate drag;
-                 * otherwise don't. mScroller.isFinished should be false when
+                /*
+                            * Remember location of down touch.
+                            * ACTION_DOWN always refers to pointer index 0.
+                            */
+                mLastMotionY = y
+                mActivePointerId = ev.getPointerId(0)
+                initOrResetVelocityTracker()
+                mVelocityTracker!!.addMovement(ev)
+                /*
+                * If being flinged and user touches the screen, initiate drag;
+                * otherwise don't. mScroller.isFinished should be false when
                  * being flinged. We need to call computeScrollOffset() first so that
                  * isFinished() is correct.
-                 */mIsBeingDragged = false
-                    startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_TOUCH)
-                }
+                */
+                mScroller.computeScrollOffset()
+                mIsBeingDragged = !mScroller.isFinished
+                startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_TOUCH)
             }
             MotionEvent.ACTION_CANCEL, MotionEvent.ACTION_UP -> {
                 /* Release the drag */
                 mIsBeingDragged = false
                 mActivePointerId = INVALID_POINTER
                 recycleVelocityTracker()
+                if (mScroller.springBack(scrollX, scrollY, 0, 0, 0, scrollRange)) {
+                    ViewCompat.postInvalidateOnAnimation(dealView)
+                }
                 stopNestedScroll(ViewCompat.TYPE_TOUCH)
             }
             MotionEvent.ACTION_POINTER_UP -> onSecondaryPointerUp(ev)
@@ -198,19 +225,28 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
                     return false
                 }
 
+                if (!mScroller.isFinished.also { mIsBeingDragged = it }) {
+                    requestDisallowParentInterceptEvent(true)
+                }
+
+                /*
+                 * If being flinged and user touches, stop the fling. isFinished
+                 * will be false if being flinged.
+                 */if (!mScroller.isFinished) {
+                    abortAnimatedScroll()
+                }
                 // Remember where the motion event started
                 mLastMotionY = ev.y.toInt()
                 mActivePointerId = ev.getPointerId(0)
                 startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_TOUCH)
             }
             MotionEvent.ACTION_MOVE -> {
-                requestDisallowParentInterceptEvent(true)
-
                 val activePointerIndex = ev.findPointerIndex(mActivePointerId)
                 if (activePointerIndex != -1) {
                     val y = ev.getY(activePointerIndex).toInt()
                     var deltaY = mLastMotionY - y
-                    if (!mIsBeingDragged && Math.abs(deltaY) > mTouchSlop) {
+                    if (!mIsBeingDragged && abs(deltaY) > mTouchSlop) {
+                        requestDisallowParentInterceptEvent(true)
                         mIsBeingDragged = true
                         if (deltaY > 0) {
                             deltaY -= mTouchSlop
@@ -245,20 +281,26 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
                 }
             }
             MotionEvent.ACTION_UP -> {
-                requestDisallowParentInterceptEvent(false)
                 val velocityTracker = mVelocityTracker
                 velocityTracker!!.computeCurrentVelocity(1000, mMaximumVelocity.toFloat())
                 val initialVelocity = velocityTracker.getYVelocity(mActivePointerId).toInt()
                 if (abs(initialVelocity) >= mMinimumVelocity) {
                     if (!dispatchNestedPreFling(0f, -initialVelocity.toFloat())) {
                         dispatchNestedFling(0f, -initialVelocity.toFloat(), true)
+                        fling(-initialVelocity)
                     }
+                } else if (mScroller.springBack(scrollX, scrollY, 0, 0, 0, scrollRange)) {
+                    ViewCompat.postInvalidateOnAnimation(dealView)
                 }
                 mActivePointerId = INVALID_POINTER
                 endDrag()
             }
             MotionEvent.ACTION_CANCEL -> {
-                requestDisallowParentInterceptEvent(false)
+                if (mIsBeingDragged && childCount > 0) {
+                    if (mScroller.springBack(scrollX, scrollY, 0, 0, 0, scrollRange)) {
+                        ViewCompat.postInvalidateOnAnimation(dealView)
+                    }
+                }
                 mActivePointerId = INVALID_POINTER
                 endDrag()
             }
@@ -268,7 +310,6 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
                 mActivePointerId = ev.getPointerId(index)
             }
             MotionEvent.ACTION_POINTER_UP -> {
-                requestDisallowParentInterceptEvent(false)
                 onSecondaryPointerUp(ev)
                 mLastMotionY = ev.getY(ev.findPointerIndex(mActivePointerId)).toInt()
             }
@@ -288,6 +329,11 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
         parent?.requestDisallowInterceptTouchEvent(event)
     }
 
+    fun requestDisallowInterceptTouchEvent(disallowIntercept: Boolean) {
+        if (disallowIntercept) {
+            recycleVelocityTracker()
+        }
+    }
 
     // NestedScrollingChild3
     override fun dispatchNestedScroll(
@@ -498,6 +544,8 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
     ): Boolean {
         return if (!consumed) {
             dispatchNestedFling(0f, velocityY, true)
+            fling(velocityY.toInt())
+            true
         } else false
     }
 
@@ -535,16 +583,6 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
         }
     }
 
-
-    private fun inChild(x: Int, y: Int): Boolean {
-        if (childCount > 0) {
-            val scrollY = scrollY
-            val child = dealView.getChildAt(0)
-            return !(y < child.top - scrollY || y >= child.bottom - scrollY || x < child.left || x >= child.right)
-        }
-        return false
-    }
-
     private fun onSecondaryPointerUp(ev: MotionEvent) {
         val pointerIndex = ev.actionIndex
         val pointerId = ev.getPointerId(pointerIndex)
@@ -568,4 +606,40 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
     }
 
 
+    /**
+     * Fling the scroll view
+     *
+     * @param velocityY The initial velocity in the Y direction. Positive
+     * numbers mean that the finger/cursor is moving down the screen,
+     * which means we want to scroll towards the top.
+     */
+    private fun fling(velocityY: Int) {
+        if (childCount > 0) {
+            mScroller.fling(
+                scrollX, scrollY,  // start
+                0, velocityY,  // velocities
+                0, 0, Int.MIN_VALUE, Int.MAX_VALUE,  // y
+                0, 0
+            ) // overscroll
+            runAnimatedScroll(true)
+        }
+    }
+
+    /**
+     *
+     */
+    private fun runAnimatedScroll(participateInNestedScrolling: Boolean) {
+        if (participateInNestedScrolling) {
+            startNestedScroll(ViewCompat.SCROLL_AXIS_VERTICAL, ViewCompat.TYPE_NON_TOUCH)
+        } else {
+            stopNestedScroll(ViewCompat.TYPE_NON_TOUCH)
+        }
+        mLastScrollerY = scrollY
+        ViewCompat.postInvalidateOnAnimation(dealView)
+    }
+
+    private fun abortAnimatedScroll() {
+        mScroller.abortAnimation()
+        stopNestedScroll(ViewCompat.TYPE_NON_TOUCH)
+    }
 }

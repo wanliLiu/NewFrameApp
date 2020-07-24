@@ -2,9 +2,7 @@ package com.soli.newframeapp.demo
 
 import com.google.android.material.appbar.AppBarLayout
 import com.soli.libcommon.base.BaseTopSpecialActivity
-import com.soli.libcommon.util.ImageLoader
-import com.soli.libcommon.util.MLog
-import com.soli.libcommon.util.StatusBarUtil
+import com.soli.libcommon.util.*
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.activity_for_top_special_model.*
 
@@ -35,6 +33,8 @@ class TestTopSpecialActivity : BaseTopSpecialActivity() {
                 )
             )
         })
+
+        zoom_image.clickView { openActivity<TestAnotherTopSpecialActivity>() }
 
     }
 

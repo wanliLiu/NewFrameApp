@@ -44,6 +44,7 @@
         <activity android:name=".toast.CustomToastActivity" />
         <activity android:name=".palette.PaletteActivity" />
         <activity android:name=".fragment.LaunchUIHome" />
+        <activity android:name=".demo.TestAnotherTopSpecialActivity" />
 
         <service android:name=".download.DownloadService" />
     </application>
