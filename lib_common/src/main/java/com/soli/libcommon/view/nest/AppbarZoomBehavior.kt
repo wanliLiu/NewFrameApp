@@ -131,15 +131,16 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
 
         MLog.e(
             Tag,
-            "dx:$dx --- dy:$dy child.bottom:${child.bottom}  mAppbarHeight:$mAppbarHeight topImageMinHeight:$mImageViewHeight"
+            "onNestedPreScroll--> type :$type  dy:$dy child.bottom:${child.bottom}  mAppbarHeight:$mAppbarHeight topImageMinHeight:$mImageViewHeight"
         )
 
         if (mImageView != null && child.bottom >= mAppbarHeight && dy < 0 && type == ViewCompat.TYPE_TOUCH) {//
             zoomHeaderImageView(child, dy)
+            consumed[1] = dy
         } else {
             if (mImageView != null && child.bottom > mAppbarHeight && dy > 0 && type == ViewCompat.TYPE_TOUCH) {//
-                consumed[1] = dy
                 zoomHeaderImageView(child, dy)
+                consumed[1] = dy
             } else {
                 if (valueAnimator == null || !valueAnimator!!.isRunning) {
                     MLog.e(Tag, " super.onNestedPreScroll")
@@ -160,6 +161,35 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
     }
 
 
+    override fun onNestedScroll(
+        coordinatorLayout: CoordinatorLayout,
+        child: AppBarLayout,
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        type: Int,
+        consumed: IntArray
+    ) {
+        MLog.e(
+            Tag,
+            "onNestedScroll-->type :$type  dyUnconsumed :$dyUnconsumed"
+        )
+        super.onNestedScroll(
+            coordinatorLayout,
+            child,
+            target,
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            type,
+            consumed
+        )
+    }
+
+
     /**
      * 对ImageView进行缩放处理，对AppbarLayout进行高度的设置
      *
@@ -170,7 +200,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         mTotalDy += -dy
         mTotalDy = min(mTotalDy, MAX_ZOOM_HEIGHT)
         mScaleValue = max(1f, 1f + mTotalDy / MAX_ZOOM_HEIGHT)
-        MLog.e(Tag, "mScaleValue:$mScaleValue mTotalDy:$mTotalDy")
+        MLog.e(Tag, "zoomHeaderImageView----->mScaleValue:$mScaleValue mTotalDy:$mTotalDy")
         mImageView!!.scaleX = mScaleValue
         mImageView!!.scaleY = mScaleValue
         mLastBottom = mAppbarHeight + (mImageViewHeight / 2 * (mScaleValue - 1)).toInt()
@@ -209,7 +239,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
 
         MLog.e(
             TAG,
-            "onNestedPreFling --> child : ${child.javaClass.simpleName}  target : ${target.javaClass.simpleName}  velocityX ：$velocityX  velocityY : $velocityY"
+            "onNestedPreFling --> child : ${child.javaClass.simpleName}  target : ${target.javaClass.simpleName}  velocityX ：$velocityX  velocityY : $velocityY  isAnimate:$isAnimate"
         )
         return super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY)
     }
@@ -229,6 +259,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         target: View,
         type: Int
     ) {
+        MLog.e(Tag, "onStopNestedScroll--->isAnimate:$isAnimate")
         recovery(abl)
         super.onStopNestedScroll(coordinatorLayout, abl, target, type)
     }
@@ -239,6 +270,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      * @param abl
      */
     private fun recovery(abl: AppBarLayout) {
+        MLog.e(Tag, "recovery ----->mTotalDy :$mTotalDy")
         if (mTotalDy > 0) {
             mTotalDy = 0f
             if (isAnimate) {
@@ -247,7 +279,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
                     val value = animation.animatedValue as Float
                     MLog.e(
                         Tag,
-                        "value:${animation.animatedValue}  animatedFraction:${animation.animatedFraction}"
+                        "recovery------> value:${animation.animatedValue}  animatedFraction:${animation.animatedFraction}"
                     )
 
                     mImageView!!.scaleX = value

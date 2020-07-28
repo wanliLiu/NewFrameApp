@@ -65,7 +65,7 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
         get() = dealView.childCount
 
     private val scrollY: Int
-        get() = dealView.scrollY
+        get() = -dealView.top
 
     private val scrollX: Int
         get() = dealView.scrollX
@@ -110,6 +110,20 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
             ViewCompat.TYPE_NON_TOUCH
         )
         unconsumed -= mScrollConsumed[1]
+
+        if (unconsumed != 0) {
+
+            mScrollConsumed[1] = 0
+            dispatchNestedScroll(
+                0, 0, 0, unconsumed, mScrollOffset,
+                ViewCompat.TYPE_NON_TOUCH, mScrollConsumed
+            )
+            unconsumed -= mScrollConsumed[1]
+        }
+
+        if (unconsumed != 0) {
+            abortAnimatedScroll()
+        }
 
         if (!mScroller.isFinished) {
             ViewCompat.postInvalidateOnAnimation(dealView)
