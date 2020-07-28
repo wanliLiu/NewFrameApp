@@ -32,7 +32,7 @@ class ZoomFixAppBarLayout : FixAppBarLayout, NestedScrollingParent3,
 
     override fun getBehavior(): CoordinatorLayout.Behavior<AppBarLayout> {
 //        return FixAppBarLayoutBehavior()
-        return AppbarZoomBehavior()
+        return AppbarZoomBehavior().also { it.dealTool = dealTool }
 //        return ZoomAppBarLayoutBehavior()
     }
 

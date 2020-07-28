@@ -1,5 +1,7 @@
 package com.soli.libcommon.view.nest
 
+import android.animation.Animator
+import android.animation.AnimatorListenerAdapter
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
@@ -42,6 +44,9 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
     private var isAnimate: Boolean = false//是否做动画标志
 
     private var valueAnimator: ValueAnimator? = null
+
+    var dealTool: DealTransparentTouchEvent? = null
+    private var lastVelocityY = 0f
 
     constructor()
 
@@ -95,6 +100,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         type: Int
     ): Boolean {
         isAnimate = true
+        MLog.e(Tag, "onStartNestedScroll-----> isAnimate :$isAnimate")
 
         if (target is TransparentTouchEvent) return true
 
@@ -133,6 +139,8 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
             Tag,
             "onNestedPreScroll--> type :$type  dy:$dy child.bottom:${child.bottom}  mAppbarHeight:$mAppbarHeight topImageMinHeight:$mImageViewHeight"
         )
+
+//        valueAnimator?.cancel()
 
         if (mImageView != null && child.bottom >= mAppbarHeight && dy < 0 && type == ViewCompat.TYPE_TOUCH) {//
             zoomHeaderImageView(child, dy)
@@ -236,9 +244,9 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         if (velocityY > 100) {
             isAnimate = false
         }
-
+        lastVelocityY = velocityY
         MLog.e(
-            TAG,
+            Tag,
             "onNestedPreFling --> child : ${child.javaClass.simpleName}  target : ${target.javaClass.simpleName}  velocityX ：$velocityX  velocityY : $velocityY  isAnimate:$isAnimate"
         )
         return super.onNestedPreFling(coordinatorLayout, child, target, velocityX, velocityY)
@@ -259,8 +267,9 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         target: View,
         type: Int
     ) {
-        MLog.e(Tag, "onStopNestedScroll--->isAnimate:$isAnimate")
-        recovery(abl)
+        MLog.e(Tag, "onStopNestedScroll--->type :$type  isAnimate:$isAnimate")
+        recovery(abl, type)
+
         super.onStopNestedScroll(coordinatorLayout, abl, target, type)
     }
 
@@ -269,7 +278,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
      *
      * @param abl
      */
-    private fun recovery(abl: AppBarLayout) {
+    private fun recovery(abl: AppBarLayout, type: Int) {
         MLog.e(Tag, "recovery ----->mTotalDy :$mTotalDy")
         if (mTotalDy > 0) {
             mTotalDy = 0f
@@ -298,8 +307,20 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
                     stickLayout?.top = (fraction - mStickLayoutHeight).toInt()
                     stickLayout?.bottom = fraction.toInt()
                 }
+                valueAnimator!!.addListener(object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        dealTool?.apply {
+                            MLog.e(Tag, "end up fling type :$type lastVelocityY:$lastVelocityY")
+                            if (lastVelocityY != 0f) {
+                                fling(lastVelocityY.toInt())
+                            }
+                            lastVelocityY = 0f
+                        }
+                    }
+                })
                 valueAnimator!!.start()
             } else {
+                //永远不会执行这里
                 MLog.e(Tag, "recovery---结束未执行动画")
                 mImageView!!.scaleX = 1f
                 mImageView!!.scaleY = 1f

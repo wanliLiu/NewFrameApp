@@ -627,7 +627,7 @@ class DealTransparentTouchEvent(context: Context, private val dealView: ViewGrou
      * numbers mean that the finger/cursor is moving down the screen,
      * which means we want to scroll towards the top.
      */
-    private fun fling(velocityY: Int) {
+    fun fling(velocityY: Int) {
         if (childCount > 0) {
             mScroller.fling(
                 scrollX, scrollY,  // start
