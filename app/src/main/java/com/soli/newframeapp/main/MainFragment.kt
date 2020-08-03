@@ -180,10 +180,22 @@ mtPFZWCyL3HNRSURFiOCfVzLk9LG+a+qgqXL9gw0jMK/
     private fun rsaTest() {
         val endString =
             "{\"self_userid\":\"100016\",\"app_v\":\"1.13.1\",\"sys_v\":\"27\",\"userId\":\"100016\",\"sysModel\":\"MI 5X\",\"_authOnce\":\"94h9ggj9\",\"_authKey\":\"170894c09f7127d2ed3e084b4a80c231\",\"terminal\":\"android\",\"app_o\":\"0\",\"uvkey\":\"J0/bLJNwuaKp7oNrxtHAcBOCwpR5t53TCWl3xX8oY3d5xbsDx23Nh4X0F1fzb0n9RcGP0NpS1gZ0kYBJLJD6sCMakzYviFRRFw16F4pkCG3E0xkemPNLGAhES5EJ5lhDsE9Wh3CMSB+aUTswzAcz5gHb+rDKhuCSPlVcua3JTQ4=\"}"
-        val encode = RSAUtils.encryptDataByPublickey(endString, dealPublckKey())
-        Log.e("RSA", "加密的：$encode")
-        val decode = RSAUtils.decryptDataByPrivatekey(encode, dealPrivateKey())
-        Log.e("RSA", "解密的：$decode")
+        val pubEn = RSAUtils.encryptDataByPublickey(endString, dealPublckKey())
+        Log.e("RSA", "公钥加密的：$pubEn")
+        val priDec = RSAUtils.decryptDataByPrivatekey(pubEn!!, dealPrivateKey())
+        Log.e("RSA", "私钥解密的：$priDec")
+
+        val priEn = RSAUtils.encryptDataByPrivatekey(endString, dealPrivateKey())
+        Log.e("RSA", "私钥加密的：$priEn")
+        val pubDec = RSAUtils.decryptDataByPublickey(priEn!!, dealPublckKey())
+        Log.e("RSA", "公钥解密的：$pubDec")
+
+        val key =
+            "MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDN/gr5JMU83YboVR1zdoPhhg8FrWE9OokjTILsb9qzJ82gpmXEqpcCoWm9zR0BScx2ZE2SJdQtKnhIA7TkQWvTELyYy4bF1+Vhcg9t/gQhKcxWw4Yu/Hi5MxnxAJ8VxpbJbGRImEsitWAf2Jw4a2NLpJvIl371IcQfzx658/uS+wIDAQAB"
+        val value =
+            "KYeO27TKBgT46yIARG2UuaElX7QfmSAKKkfPt3KjtTYV4JQ1VuMpd05ud75r5CzgpeM3quwKugGs8N7YFjdsnQtlduVdfA/24yecX2bN/RbDdLR5yOLnFm7jm5JflfUoYiL0FL3SETI3GSbQMSlvkqGAkj2G4+08w5SdjkisyMscd2tiam4E7q2hFVg9pHxIyfJaeViCfk18SxDrI1Lbjk6nlvEUv/zvwaoUTheiRoLHfyShTUYW4Qlg0lG1NOYulr/aA6Y4dGnlUBLYzmEoCsm/kgCesYnntZf1BUpvtEz+1m7yvFk5vL+Zj0x6+rXVMrroZ3cE2ky5mMzyIwlzVQ=="
+        val dsd = RSAUtils.decryptDataByPublickey(value, key)
+        Log.e("RSA", "dsdsd：$dsd")
     }
 
 
