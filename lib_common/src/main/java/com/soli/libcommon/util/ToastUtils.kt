@@ -265,7 +265,7 @@ object ToastUtils {
             mToast.view = layout
             mToast.setGravity(Gravity.TOP or Gravity.FILL_HORIZONTAL, 0, 0)//从顶部开始显示
 
-            mToast.view.systemUiVisibility =
+            mToast.view?.systemUiVisibility =
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN//设置Toast可以布局到系统状态栏的下面
 
             layout.doOnLayout {
@@ -288,7 +288,7 @@ object ToastUtils {
                 })
             }
 
-            mToast.view.findViewById<TextView>(R.id.tips_content).text = text
+            mToast.view?.findViewById<TextView>(R.id.tips_content)?.text = text
             mToast.duration = Toast.LENGTH_LONG
 
             mToast.show()

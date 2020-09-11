@@ -383,8 +383,8 @@ object FileUtil {
         val retr = MediaMetadataRetriever()
         retr.setDataSource(videoFile)
         return arrayOf(
-            retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH),
-            retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT)
+            retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_WIDTH) ?: "",
+            retr.extractMetadata(MediaMetadataRetriever.METADATA_KEY_VIDEO_HEIGHT) ?: ""
         )
     }
 

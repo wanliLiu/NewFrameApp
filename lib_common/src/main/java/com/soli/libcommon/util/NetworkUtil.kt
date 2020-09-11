@@ -166,17 +166,6 @@ object NetworkUtil {
         }
     }
 
-    /**
-     * 判断wifi是否连接状态
-     *
-     * 需添加权限 `<uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>`
-     *
-     * @return `true`: 连接<br></br>`false`: 未连接
-     */
-    fun isWifiConnected(): Boolean {
-        val cm = Constant.getContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
-        return (cm.activeNetworkInfo != null && cm.activeNetworkInfo.type == ConnectivityManager.TYPE_WIFI)
-    }
 
     /**
      * 判断wifi数据是否可用

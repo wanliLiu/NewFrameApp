@@ -10,9 +10,9 @@ import androidx.core.app.ActivityCompat
 import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.soli.libcommon.base.BaseSwipeBackFragment
+import com.soli.newframeapp.R
 import com.soli.newframeapp.event.OpenFragmentEvent
 import com.soli.newframeapp.event.ShowMiniBarEvent
-import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.home_entrance.*
 import me.yokeyword.fragmentation.ISupportFragment
 import org.greenrobot.eventbus.Subscribe
@@ -59,9 +59,9 @@ class LaunchUIHome : BaseLaunchUI() {
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        savedInstanceState?.apply {
+        savedInstanceState.apply {
             showTabBar = getBoolean("showTabBar", showTabBar)
             isFirstSwipe = getBoolean("isFirstSwipe", isFirstSwipe)
         }
