@@ -19,10 +19,9 @@ class ScanFileFagment : BaseToolbarFragment() {
 
     private var start = 0L
     private val mhander = Handler(Looper.getMainLooper()) {
-        val countres = it.obj as Map<String, Int>
         scanResult.text = "扫描结束\n"
         scanResult.append("扫描时间：${System.currentTimeMillis() - start}ms\n")
-        scanResult.append(countres.toString())
+        scanResult.append(it.obj.toString())
         true
     }
 
@@ -45,52 +44,51 @@ class ScanFileFagment : BaseToolbarFragment() {
 
 
     private fun scanFile() {
+        start = System.currentTimeMillis()
         if (!Environment.getExternalStorageState().equals(Environment.MEDIA_MOUNTED)) {
             return
         }
-        val path: String = Environment.getExternalStorageDirectory().getAbsolutePath()
-        val CATEGORY_SUFFIX: MutableMap<String, Set<String?>> = HashMap()
-        var set: MutableSet<String?> = HashSet()
+        val path: String =
+            Environment.getExternalStorageDirectory().absolutePath // "/storage/emulated/0/DCIM/Camera/"
+        val CATEGORY_SUFFIX: MutableMap<String, Set<String>> = HashMap()
+        var set: MutableSet<String> = HashSet()
         set.add("mp4")
         set.add("avi")
         set.add("wmv")
         set.add("flv")
-        CATEGORY_SUFFIX["video"] = set
+        CATEGORY_SUFFIX["Videos"] = set
+        set = HashSet()
         set.add("txt")
         set.add("pdf")
         set.add("doc")
         set.add("docx")
         set.add("xls")
         set.add("xlsx")
-        CATEGORY_SUFFIX["document"] = set
+        CATEGORY_SUFFIX["Docs"] = set
         set = HashSet()
         set.add("jpg")
         set.add("jpeg")
         set.add("png")
         set.add("bmp")
         set.add("gif")
-        CATEGORY_SUFFIX["picture"] = set
+        CATEGORY_SUFFIX["Images"] = set
         set = HashSet()
         set.add("mp3")
         set.add("ogg")
-        CATEGORY_SUFFIX["music"] = set
+        CATEGORY_SUFFIX["Music"] = set
         set = HashSet()
         set.add("apk")
-        CATEGORY_SUFFIX["apk"] = set
+        CATEGORY_SUFFIX["Apk"] = set
         set = HashSet()
         set.add("zip")
         set.add("rar")
         set.add("7z")
-        CATEGORY_SUFFIX["zip"] = set
+        CATEGORY_SUFFIX["Zip"] = set
 
         //单一线程线程池
         val singleExecutorService: ExecutorService = Executors.newSingleThreadExecutor()
-        singleExecutorService.submit(Runnable { //构建对象
-            val scanFileCountUtil = ScanFileCountUtil.Builder(mhander)
-                .setFilePath(path)
-                .setCategorySuffix(CATEGORY_SUFFIX)
-                .create()
-            scanFileCountUtil.scanCountFile()
-        })
+        singleExecutorService.submit { //构建对象
+            ScanFileCountUtil(path, CATEGORY_SUFFIX, mhander).startScanFile()
+        }
     }
 }
