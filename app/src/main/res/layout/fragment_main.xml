@@ -138,4 +138,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="MotionLayout" />
+
+
+    <Button
+        android:id="@+id/scanFile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="文件全盘扫描" />
+
 </com.google.android.flexbox.FlexboxLayout>

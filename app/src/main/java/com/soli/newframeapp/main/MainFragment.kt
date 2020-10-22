@@ -1,6 +1,7 @@
 package com.soli.newframeapp.main
 
 import android.Manifest
+import android.os.Build
 import android.os.Handler
 import android.util.Log
 import android.view.View
@@ -25,6 +26,7 @@ import com.soli.newframeapp.net.WebviewActivity
 import com.soli.newframeapp.palette.PaletteActivity
 import com.soli.newframeapp.pic.PicDealFragment
 import com.soli.newframeapp.pubu.PubuTestActivity
+import com.soli.newframeapp.scanfile.ScanFileFagment
 import com.soli.newframeapp.span.SpecialSpanFragment
 import com.soli.newframeapp.toast.CustomToastActivity
 import com.soli.permissions.RxPermissions
@@ -110,7 +112,7 @@ class MainFragment : BaseToolbarFragment() {
             R.id.LauchActivity -> openActivity<SecondAcitivity>()
             R.id.fragmentTest -> openActivity<FragmentTestActivity>()
             R.id.netWorkTest -> openActivity<NetWorkTestActivity>()
-            R.id.fileDownload -> checkPermission()
+            R.id.fileDownload -> checkStorePermission { openActivity<DownloadTestActivity>() }
             R.id.webViewTest -> openActivity<WebviewActivity>()
             R.id._23Test -> openActivity<Android7Activity>()
             R.id.websocket -> openActivity<WebsocketActivity>()
@@ -125,14 +127,21 @@ class MainFragment : BaseToolbarFragment() {
             R.id.rsaTest -> rsaTest()
             R.id.fragmentFramework -> openActivity<LaunchUIHome>()
             R.id.motionLayout -> start(MotionLayoutFragment())
+            R.id.scanFile -> checkStorePermission {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
+                    Toast.makeText(ctx, "Android Q以上就没法用了哦", Toast.LENGTH_SHORT).show()
+                else
+                    start(ScanFileFagment())
+            }
             else -> Toast.makeText(ctx, "没有需要点击打开的", Toast.LENGTH_SHORT).show()
         }
     }
 
+
     /**
      *
      */
-    private fun checkPermission() {
+    private fun checkStorePermission(callBack: () -> Unit) {
         val diapose =
             rxPermissions.request(
                 Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -141,7 +150,7 @@ class MainFragment : BaseToolbarFragment() {
                 .compose(RxLifecycle.with(this).bindToLifecycle())
                 .subscribe { pass ->
                     if (pass)
-                        openActivity<DownloadTestActivity>()
+                        callBack()
                     else {
                         ToastUtils.showShortToast("需要文件读写权限")
                     }
