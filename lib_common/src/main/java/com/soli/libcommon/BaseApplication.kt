@@ -1,21 +1,38 @@
 package com.soli.libcommon
 
+import android.content.Context
 import android.os.Build
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatDelegate
-import com.bytedance.boost_multidex.BoostMultiDexApplication
+import com.bytedance.boost_multidex.BoostMultiDex
+import com.bytedance.boost_multidex.Utility
 import com.facebook.stetho.Stetho
 import com.gu.toolargetool.TooLargeTool
 import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.*
+import io.flutter.app.FlutterApplication
 import io.reactivex.plugins.RxJavaPlugins
 import me.yokeyword.fragmentation.Fragmentation
+
+/**
+ *
+ */
+open class InnerBoostMultiDexApplication : FlutterApplication() {
+
+    // TODO: 2020/11/12  参考 BoostMultiDexApplication 
+//    override fun attachBaseContext(base: Context?) {
+//        super.attachBaseContext(base)
+//        if (BoostMultiDex.isOptimizeProcess(Utility.getCurProcessName(base))) {
+//            BoostMultiDex.install(base)
+//        }
+//    }
+}
 
 /**
  * @author Soli
  * @Time 18-5-15 上午11:07
  */
-abstract class BaseApplication : BoostMultiDexApplication() {
+abstract class BaseApplication : InnerBoostMultiDexApplication() {
 
     protected abstract fun beforeLaunch()
 

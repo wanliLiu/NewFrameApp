@@ -39,6 +39,12 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="FlutterLaunchTheme" parent="@android:style/Theme.Black.NoTitleBar">
+        <!-- Show a splash screen on the activity. Automatically removed when
+             Flutter draws its first frame -->
+        <item name="android:windowBackground">@drawable/launch_background</item>
+    </style>
+
     <style name="CustomProgressDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>

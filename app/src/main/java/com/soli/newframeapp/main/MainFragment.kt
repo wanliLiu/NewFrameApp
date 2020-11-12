@@ -19,6 +19,7 @@ import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.demo.TestTopSpecialActivity
 import com.soli.newframeapp.download.DownloadTestActivity
 import com.soli.newframeapp.event.openFragment
+import com.soli.newframeapp.flutter.FlutterEntranceActivity
 import com.soli.newframeapp.fragment.LaunchUIHome
 import com.soli.newframeapp.motion.MotionLayoutFragment
 import com.soli.newframeapp.net.NetWorkTestActivity
@@ -133,6 +134,11 @@ class MainFragment : BaseToolbarFragment() {
                 else
                     start(ScanFileFagment())
             }
+            R.id.flutterIn -> openActivity<FlutterEntranceActivity>(
+                "initial_route" to "/",
+                "background_mode" to "opaque",
+                "destroy_engine_with_activity" to true
+            )
             else -> Toast.makeText(ctx, "没有需要点击打开的", Toast.LENGTH_SHORT).show()
         }
     }

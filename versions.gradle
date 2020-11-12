@@ -179,6 +179,10 @@ def addRepos(RepositoryHandler handler) {
 
     handler.maven { url 'https://dl.bintray.com/guardian/android' }
 
+    handler.maven { url "http://10.20.120.200:8081/nexus/content/repositories/taiheRepo/" }
+    String storageUrl = System.env.FLUTTER_STORAGE_BASE_URL ?: "https://storage.googleapis.com"
+    handler.maven {url storageUrl + '/download.flutter.io'}
+
     handler.flatDir { dirs project(':lib_common').file('libs') }
 }
 
