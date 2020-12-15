@@ -32,6 +32,7 @@ object ToastUtils {
     private val sHandler = Handler(Looper.getMainLooper())
 
     private fun QueueLength() = toastList.size
+
     /**
      *
      */
@@ -261,7 +262,8 @@ object ToastUtils {
             isToastShow = true
             val mToast = Toast(Constant.getContext())
             val layout =
-                LayoutInflater.from(Constant.getContext()).inflate(R.layout.view_push_tips_layout, null)//自定义的布局
+                LayoutInflater.from(Constant.getContext())
+                    .inflate(R.layout.view_push_tips_layout, null)//自定义的布局
             mToast.view = layout
             mToast.setGravity(Gravity.TOP or Gravity.FILL_HORIZONTAL, 0, 0)//从顶部开始显示
 
@@ -269,16 +271,24 @@ object ToastUtils {
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE or View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN//设置Toast可以布局到系统状态栏的下面
 
             layout.doOnLayout {
-                val showAnimation = ObjectAnimator.ofFloat(it, "translationY", -it.height * 1.0f, 0f)
+                val showAnimation =
+                    ObjectAnimator.ofFloat(it, "translationY", -it.height * 1.0f, 0f)
                 showAnimation.duration = 300
                 val pauseAnimation = ObjectAnimator.ofFloat(it, "alpha", 1f, 1f)
                 pauseAnimation.duration = if (duration == Toast.LENGTH_SHORT) 1000 else 2000
-                val hiedAnimation = ObjectAnimator.ofFloat(it, "translationY", 0f, -it.height * 1.0f)
+                val hiedAnimation =
+                    ObjectAnimator.ofFloat(it, "translationY", 0f, -it.height * 1.0f)
                 hiedAnimation.duration = 300
 
                 val animationSet = AnimatorSet()
                 animationSet.setInterpolator(LinearInterpolator())
-                animationSet.playSequentially(arrayOf(showAnimation, pauseAnimation, hiedAnimation).toList())
+                animationSet.playSequentially(
+                    arrayOf(
+                        showAnimation,
+                        pauseAnimation,
+                        hiedAnimation
+                    ).toList()
+                )
                 animationSet.start()
                 animationSet.addListener(object : AnimatorListenerAdapter() {
                     override fun onAnimationEnd(animation: Animator?) {
