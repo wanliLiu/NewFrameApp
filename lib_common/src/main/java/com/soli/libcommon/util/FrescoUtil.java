@@ -71,7 +71,7 @@ public class FrescoUtil {
         if (sImagePipelineConfig == null) {
 //            ImagePipelineConfig.Builder configBuilder = ImagePipelineConfig.newBuilder(context);
             //网络层用 okhttp 做了相应的https兼容
-            ImagePipelineConfig.Builder configBuilder = OkHttpImagePipelineConfigFactory.newBuilder(context, ApiHelper.getHttpClient());
+            ImagePipelineConfig.Builder configBuilder = OkHttpImagePipelineConfigFactory.newBuilder(context, ApiHelper.getClient());
             configureCaches(configBuilder, context);
             configureLoggingListeners(configBuilder);
             configureOptions(configBuilder);

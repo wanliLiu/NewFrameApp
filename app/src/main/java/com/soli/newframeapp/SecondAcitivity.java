@@ -1,10 +1,12 @@
 package com.soli.newframeapp;
 
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
+
 import com.soli.libcommon.base.BaseActivity;
-import com.soli.libcommon.net.ApiCallBack;
 import com.soli.libcommon.net.ApiHelper;
+import com.soli.libcommon.net.ApiResult;
 import com.soli.libcommon.net.DataType;
 import com.soli.libcommon.util.NetworkUtil;
 import com.soli.libcommon.util.TabFragmentManager;
@@ -14,6 +16,9 @@ import com.soli.newframeapp.model.StoryList;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 /**
  * @author Soli
@@ -61,8 +66,8 @@ public class SecondAcitivity extends BaseActivity {
     }
 
     private void loadingErrorTest() {
-        showProgress(true,true,LoadingType.TypeDialog);
-        new Handler().postDelayed(() -> {
+        showProgress(true, true, LoadingType.TypeDialog);
+        new Handler(Looper.myLooper()).postDelayed(() -> {
             dismissProgress();
             addFragment();
 
@@ -85,18 +90,18 @@ public class SecondAcitivity extends BaseActivity {
         Calendar calendar = Calendar.getInstance();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyyMMdd", Locale.getDefault());
 
-        ApiHelper api = new ApiHelper.Builder()
-                .baseUrl("http://news.at.zhihu.com/api/4/news/before/")
-                .bodyType(DataType.JSON_OBJECT, StoryList.class)
-                .url(simpleDateFormat.format(calendar.getTime()))
-                .build();
 
-        api.get((ApiCallBack<StoryList>) result -> {
-//            dismissProgress();
+        ApiHelper.Builder api = new ApiHelper.Builder();
+        api.setBaseUrl("http://news.at.zhihu.com/api/4/news/before/");
+        api.setBodyType(DataType.JSON_OBJECT);
+        api.setClazz(StoryList.class);
+        api.setUrl(simpleDateFormat.format(calendar.getTime()));
+
+        api.build().get((Function1<ApiResult<StoryList>, Unit>) result -> {
             if (result.isSuccess()) {
                 Log.e("result", result.getFullData());
-            } else {
             }
+            return null;
         });
     }
 }

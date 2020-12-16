@@ -1,4 +1,4 @@
-package com.soli.libcommon.net;
+package com.soli.libcommon.net
 
 /**
  * 请求结果码
@@ -6,8 +6,7 @@ package com.soli.libcommon.net;
  * @author Soli
  * @Time 18-5-17 下午3:52
  */
-public enum ResultCode {
-
+enum class ResultCode(intValue: Int) {
     /**
      * 请求成功
      */
@@ -20,16 +19,7 @@ public enum ResultCode {
 
     /**
      * 网络连接有问题
-     **/
+     */
     NETWORK_TROBLE(0x2);
 
-    private int mIntValue;
-
-    ResultCode(int intValue) {
-        mIntValue = intValue;
-    }
-
-    public int getIntValue() {
-        return mIntValue;
-    }
 }

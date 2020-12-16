@@ -1,6 +1,5 @@
 package com.soli.newframeapp.net
 
-import android.view.View
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.net.DataType
@@ -60,26 +59,25 @@ class NetWorkTestActivity : BaseActivity() {
 
         showProgress(show)
 
-        val apiHelper = ApiHelper.Builder()
-            .baseUrl("http://news.at.zhihu.com/api/4/news/before/")
-            .bodyType(DataType.JSON_OBJECT, StoryList::class.java)
-            .url(simpleDateFormat.format(calendar.time))
-            .build()
 
-
-        apiHelper.get { result ->
+        ApiHelper.build {
+            baseUrl = "http://news.at.zhihu.com/api/4/news/before/"
+            bodyType = DataType.JSON_OBJECT
+            clazz = StoryList::class.java
+            url = simpleDateFormat.format(calendar.time)
+        }.get<StoryList> { result ->
 
             ViewUtil.setNoDataEmptyView(context = ctx,
                 listview = itemList,
                 message = "没有数据哦,测试RecyclerView加载没有数据的空视图显示!",
-                listener = View.OnClickListener {
+                listener = {
                     index = 0
                     getNewsDate(true)
                 })
 
             dismissProgress()
             refreshLayout.onRefreshComplete()
-            if (result.isSuccess) {
+            if (result.isSuccess && result.result != null) {
 
                 if (index == 0)
                     mAadapter.removeAll()

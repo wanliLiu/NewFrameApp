@@ -206,7 +206,7 @@ object ToastUtils {
      * @param duration 显示时长
      */
     private fun showToast(@StringRes resId: Int, duration: Int) {
-        showToast(Constant.getContext().resources.getText(resId).toString(), duration)
+        showToast(Constant.context.resources.getText(resId).toString(), duration)
     }
 
     /**
@@ -217,7 +217,7 @@ object ToastUtils {
      * @param args     参数
      */
     private fun showToast(@StringRes resId: Int, duration: Int, vararg args: Any) {
-        showToast(String.format(Constant.getContext().resources.getString(resId), *args), duration)
+        showToast(String.format(Constant.context.resources.getString(resId), *args), duration)
     }
 
     /**
@@ -260,9 +260,9 @@ object ToastUtils {
     private fun showCustomToast(text: String, duration: Int) {
         if (!TextUtils.isEmpty(text)) {
             isToastShow = true
-            val mToast = Toast(Constant.getContext())
+            val mToast = Toast(Constant.context)
             val layout =
-                LayoutInflater.from(Constant.getContext())
+                LayoutInflater.from(Constant.context)
                     .inflate(R.layout.view_push_tips_layout, null)//自定义的布局
             mToast.view = layout
             mToast.setGravity(Gravity.TOP or Gravity.FILL_HORIZONTAL, 0, 0)//从顶部开始显示

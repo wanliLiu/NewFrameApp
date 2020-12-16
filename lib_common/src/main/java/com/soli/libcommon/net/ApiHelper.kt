@@ -1,122 +1,104 @@
-package com.soli.libcommon.net;
+package com.soli.libcommon.net
 
-import android.text.TextUtils;
-import android.webkit.MimeTypeMap;
-
-import androidx.annotation.NonNull;
-
-import com.alibaba.fastjson.JSONObject;
-import com.soli.libcommon.base.Constant;
-import com.soli.libcommon.net.cookie.https.HttpsUtils;
-import com.soli.libcommon.net.download.FileProgressListener;
-import com.soli.libcommon.net.download.ProgressInterceptor;
-import com.soli.libcommon.net.upload.ProgressRequestBody;
-import com.soli.libcommon.net.websocket.RxWebSocket;
-import com.soli.libcommon.util.FileUtil;
-import com.soli.libcommon.util.NetworkUtil;
-import com.soli.libcommon.util.RxJavaUtil;
-import com.soli.libcommon.util.Utils;
-
-import java.io.File;
-import java.net.URLEncoder;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import okhttp3.Cache;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
-import okhttp3.logging.LoggingEventListener;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import retrofit2.Retrofit;
+import android.text.TextUtils
+import android.webkit.MimeTypeMap
+import com.alibaba.fastjson.JSON
+import com.alibaba.fastjson.JSONObject
+import com.google.gson.Gson
+import com.soli.libcommon.base.Constant
+import com.soli.libcommon.net.cookie.https.HttpsUtils
+import com.soli.libcommon.net.download.FileProgressListener
+import com.soli.libcommon.net.download.ProgressInterceptor
+import com.soli.libcommon.net.upload.ProgressRequestBody
+import com.soli.libcommon.net.websocket.RxWebSocket.Companion.Instance
+import com.soli.libcommon.util.*
+import com.soli.libcommon.util.Utils.MD5
+import com.soli.libcommon.util.Utils.getFileMD5
+import io.reactivex.android.schedulers.AndroidSchedulers
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.logging.HttpLoggingInterceptor
+import okhttp3.logging.LoggingEventListener
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
+import retrofit2.Retrofit
+import java.io.File
+import java.net.Proxy
+import java.net.URLEncoder
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * @author Soli
  * @Time 18-5-17 下午4:42
  */
-public class ApiHelper {
+class ApiHelper private constructor(private val builder: Builder) {
 
-    private static OkHttpClient okHttpClient;
+    companion object {
 
-    private long timeout = 30L;
-    private Retrofit retrofit;
-    private static final Map<String, Call> CALL_MAP = new HashMap<>();
-    private Builder mBuilder;
-    private static ApiHelper client;
+        /**
+         *
+         */
+        inline fun build(block: Builder.() -> Unit): ApiHelper = Builder().apply(block).build()
 
+        private val CALL_MAP = HashMap<String, Call<*>>()
 
-    private boolean isWebSocketRequest = false;
+        @Volatile
+        private var okHttpClient: OkHttpClient? = null
 
-    //文件下载进度回调
-    private FileProgressListener progressListener;
+        @JvmStatic
+        val client: OkHttpClient
+            get() = okHttpClient ?: synchronized(this) {
+                okHttpClient ?: newClient.also { okHttpClient = it }
+            }
 
-    /**
-     * 获取httpClient供Fresco使用
-     *
-     * @return
-     */
-    public static OkHttpClient getHttpClient() {
-        return getInstance().getOkHttpClient();
-    }
-
-    /**
-     * 获取单例
-     *
-     * @return
-     */
-    private static ApiHelper getInstance() {
-        if (client != null)
-            return client;
-        synchronized (ApiHelper.class) {
-            if (client == null)
-                client = new ApiHelper();
+        @JvmStatic
+        fun resetApiClient() {
+            retrofit = null
+            okHttpClient = null
         }
 
-        return client;
-    }
+        @Volatile
+        private var retrofit: Retrofit? = null
 
-    /**
-     *
-     */
-    private ApiHelper() {
-        OkHttpClient.Builder client = new OkHttpClient.Builder();
-        client.connectTimeout(timeout, TimeUnit.SECONDS);
-        client.readTimeout(timeout, TimeUnit.SECONDS);
-        client.writeTimeout(timeout, TimeUnit.SECONDS);
-        client.retryOnConnectionFailure(true);
-//        client.cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(Constant.getContext())));
-        client.hostnameVerifier((hostname, session) -> true);
+        private val timeout = 30L
 
-        addProgress(client);
-        netWorkCacheSet(client);
+        //文件下载进度回调
+        private var progressListener: FileProgressListener? = null
 
-        //添加公共请求头的参数
-        client.addInterceptor(new RequestHeaderInterceptor());
+        private val newClient: OkHttpClient
+            get() = OkHttpClient.Builder().apply {
+                connectTimeout(timeout, TimeUnit.SECONDS)
+                readTimeout(timeout, TimeUnit.SECONDS)
+                writeTimeout(timeout, TimeUnit.SECONDS)
+                retryOnConnectionFailure(true)
+                if (!SecurityUtil.needCapturePacket)
+                    proxy(Proxy.NO_PROXY)
+                //        cookieJar(new PersistentCookieJar(new SetCookieCache(), new SharedPrefsCookiePersistor(Constant.getContext())));
+                hostnameVerifier { _, _ -> true }
 
-        if (Constant.Debug) {
-            client.addInterceptor((new HttpLoggingInterceptor()).setLevel(HttpLoggingInterceptor.Level.BODY));
-            client.eventListenerFactory(new LoggingEventListener.Factory());
-            //for stetho 在网页调试页看网络日志
-//            client.addNetworkInterceptor(new StethoInterceptor());
-        }
+                addProgress(this)
+                netWorkCacheSet(this)
 
-        //支持https访问  Android 5.0以下 TLSV1.1和TLSV1.2是关闭的，要自己打开，Android 5.0以上是打开的
-        //这里就针对这两种情况，不同处理
+                //添加公共请求头的参数
+                addInterceptor(RequestHeaderInterceptor())
+                if (Constant.Debug) {
+                    addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
+                    eventListenerFactory(LoggingEventListener.Factory())
+                    //for stetho 在网页调试页看网络日志
+//            addNetworkInterceptor(new StethoInterceptor());
+                }
+
+                //支持https访问  Android 5.0以下 TLSV1.1和TLSV1.2是关闭的，要自己打开，Android 5.0以上是打开的
+                //这里就针对这两种情况，不同处理
 //        if (Build.VERSION.SDK_INT > Build.VERSION_CODES.KITKAT_WATCH) {
-        //Android 5.0以上
-        HttpsUtils.SSLParams sslParams = HttpsUtils.getSslSocketFactory(null, null, null);
-        client.sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager);
-//        } else {
+                //Android 5.0以上
+                val sslParams = HttpsUtils.getSslSocketFactory(null, null, null)
+                sslSocketFactory(sslParams.sSLSocketFactory, sslParams.trustManager)
+                //        } else {
 //            //Android 5.0 以下
 //            SSLContext sslContext = null;
 //            try {
@@ -124,78 +106,143 @@ public class ApiHelper {
 //                sslContext.init(null, null, null);
 //
 //                SSLSocketFactory socketFactory = new Tls12SocketFactory(sslContext.getSocketFactory());
-//                client.sslSocketFactory(socketFactory, new HttpsUtils.UnSafeTrustManager());
+//                sslSocketFactory(socketFactory, new HttpsUtils.UnSafeTrustManager());
 //            } catch (Exception e) {
 //                e.printStackTrace();
 //            }
 //        }
+            }.build()
 
-        okHttpClient = client.build();
-    }
 
-    /**
-     * 网络缓存设置
-     *
-     * @param builder
-     */
-    private void netWorkCacheSet(OkHttpClient.Builder builder) {
-        File mFile = new File(Constant.getContext().getCacheDir() + "http");//储存目录
-        long maxSize = 10 * 1024 * 1024; // 10 MB 最大缓存数
-        builder.cache(new Cache(mFile, maxSize));
+        /**
+         * 网络缓存设置
+         *
+         * @param builder
+         */
+        private fun netWorkCacheSet(builder: OkHttpClient.Builder) {
+            val mFile = File(Constant.context.cacheDir.toString() + "http") //储存目录
+            val maxSize = (10 * 1024 * 1024).toLong() // 10 MB 最大缓存数
+            builder.cache(Cache(mFile, maxSize))
+            builder.interceptors().add(CacheInterceptor())
+            builder.networkInterceptors().add(CacheInterceptor())
+        }
 
-        builder.interceptors().add(new CacheInterceptor());
-        builder.networkInterceptors().add(new CacheInterceptor());
-    }
+        /**
+         * 添加对网络数据获取的进度添加
+         *
+         * @param builder
+         */
+        private fun addProgress(builder: OkHttpClient.Builder) {
+            builder.addNetworkInterceptor(ProgressInterceptor { progress: Int?, bytesRead: Long?, updateBytes: Long?, fileSize: Long?, done: Boolean? ->
+                if (progressListener != null) {
+                    RxJavaUtil.runOnUiThread {
+                        if (progressListener != null) progressListener!!.progress(
+                            progress!!, bytesRead!!, updateBytes!!, fileSize!!, done!!
+                        )
+                    }
+                }
+            })
+        }
 
-    /**
-     * 添加对网络数据获取的进度添加
-     *
-     * @param builder
-     */
-    private void addProgress(OkHttpClient.Builder builder) {
-        builder.addNetworkInterceptor(new ProgressInterceptor((progress, bytesRead, updateBytes, fileSize, done) -> {
-            if (progressListener != null) {
-                RxJavaUtil.runOnUiThread(() -> {
-                    if (progressListener != null)
-                        progressListener.progress(progress, bytesRead, updateBytes, fileSize, done);
-                });
+
+        /**
+         * 添加某个请求
+         */
+        @Synchronized
+        private fun putCall(builder: Builder?, call: Call<*>) {
+            if (builder!!.tag == null) return
+            synchronized(CALL_MAP) { CALL_MAP.put(builder.tag.toString() + builder.url, call) }
+        }
+
+        /**
+         * 取消某个界面都所有请求，或者是取消某个tag的所有请求;
+         * 如果要取消某个tag单独请求，tag需要传入tag+url
+         *
+         * @param tag 请求标签
+         */
+        @Synchronized
+        @JvmStatic
+        fun cancel(tag: Any?) {
+            if (tag == null) return
+            val list: MutableList<String?> = ArrayList()
+            synchronized(CALL_MAP) {
+                for (key in CALL_MAP.keys) {
+                    if (key!!.startsWith(tag.toString())) {
+                        CALL_MAP[key]!!.cancel()
+                        list.add(key)
+                    }
+                }
             }
-            return null;
-        }));
+            for (s in list) {
+                removeCall(s)
+            }
+        }
+
+        /**
+         * 移除某个请求
+         *
+         * @param url 添加的url
+         */
+        @Synchronized
+        private fun removeCall(url: String?) {
+            var url = url
+            if (TextUtils.isEmpty(url)) return
+            synchronized(CALL_MAP) {
+                for (key in CALL_MAP.keys) {
+                    if (!TextUtils.isEmpty(url) && key!!.contains(url!!)) {
+                        url = key
+                        break
+                    }
+                }
+                if (!TextUtils.isEmpty(url)) CALL_MAP.remove(url)
+            }
+        }
     }
 
     /**
      * 获取的Retrofit的实例，
      * 引起Retrofit变化的因素只有静态变量BASE_URL的改变。
      */
-    private void getRetrofit() {
+    private fun getRetrofit() {
+
+        client ?: return
+
         //默认的
-        String defaultUrl = Constant.webServer;
+        val defaultUrl = Constant.webServer
         //动态设置的
-        String setUrl = mBuilder.builderBaseUrl;
-        boolean isNeedGet = false;
-        if (retrofit == null)
-            isNeedGet = true;
-        else if (!TextUtils.isEmpty(setUrl) && !defaultUrl.equals(setUrl))
-            isNeedGet = true;
-        else if (!retrofit.baseUrl().toString().equals(defaultUrl))
-            isNeedGet = true;
+        var setUrl = builder.baseUrl
+        val isNeedGet = when {
+            retrofit == null ||
+                    !TextUtils.isEmpty(setUrl) && defaultUrl != setUrl ||
+                    retrofit!!.baseUrl().toString() != defaultUrl -> true
+            else -> false
+        }
 
         if (isNeedGet) {
             if (TextUtils.isEmpty(setUrl))
-                setUrl = defaultUrl;
-            retrofit = new Retrofit.Builder()
-                    .baseUrl(setUrl)
-                    .client(okHttpClient)
-                    .build();
+                setUrl = defaultUrl
+            retrofit = Retrofit.Builder()
+                .baseUrl(setUrl)
+                .client(client)
+                .build()
         }
     }
 
     /**
-     * @return
+     *
      */
-    private OkHttpClient getOkHttpClient() {
-        return okHttpClient;
+    private fun <T> dealNetWorkInfo(callBack: ApiCallBack<T>?): Boolean {
+        return when {
+            !NetworkUtil.isConnected() -> {
+                callBack?.invoke(ApiResult(ResultCode.NETWORK_TROBLE, "----没有网络啦---"))
+                true
+            }
+            SecurityUtil.dealNetSecurityCheck() -> {
+                callBack?.invoke(ApiResult(ResultCode.NETWORK_TROBLE, "网络异常"))
+                true
+            }
+            else -> false
+        }
     }
 
     /**
@@ -203,12 +250,11 @@ public class ApiHelper {
      *
      * @param callBack
      */
-    public void get(final ApiCallBack callBack) {
-        Builder builder = mBuilder;
-        builder.url(builder.url + "?" + builder.params.getParams());
-        Call<ResponseBody> mCall = retrofit.create(ApiService.class).executeGet(builder.url);
-        putCall(builder, mCall);
-        startRequest(builder, callBack, mCall);
+    fun <T> get(callBack: ApiCallBack<T>) {
+        require(retrofit != null) { "Retrofit不能为空" }
+        val mCall = retrofit!!.create(ApiService::class.java).executeGet(builder.getUrl)
+        putCall(builder, mCall)
+        startRequest(callBack, mCall)
     }
 
     /**
@@ -216,24 +262,20 @@ public class ApiHelper {
      *
      * @param callBack
      */
-    public void post(final ApiCallBack callBack) {
-        Builder builder = mBuilder;
-        Call<ResponseBody> mCall = retrofit.create(ApiService.class).executePost(builder.url, builder.params);
-        putCall(builder, mCall);
-        startRequest(builder, callBack, mCall);
+    fun <T> post(callBack: ApiCallBack<T>?) {
+        val mCall =
+            retrofit!!.create(ApiService::class.java).executePost(builder.url, builder.params)
+        putCall(builder, mCall)
+        startRequest(callBack, mCall)
     }
 
-
     /**
-     * 发送post请求
+     * 默认发送post请求
      *
      * @param callBack
      */
-    public void request(final ApiCallBack callBack) {
-        if (!isWebSocketRequest)
-            post(callBack);
-        else
-            webSocketRequest(callBack);
+    fun <T> request(callBack: ApiCallBack<T>?) {
+        if (!builder.isWebSocketRequest) post(callBack) else webSocketRequest(callBack)
     }
 
     /**
@@ -242,16 +284,25 @@ public class ApiHelper {
      * @param builder
      * @param callBack
      */
-    private void listenerWebSocketResult(Builder builder, final ApiCallBack callBack) {
-        Disposable disposable = RxWebSocket.Companion.getInstance().getWebSocketInfoObservable()
-                .timeout(10, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
-                .filter(webSocketInfo -> webSocketInfo.getString() != null)
-                .take(1)
-                .subscribe(dataBack -> {
-                    ApiResult result;
+    private fun <T> listenerWebSocketResult(callBack: ApiCallBack<T>?) {
+        val disposable = Instance.getWebSocketInfoObservable()
+            .timeout(10, TimeUnit.SECONDS, AndroidSchedulers.mainThread())
+            .filter { (_, string) -> string != null }
+            .take(1)
+            .subscribe({ (_, data) ->
+                callBack?.invoke(
                     try {
-                        result = new ApiResult(ResultCode.RESULT_OK, parseData(dataBack.getString(), builder.clazz, builder.bodyType), dataBack.getString());
-//                        JSONObject json = JSON.parseObject(dataBack.getString());
+                        ApiResult(
+                            code = ResultCode.RESULT_OK,
+                            fullData = data ?: "",
+                            result = parseData(
+                                builder.isJavaModel,
+                                data ?: "",
+                                builder.clazz,
+                                builder.bodyType
+                            )
+                        )
+                        //                        JSONObject json = JSON.parseObject(dataBack.getString());
 //                        String token = json.getString("token");
 //                        String code = json.getString("code");
 //                        String content = json.getString("content");
@@ -272,19 +323,13 @@ public class ApiHelper {
 //                        } else {
 //                            result = new ApiResult(ResultCode.RESULT_FAILED, "websocket返回的数据有问题");
 //                        }
-                    } catch (Exception e) {
-                        result = new ApiResult(ResultCode.RESULT_FAILED, e.getMessage());
+                    } catch (e: Exception) {
+                        ApiResult(ResultCode.RESULT_FAILED, e.message ?: "")
                     }
-
-                    if (callBack != null) {
-                        callBack.receive(result);
-                    }
-
-                }, throwable -> {
-                    if (callBack != null) {
-                        callBack.receive(new ApiResult(ResultCode.RESULT_FAILED, throwable.getMessage()));
-                    }
-                });
+                )
+            }) { throwable ->
+                callBack?.invoke(ApiResult(ResultCode.RESULT_FAILED, throwable.message!!))
+            }
     }
 
     /**
@@ -292,141 +337,128 @@ public class ApiHelper {
      *
      * @param callBack
      */
-    private void webSocketRequest(final ApiCallBack callBack) {
-        if (!NetworkUtil.INSTANCE.isConnected()) {
-            if (callBack != null)
-                callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));
-            return;
-        }
+    private fun <T> webSocketRequest(callBack: ApiCallBack<T>?) {
+        if (dealNetWorkInfo(callBack)) return
 
-        final Builder builder = mBuilder;
-//        builder.params = builder.params.getWebSocketParams(builder.url);
-        listenerWebSocketResult(builder, callBack);
-        RxWebSocket.Companion.getInstance().asyncSend(builder.params.getParams());
+        //        builder.params = builder.params.getWebSocketParams(builder.url);
+        listenerWebSocketResult(callBack)
+        Instance.asyncSend(builder.params.params)
     }
-
 
     /**
      * @param builder
      * @param content
      * @return
      */
-    private ApiResult parseOriginData(Builder builder, String content) {
-
-        ApiResult result = new ApiResult();
-
-        result.setJson(content);
-        JSONObject object = JSONObject.parseObject(content);
-        if (object.containsKey("state") && object.getBoolean("state")) {
+    private fun <T> parseOriginData(content: String): ApiResult<T> {
+        val result = ApiResult<T>(fullData = content)
+        val json = JSONObject.parseObject(content)
+        if (json.containsKey("state") && json.getBoolean("state")) {
             //网络数据，逻辑成功
-            result.setCode(ResultCode.RESULT_OK);
-            String data = object.getString("data");
+            result.code = ResultCode.RESULT_OK
+            val data = json.getString("data")
             if (!TextUtils.isEmpty(data))
-                result.setResult(parseData(data, builder.clazz, builder.bodyType));
+                result.result =
+                    parseData(builder.isJavaModel, data, builder.clazz, builder.bodyType)
         } else {
-            result.setCode(ResultCode.RESULT_FAILED);
-            result.setErrorCodeMsg(object.getString("errcode"), object.getString("errmsg"));
+            result.code = ResultCode.RESULT_FAILED
+            result.errorCode = json.getString("errcode")
+            result.errormsg = json.getString("errmsg")
         }
-
-        return result;
+        return result
     }
-
 
     /**
      * @param callBack
      * @param listener
      */
-    public void uploadFile(final ApiCallBack<String> callBack, final FileProgressListener listener) {
-        Builder builder = mBuilder;
+    fun uploadFile(callBack: ApiCallBack<String?>?, listener: FileProgressListener?) {
 
-        File file = new File(builder.fileUrl);
-        if (!file.exists())
-            throw new IllegalArgumentException("上传的文件不存在--->" + file.getAbsolutePath());
-//
+        if (dealNetWorkInfo(callBack)) return
+
+        require(File(builder.fileUrl).exists()) { "下载的文件地址有问题" }
+
+        val file = File(builder.fileUrl)
+        require(file.exists()) { "上传的文件不存在--->" + file.absolutePath }
+        //
 //        progressListener = listener;
-
-        ProgressRequestBody filebody = new ProgressRequestBody(RequestBody.create(MediaType.parse("multipart/form-data"), file), listener);
-        MultipartBody.Part filePart = MultipartBody.Part.createFormData("file", file.getName(), filebody);
-
-        String fileExt = MimeTypeMap.getFileExtensionFromUrl(file.getAbsolutePath());
-        if (TextUtils.isEmpty(fileExt))
-            fileExt = "jpg";
-
-        int fileMode = FileUtil.INSTANCE.getFileUploadType(fileExt);
-
-        String safe = "1";
-        String cache = "1";
-
-        String key = Utils.INSTANCE.MD5(fileMode + fileExt + safe + Utils.INSTANCE.getFileMD5(file) + "taiheUp@#");
-        StringBuffer secureKey = new StringBuffer();
-//        String mapFrom = "0123456789abcdef";
-        String mapTo = "f7c8d0e1a9b53426";
-        for (int i = 0; i < key.length(); i++) {
-            int tst = Integer.parseInt(key.substring(i, i + 1), 16);
-            secureKey.append(mapTo.substring(tst, tst + 1));
+        val filebody = ProgressRequestBody(
+            file.asRequestBody("multipart/form-data".toMediaTypeOrNull()),
+            listener
+        )
+        val filePart = MultipartBody.Part.createFormData("file", file.name, filebody)
+        var fileExt = MimeTypeMap.getFileExtensionFromUrl(file.absolutePath)
+        if (TextUtils.isEmpty(fileExt)) fileExt = "jpg"
+        val fileMode = FileUtil.getFileUploadType(fileExt)
+        val safe = "1"
+        val cache = "1"
+        val key = MD5(fileMode.toString() + fileExt + safe + getFileMD5(file) + "taiheUp@#")
+        val secureKey = StringBuffer()
+        //        String mapFrom = "0123456789abcdef";
+        val mapTo = "f7c8d0e1a9b53426"
+        for (i in key.indices) {
+            val tst = key.substring(i, i + 1).toInt(16)
+            secureKey.append(mapTo.substring(tst, tst + 1))
         }
-
-        String url = "/?upload=1&fileMode=" + fileMode + "&fileExt=" + fileExt + "&safe=" + safe + "&cache=" + cache + "&mode=upload&secureKey=" + secureKey.toString();
-
-        Call<ResponseBody> mCall = retrofit.create(ApiService.class).uploadFile(url, filePart);
-        putCall(builder, mCall);
-        startRequest(builder, callBack, mCall);
+        val url =
+            "/?upload=1&fileMode=$fileMode&fileExt=$fileExt&safe=$safe&cache=$cache&mode=upload&secureKey=$secureKey"
+        val mCall = retrofit!!.create(ApiService::class.java).uploadFile(url, filePart)
+        putCall(builder, mCall)
+        startRequest(callBack, mCall)
     }
-
 
     /**
      * @param callBack
      * @param listener
      */
-    public void uploadFileNew(final ApiCallBack<String> callBack, final FileProgressListener listener) {
-        Builder builder = mBuilder;
+    fun uploadFileNew(callBack: ApiCallBack<String>?, listener: FileProgressListener?) {
 
-        File file = new File(builder.fileUrl);
-        if (!file.exists())
-            throw new IllegalArgumentException("上传的文件不存在--->" + file.getAbsolutePath());
+        if (dealNetWorkInfo(callBack)) return
 
-        ProgressRequestBody filebody = new ProgressRequestBody(RequestBody.create(file, MediaType.parse("multipart/form-data")), listener);
-
-        String fileExt = FileUtil.INSTANCE.getFileExtension(file.getAbsolutePath());
-
-        int fileMode = FileUtil.INSTANCE.getFileUploadType(fileExt);
-
-        String safe = "1";//二次验证1.开启验证 2.关闭验证
-        String cache = "1";//使用文件重复上传验证.1 开启 2.关闭
+        val file = File(builder.fileUrl)
+        require(file.exists()) { "上传的文件不存在--->" + file.absolutePath }
+        val filebody = ProgressRequestBody(
+            file.asRequestBody("multipart/form-data".toMediaTypeOrNull()),
+            listener
+        )
+        val fileExt = FileUtil.getFileExtension(file.absolutePath)
+        val fileMode = FileUtil.getFileUploadType(fileExt)
+        val safe = "1" //二次验证1.开启验证 2.关闭验证
+        val cache = "1" //使用文件重复上传验证.1 开启 2.关闭
 
         //upload : Key 的组装方式, fileMode+fileExt+safe+文件的md5+每个域名都不同的key 这个串md5后用字符mapping表映射一次.
-        String key = Utils.INSTANCE.MD5(fileMode + fileExt + safe + Utils.INSTANCE.getFileMD5(file) + "taiheUp@#");
-        StringBuffer secureKey = new StringBuffer();
-//        String mapFrom = "0123456789abcdef";
-        String mapTo = "f7c8d0e1a9b53426";
-        for (int i = 0; i < key.length(); i++) {
-            int tst = Integer.parseInt(key.substring(i, i + 1), 16);
-            secureKey.append(mapTo.substring(tst, tst + 1));
+        val key = MD5(fileMode.toString() + fileExt + safe + getFileMD5(file) + "taiheUp@#")
+        val secureKey = StringBuffer()
+        //        String mapFrom = "0123456789abcdef";
+        val mapTo = "f7c8d0e1a9b53426"
+        for (i in key.indices) {
+            val tst = key.substring(i, i + 1).toInt(16)
+            secureKey.append(mapTo.substring(tst, tst + 1))
         }
-
-        Map<String, RequestBody> fileUploadParams = new HashMap<>();
-        fileUploadParams.put("fileMode", RequestBody.create(String.valueOf(fileMode), null));
+        val fileUploadParams: MutableMap<String, RequestBody> = HashMap()
+        fileUploadParams["fileMode"] = fileMode.toString().toRequestBody()
         //(mov count是从视频中抽取的图片数量 0表示不抽取 仅当fileMode是2的时候生效.)
-        fileUploadParams.put("movImgCount", RequestBody.create("0", null));
-        fileUploadParams.put("fileExt", RequestBody.create(fileExt, null));
+        fileUploadParams["movImgCount"] = "0".toRequestBody()
+        fileUploadParams["fileExt"] = fileExt.toRequestBody()
         try {
-            fileUploadParams.put("file\"; filename=\"" + URLEncoder.encode(file.getName(), "UTF-8") + " ", filebody);
-        } catch (Exception e) {
-            e.printStackTrace();
-            fileUploadParams.put("file\"; filename=\"" + URLEncoder.encode(file.getName()) + " ", filebody);
+            fileUploadParams["file\"; filename=\"" + URLEncoder.encode(file.name, "UTF-8") + " "] =
+                filebody
+        } catch (e: Exception) {
+            e.printStackTrace()
+            fileUploadParams["file\"; filename=\"" + URLEncoder.encode(file.name) + " "] = filebody
         }
-        fileUploadParams.put("safe", RequestBody.create(safe, null));
-        fileUploadParams.put("cache", RequestBody.create(cache, null));
-        fileUploadParams.put("secureKey", RequestBody.create(secureKey.toString(), null));
-//        fileUploadParams.put("action", RequestBody.create(builder.url.replace(Constant.apiHead, ""), null));
-        fileUploadParams.put("mode", RequestBody.create("upload", null));
+        fileUploadParams["safe"] = safe.toRequestBody()
+        fileUploadParams["cache"] = cache.toRequestBody()
+        fileUploadParams["secureKey"] = secureKey.toString().toRequestBody()
+        //        fileUploadParams.put("action", RequestBody.create(builder.url.replace(Constant.apiHead, ""), null));
+        fileUploadParams["mode"] = "upload".toRequestBody()
 
 //        Call<ResponseBody> mCall = retrofit.create(ApiService.class).uploadFileNew(builder.url.replace(Constant.apiHead, ""), fileUploadParams);
-        Call<ResponseBody> mCall = retrofit.create(ApiService.class).uploadFileNew(builder.url, fileUploadParams);
-        mCall = mCall.clone();
-
-        putCall(builder, mCall);
-        startRequest(builder, callBack, mCall);
+        var mCall =
+            retrofit!!.create(ApiService::class.java).uploadFileNew(builder.url, fileUploadParams)
+        mCall = mCall.clone()
+        putCall(builder, mCall)
+        startRequest(callBack, mCall)
     }
 
     /**
@@ -435,59 +467,92 @@ public class ApiHelper {
      * @param callBack
      * @param listener
      */
-    public void downloadFile(final ApiCallBack<File> callBack, final FileProgressListener listener) {
-        Builder builder = mBuilder;
-
-        if (builder.saveFile == null) throw new IllegalArgumentException("下载保存的文件地址不能为空");
-
-        progressListener = listener;
-
-        Call<ResponseBody> mCall = retrofit.create(ApiService.class).executeDownloadFile(builder.fileUrl);
-        putCall(builder, mCall);
-        startDownloadFileRequest(builder, callBack, mCall);
+    fun downloadFile(callBack: ApiCallBack<File>?, listener: FileProgressListener?) {
+        requireNotNull(builder.saveFile) { "下载保存的文件地址不能为空" }
+        progressListener = listener
+        val mCall = retrofit!!.create(ApiService::class.java).executeDownloadFile(
+            builder.fileUrl
+        )
+        putCall(builder, mCall)
+        startDownloadFileRequest(callBack, mCall)
     }
 
     /**
      * @param builder
      * @param callBack
      */
-    private void startDownloadFileRequest(final Builder builder, final ApiCallBack callBack, Call<ResponseBody> mCall) {
-        if (!NetworkUtil.INSTANCE.isConnected()) {
-            if (callBack != null)
-                callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));
-            return;
-        }
-        mCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+    private fun startDownloadFileRequest(
+        callBack: ApiCallBack<File>?,
+        mCall: Call<ResponseBody>
+    ) {
+        if (dealNetWorkInfo(callBack)) return
+
+        mCall.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 try {
-                    final File file = builder.saveFile;
-                    if (!file.exists()) {
-                        file.createNewFile();
+                    val file = builder.saveFile
+                    if (!file!!.exists()) {
+                        file.createNewFile()
                     }
-                    FileUtil.INSTANCE.getFileFromBytes(response.body().bytes(), file);
-
-                    if (callBack != null)
-                        callBack.receive(new ApiResult(ResultCode.RESULT_OK, file, file.getAbsolutePath()));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    onFailure(null, e);
+                    FileUtil.getFileFromBytes(response.body()!!.bytes(), file)
+                    callBack?.invoke(
+                        ApiResult(
+                            code = ResultCode.RESULT_OK,
+                            result = file,
+                            fullData = file.absolutePath
+                        )
+                    )
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    onFailure(null, e)
                 }
-                progressListener = null;
+                progressListener = null
             }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
-                if (callBack != null)
-                    callBack.receive(new ApiResult(ResultCode.RESULT_FAILED, t.getMessage()));
+            override fun onFailure(call: Call<ResponseBody>?, t: Throwable) {
+                t.printStackTrace()
+                callBack?.invoke(
+                    ApiResult(ResultCode.RESULT_FAILED, t.message!!)
+                )
                 if (null != builder.tag) {
-                    removeCall(builder.url);
+                    removeCall(builder.url)
                 }
-                progressListener = null;
+                progressListener = null
             }
-        });
+        })
     }
+
+    /**
+     * 数据解析方法,兼容kotlin的解析
+     *
+     * @param data     要解析的数据
+     * @param clazz    解析类
+     * @param bodyType 解析数据类型
+     */
+    private fun <T> parseData(
+        isJavaModel: Boolean,
+        data: String, clazz: Class<*>?, @DataType.Type bodyType: Int
+    ): T? {
+        return if (isJavaModel) {
+            when (bodyType) {
+                DataType.STRING -> data as T
+                DataType.JSON_OBJECT -> JSON.parseObject(data, clazz) as T
+                DataType.JSON_ARRAY -> JSON.parseArray(data, clazz) as T
+                else -> null
+            }
+        } else {
+            when (bodyType) {
+                DataType.STRING -> data as T
+                DataType.JSON_OBJECT -> Gson().fromJson(data, clazz) as T
+                DataType.JSON_ARRAY -> Gson().fromJson<List<T>>(
+                    data,
+                    ParameterizedTypeImpl(clazz!!)
+                ) as T
+                else -> null
+            }
+        }
+    }
+
 
     /**
      * 发送网络请求
@@ -495,37 +560,40 @@ public class ApiHelper {
      * @param builder
      * @param callBack
      */
-    private void startRequest(final Builder builder, final ApiCallBack callBack, Call<ResponseBody> mCall) {
-        if (!NetworkUtil.INSTANCE.isConnected()) {
-            if (callBack != null)
-                callBack.receive(new ApiResult(ResultCode.NETWORK_TROBLE, "没有网络啊！！！"));
-            return;
-        }
-        mCall.enqueue(new Callback<ResponseBody>() {
-            @Override
-            public void onResponse(Call<ResponseBody> call, Response<ResponseBody> response) {
+    private fun <T> startRequest(callBack: ApiCallBack<T>?, mCall: Call<ResponseBody>) {
 
+        if (dealNetWorkInfo(callBack)) return
+
+        mCall.enqueue(object : Callback<ResponseBody> {
+            override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 // TODO: 2018/5/19 这里可以根据实际情况做相应的调整 比如
-                ApiResult result = null;
+                var result: ApiResult<T>? = null
                 if (200 == response.code()) {
-                    try {
-                        String re = response.body().string();
-                        result = new ApiResult(ResultCode.RESULT_OK, parseData(re, builder.clazz, builder.bodyType), re);
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                        result = new ApiResult(ResultCode.RESULT_FAILED, e.getMessage());
+                    result = try {
+                        val data = response.body()!!.string()
+                        ApiResult(
+                            code = ResultCode.RESULT_OK,
+                            fullData = data,
+                            result = parseData(
+                                builder.isJavaModel,
+                                data,
+                                builder.clazz,
+                                builder.bodyType
+                            )
+                        )
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        ApiResult(ResultCode.RESULT_FAILED, e.message ?: "")
                     }
                 }
-                if (!response.isSuccessful() || 200 != response.code()) {
+                if (!response.isSuccessful || 200 != response.code()) {
                     // TODO: 2018/5/19  这里可以根据实际情况，对返回的错误msg，通过接口的msg来拿
-                    result = new ApiResult(ResultCode.RESULT_FAILED, response.message());
+                    result = ApiResult(ResultCode.RESULT_FAILED, response.message() ?: "")
                 }
-
-                if (callBack != null)
-                    callBack.receive(result);
-
+                if (result != null)
+                    callBack?.invoke(result)
                 if (null != builder.tag) {
-                    removeCall(builder.url);
+                    removeCall(builder.url)
                 }
 
 //                ApiResult result;
@@ -544,228 +612,67 @@ public class ApiHelper {
 //                }
             }
 
-            @Override
-            public void onFailure(Call<ResponseBody> call, Throwable t) {
-                t.printStackTrace();
-                if (callBack != null)
-                    callBack.receive(new ApiResult(ResultCode.RESULT_FAILED, t.getMessage()));
+            override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                t.printStackTrace()
+                callBack?.invoke(ApiResult(ResultCode.RESULT_FAILED, t.message!!))
                 if (null != builder.tag) {
-                    removeCall(builder.url);
+                    removeCall(builder.url)
                 }
             }
-
-        });
-    }
-
-    /**
-     * 数据解析方法
-     *
-     * @param data     要解析的数据
-     * @param clazz    解析类
-     * @param bodyType 解析数据类型
-     */
-    @SuppressWarnings("unchecked")
-    private Object parseData(String data, Class clazz, @DataType.Type int bodyType) {
-        Object object = null;
-        switch (bodyType) {
-            case DataType.STRING:
-                object = data;
-                break;
-            case DataType.JSON_OBJECT:
-                object = DataParseUtil.parseObject(data, clazz);
-                break;
-            case DataType.JSON_ARRAY:
-                object = DataParseUtil.parseToList(data, clazz);
-                break;
-        }
-        return object;
-    }
-
-    /**
-     * 添加某个请求
-     */
-    private synchronized void putCall(Builder builder, Call call) {
-        if (builder.tag == null)
-            return;
-        synchronized (CALL_MAP) {
-            CALL_MAP.put(builder.tag.toString() + builder.url, call);
-        }
-    }
-
-
-    /**
-     * 取消某个界面都所有请求，或者是取消某个tag的所有请求;
-     * 如果要取消某个tag单独请求，tag需要传入tag+url
-     *
-     * @param tag 请求标签
-     */
-    public synchronized void cancel(Object tag) {
-        if (tag == null)
-            return;
-        List<String> list = new ArrayList<>();
-        synchronized (CALL_MAP) {
-            for (String key : CALL_MAP.keySet()) {
-                if (key.startsWith(tag.toString())) {
-                    CALL_MAP.get(key).cancel();
-                    list.add(key);
-                }
-            }
-        }
-        for (String s : list) {
-            removeCall(s);
-        }
-
-    }
-
-    /**
-     * 移除某个请求
-     *
-     * @param url 添加的url
-     */
-    private synchronized void removeCall(String url) {
-        if (TextUtils.isEmpty(url)) return;
-        synchronized (CALL_MAP) {
-            for (String key : CALL_MAP.keySet()) {
-                if (!TextUtils.isEmpty(url) && key.contains(url)) {
-                    url = key;
-                    break;
-                }
-            }
-            if (!TextUtils.isEmpty(url))
-                CALL_MAP.remove(url);
-        }
-    }
-
-    /**
-     * @param builder
-     */
-    private void setBuilder(Builder builder) {
-        this.mBuilder = builder;
+        })
     }
 
     /**
      * 网络请求的builder
      */
-    public static final class Builder {
-        private String builderBaseUrl = "";
-        private String url;
-        private Object tag;
-        private ApiParams params;
+    class Builder {
+        var baseUrl = Constant.webServer
+
+        //        var baseUrl = ""
+        var url = ""
+//            set(value) {
+//                field = if (!value.contains("v1")) {
+//                    (if (value.startsWith("/")) "/v1" else "/v1/") + value
+//                } else
+//                    value
+//            }
+
+        var tag: Any? = null
+
+        var fileUrl = ""
+        var saveFile: File? = null
+
+        //true表示webSocket请求
+        var isWebSocketRequest = false
+
+        var params: ApiParams = ApiParams()
+
         /*返回数据的类型,默认是string类型*/
         @DataType.Type
-        private int bodyType = DataType.STRING;
-        /*解析类*/
-        private Class clazz;
-
-        private String fileUrl;
-        private File saveFile;
-
-        public Builder() {
-            params = new ApiParams();
-            builderBaseUrl = Constant.webServer;
-            tag = null;
-        }
+        var bodyType = DataType.STRING
 
         /**
-         * 请求地址的baseUrl，最后会被赋值给HttpClient的静态变量BASE_URL；
          *
-         * @param baseUrl 请求地址的baseUrl
          */
-        public Builder baseUrl(String baseUrl) {
-            this.builderBaseUrl = baseUrl;
-            return this;
-        }
+        var clazz: Class<*>? = null
 
-        /**
-         * @param fileUrl
-         * @return
-         */
-        public Builder fileUrl(String fileUrl) {
-            this.fileUrl = fileUrl;
-            return this;
-        }
+        //        是否解析java model，如果true 就用fastjson解析
+        var isJavaModel = false
 
-        /**
-         * @param saveFile
-         * @return
-         */
-        public Builder saveFile(File saveFile) {
-            this.saveFile = saveFile;
-            return this;
-        }
 
-        /**
-         * 除baseUrl以外的部分，
-         * 例如："mobile/login"
-         *
-         * @param url path路径
-         */
-        public Builder url(String url) {
-            this.url = url;
-            return this;
-        }
+//        val urlForRequest: String
+//            get() = if (Constant.requestServer.endsWith("/")) {
+//                Constant.requestServer + if (url.startsWith("/")) url.substring(1) else url
+//            } else
+//                Constant.requestServer + if (url.startsWith("/")) url else "/$url"
 
-        /**
-         * 给当前网络请求添加标签，用于取消这个网络请求
-         *
-         * @param tag 标签
-         */
-        public Builder tag(Object tag) {
-            this.tag = tag;
-            return this;
-        }
+        val getUrl: String
+            get() = "$url?${params.params}"
 
-        /**
-         * 直接传对象
-         *
-         * @param params
-         * @return
-         */
-        public Builder params(ApiParams params) {
-            this.params = params;
-            return this;
-        }
-
-        /**
-         * 添加请求参数
-         *
-         * @param key   键
-         * @param value 值
-         */
-        public Builder params(String key, String value) {
-            this.params.put(key, value);
-            return this;
-        }
-
-        /**
-         * 响应体类型设置,如果要响应体类型为STRING，请不要使用这个方法
-         *
-         * @param bodyType 响应体类型，分别:STRING，JSON_OBJECT,JSON_ARRAY,XML
-         * @param clazz    指定的解析类
-         * @param <T>      解析类
-         */
-        public <T> Builder bodyType(@DataType.Type int bodyType, @NonNull Class<T> clazz) {
-            this.bodyType = bodyType;
-            this.clazz = clazz;
-            return this;
-        }
-
-        /**
-         * @return
-         */
-        public ApiHelper build() {
-            ApiHelper client = getInstance();
-            client.isWebSocketRequest = false;
-            client.setBuilder(this);
-            client.getRetrofit();
-            return client;
-        }
-
-        public ApiHelper webSocket() {
-            ApiHelper client = getInstance();
-            client.setBuilder(this);
-            client.isWebSocketRequest = true;
-            return client;
-        }
+        fun build() =
+            ApiHelper(this).apply {
+                getRetrofit()
+            }
     }
+
 }

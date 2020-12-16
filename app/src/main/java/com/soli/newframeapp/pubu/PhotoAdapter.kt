@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.soli.libcommon.base.BaseRecycleAdapter
 import com.soli.libcommon.util.ImageLoader
@@ -21,20 +22,22 @@ class PhotoAdapter(context: Context) : BaseRecycleAdapter<String>(context) {
 
     private val itemWidth by lazy { Utils.getScreenWidthPixels(context) / 2 }
 
-    override fun onCreateViewHolder_impl(viewGroup: ViewGroup?, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder =
-        ViewHolder(LayoutInflater.from(ctx).inflate(R.layout.item_joker_photo, viewGroup, false))
+    override fun onCreateView(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
+      return   ViewHolder(LayoutInflater.from(ctx).inflate(R.layout.item_joker_photo, parent, false))
+    }
 
 
-    override fun onBindViewHolder_impl(
-        viewHolder: androidx.recyclerview.widget.RecyclerView.ViewHolder?,
+    override fun onBindView(
+        mholder: RecyclerView.ViewHolder?,
         itemType: Int,
-        original_position: Int,
-        real_position: Int
+        originalPosition: Int,
+        realPosition: Int,
+        payloads: List<Any>
     ) {
+        val bean = list[realPosition] ?: return
+        val holder = mholder as? ViewHolder
 
-        val bean = list[real_position] ?: return
-        val holder = viewHolder as ViewHolder
-
+        holder ?: return
 
         val imageInfo = ImageUtil.getImageInfo(bean)
 
@@ -51,7 +54,7 @@ class PhotoAdapter(context: Context) : BaseRecycleAdapter<String>(context) {
         ImageLoader.loadImage(holder.f_image_photo, bean, itemWidth, itemWidth)
     }
 
-    private class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
+    private class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val f_image_photo = view as SimpleDraweeView
     }
 

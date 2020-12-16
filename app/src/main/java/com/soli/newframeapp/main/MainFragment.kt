@@ -3,6 +3,7 @@ package com.soli.newframeapp.main
 import android.Manifest
 import android.os.Build
 import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -71,14 +72,14 @@ class MainFragment : BaseToolbarFragment() {
 
         progressInTest.setOnClickListener {
             showProgress()
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 dismissProgress()
             }, 2000)
         }
 
         progressDialogTest.setOnClickListener {
             showProgress(type = LoadingType.TypeDialog)
-            Handler().postDelayed({
+            Handler(Looper.getMainLooper()).postDelayed({
                 dismissProgress()
             }, 2000)
         }
@@ -95,10 +96,10 @@ class MainFragment : BaseToolbarFragment() {
 
     private fun loadingErrorTest() {
         showProgress()
-        Handler().postDelayed({
+        Handler(Looper.getMainLooper()).postDelayed({
             dismissProgress()
             if (retry < retryIndex)
-                errorHappen(1, ApiResult(ResultCode.NETWORK_TROBLE, "测试")) {
+                errorHappen<Any>(1, ApiResult(ResultCode.NETWORK_TROBLE, "测试")) {
                     retry++
                     loadingErrorTest()
                 }

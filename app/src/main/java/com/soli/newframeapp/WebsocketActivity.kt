@@ -5,7 +5,7 @@ import com.dhh.rxlifecycle2.RxLifecycle
 import com.jakewharton.rxbinding2.view.RxView
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.ApiHelper
-import com.soli.libcommon.net.ApiParams
+import com.soli.libcommon.net.apiParamsOf
 import com.soli.libcommon.net.websocket.RxWebSocket
 import kotlinx.android.synthetic.main.activity_websocket.*
 
@@ -17,7 +17,8 @@ import kotlinx.android.synthetic.main.activity_websocket.*
 
 class WebsocketActivity : BaseActivity() {
 
-    private var url: String = "wss://demos.kaazing.com/echo"
+//    TODO Echo test地址：http://www.websocket.org/echo.html
+    private var url: String = "ws://echo.websocket.org"
 
     override fun getContentView() = R.layout.activity_websocket
 
@@ -52,23 +53,17 @@ class WebsocketActivity : BaseActivity() {
 //        }
 //        RxWebSocket.Instance.asyncSend(params.jsonParams)
 
-        val params = ApiParams().apply {
-            put("param", msg)
-        }
-
-        val request = ApiHelper.Builder()
-            .url("/security/check")
-            .params(params)
-
-        (if (isWebSocket) request.webSocket() else request.build()).request { result ->
-            //            dismissProgress()
-//            if (result.isSuccess) {
-            msgBack.append("${result.result as String}\n")
-            scrollToBottom()
-//                Toast.makeText(ctx as Context, result.result as String, Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(ctx as Context, result.errormsg, Toast.LENGTH_SHORT).show()
+        ApiHelper.build {
+            url = "/security/check"
+            params = apiParamsOf("param" to msg)
+            isWebSocketRequest = isWebSocket
+        }.request<String> {
+//            if (it.isSuccess){
+//
 //            }
+
+            msgBack.append("${it.result as String}\n")
+            scrollToBottom()
         }
     }
 

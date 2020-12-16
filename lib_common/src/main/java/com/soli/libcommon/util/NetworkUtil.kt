@@ -42,7 +42,7 @@ object NetworkUtil {
      * 3.0以下打开设置界面
      */
     fun openWirelessSettings() {
-        Constant.getContext().startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+        Constant.context.startActivity(Intent(Settings.ACTION_WIRELESS_SETTINGS).setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     }
 
     /**
@@ -53,7 +53,7 @@ object NetworkUtil {
      * @return NetworkInfo
      */
     private fun getActiveNetworkInfo(): NetworkInfo? {
-        return (Constant.getContext().getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo
+        return (Constant.context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetworkInfo
     }
 
     /**
@@ -94,7 +94,7 @@ object NetworkUtil {
      */
     fun getDataEnabled(): Boolean {
         try {
-            val tm = Constant.getContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            val tm = Constant.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             val getMobileDataEnabledMethod = tm.javaClass.getDeclaredMethod("getDataEnabled")
             return getMobileDataEnabledMethod.invoke(tm) as Boolean
         } catch (e: Exception) {
@@ -113,7 +113,7 @@ object NetworkUtil {
      */
     fun setDataEnabled(enabled: Boolean) {
         try {
-            val tm = Constant.getContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+            val tm = Constant.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
             val setMobileDataEnabledMethod = tm.javaClass.getDeclaredMethod("setDataEnabled", Boolean::class.javaPrimitiveType)
             setMobileDataEnabledMethod.invoke(tm, enabled)
         } catch (e: Exception) {
@@ -142,7 +142,7 @@ object NetworkUtil {
      * @return `true`: 是<br></br>`false`: 否
      */
     fun getWifiEnabled(): Boolean {
-        val wifiManager = Constant.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wifiManager = Constant.context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
         return wifiManager.isWifiEnabled
     }
 
@@ -154,7 +154,7 @@ object NetworkUtil {
      * @param enabled `true`: 打开<br></br>`false`: 关闭
      */
     fun setWifiEnabled(enabled: Boolean) {
-        val wifiManager = Constant.getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
+        val wifiManager = Constant.context.getApplicationContext().getSystemService(Context.WIFI_SERVICE) as WifiManager
         if (enabled) {
             if (!wifiManager.isWifiEnabled) {
                 wifiManager.isWifiEnabled = true
@@ -188,7 +188,7 @@ object NetworkUtil {
      * @return 运营商名称
      */
     fun getNetworkOperatorName(): String? {
-        val tm = Constant.getContext().getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
+        val tm = Constant.context.getSystemService(Context.TELEPHONY_SERVICE) as TelephonyManager
         return tm.networkOperatorName
     }
 

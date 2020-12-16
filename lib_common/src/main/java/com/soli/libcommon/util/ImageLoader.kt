@@ -113,7 +113,7 @@ object ImageLoader {
         val defaultSize = TypedValue.applyDimension(
             TypedValue.COMPLEX_UNIT_DIP,
             100.0f,
-            Constant.getContext().resources.displayMetrics
+            Constant.context.resources.displayMetrics
         ).toInt()
 
         if (width <= 0) {
@@ -154,7 +154,7 @@ object ImageLoader {
      * @param id
      */
     fun loadResPic(image: SimpleDraweeView, id: Int) {
-        val uri = Uri.parse("res://" + Constant.getContext().packageName + "/" + id)
+        val uri = Uri.parse("res://" + Constant.context.packageName + "/" + id)
         image.setImageURI(uri,image.context)
     }
 

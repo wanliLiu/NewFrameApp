@@ -56,6 +56,7 @@ class FileUploadProcess(
 
     //上传文件的总大小
     private var uploadFileSize = 0L
+
     //上传的进度
     private var bytesSend = 0L
     private var haveUpload = 0L
@@ -86,7 +87,7 @@ class FileUploadProcess(
             if (!source.isDisposed) {
                 if (needZip && FileUtil.isImageFile(fullPath = file.absolutePath)) {
                     ImageDeal.compressPic(
-                        Constant.getContext(),
+                        Constant.context,
                         if (needOrignt) Luban.FIRST_GEAR else Luban.THIRD_GEAR,
                         file.absolutePath
                     ) { source.onNext(it) }
@@ -96,16 +97,27 @@ class FileUploadProcess(
         }
     }
 
-    private class fileUploadProgress(private val source: ObservableEmitter<UploadInfo>, private val path: String) :
-        FileProgressListener {
-        override fun progress(progress: Int, totalBytesSend: Long, updateBytes: Long, fileSize: Long, isDone: Boolean) {
+    private class fileUploadProgress(
+        private val source: ObservableEmitter<UploadInfo>,
+        private val path: String
+    ) : FileProgressListener {
+        override fun progress(
+            progress: Int,
+            totalBytesSend: Long,
+            updateBytes: Long,
+            fileSize: Long,
+            isDone: Boolean
+        ) {
             source.onNext(UploadInfo(path, totalBytesSend))
         }
     }
 
-    private class fileUploadCallBack(private val source: ObservableEmitter<UploadInfo>, private val path: String) :
-        ApiCallBack<String> {
-        override fun receive(result: ApiResult<String>) {
+    private class fileUploadCallBack(
+        private val source: ObservableEmitter<UploadInfo>,
+        private val path: String
+    ) : ApiCallBack<String> {
+
+        override fun invoke(result: ApiResult<String>) {
             if (result.isSuccess) {
                 try {
                     val json = JSON.parseObject(result.fullData)
@@ -145,13 +157,9 @@ class FileUploadProcess(
     private fun dealFileUpload(path: String): Observable<UploadInfo> {
         return Observable.create { source ->
             if (!source.isDisposed) {
-                ApiHelper.Builder()
-                    .fileUrl(path)
-                    //todo 根据实际情况来弄
-//                    .baseUrl(Constant.requestFileUploadHost)
-//                    .url(Constant.newFileUploadAction)
-                    .build()
-                    .uploadFileNew(fileUploadCallBack(source, path), fileUploadProgress(source, path))
+                ApiHelper.build {
+                    fileUrl = path
+                }.uploadFileNew(fileUploadCallBack(source, path), fileUploadProgress(source, path))
             }
         }
     }

@@ -37,61 +37,61 @@ public class MLog {
     }
 
     public static void i(String TAG, String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.i(TAG, getMessage(msg));
         }
     }
 
     public static void e(String TAG, String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.e(TAG, getMessage(msg));
         }
     }
 
     public static void d(String TAG, String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.d(TAG, getMessage(msg));
         }
     }
 
     public static void v(String TAG, String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.v(TAG, getMessage(msg));
         }
     }
 
     public static void w(String TAG, String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.w(TAG, getMessage(msg));
         }
     }
 
     public static void i(String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.i(DEFAULT_TAG, getMessage(msg));
         }
     }
 
     public static void e(String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.e(DEFAULT_TAG, getMessage(msg));
         }
     }
 
     public static void d(String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.d(DEFAULT_TAG, getMessage(msg));
         }
     }
 
     public static void v(String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.v(DEFAULT_TAG, getMessage(msg));
         }
     }
 
     public static void w(String msg) {
-        if (Constant.Debug) {
+        if (Constant.getDebug()) {
             Log.w(DEFAULT_TAG, getMessage(msg));
         }
     }

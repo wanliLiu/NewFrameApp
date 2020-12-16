@@ -12,7 +12,7 @@ import java.io.IOException
  */
 class ProgressRequestBody(
     private val mDelegate: RequestBody,
-    private val progressListener: FileProgressListener
+    private val progressListener: FileProgressListener?
 ) : RequestBody() {
 
     @Throws(IOException::class)
@@ -46,6 +46,8 @@ class ProgressRequestBody(
             override fun write(source: Buffer, byteCount: Long) {
                 super.write(source, byteCount)
 
+                progressListener ?: return
+
                 val contentLength = contentLength()
 
                 val update = if (byteCount != -1L) byteCount else 0
@@ -55,7 +57,7 @@ class ProgressRequestBody(
                 if (progress != temp) {
                     progress = temp
 //                        RxJavaUtil.runOnUiThread {
-                    progressListener.progress(
+                    progressListener?.progress(
                         progress,
                         totalBytesSend,
                         update,

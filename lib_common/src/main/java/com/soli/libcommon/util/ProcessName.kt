@@ -12,7 +12,7 @@ import com.soli.libcommon.base.Constant
 object ProcessName {
 
     //主进程
-    val MainProcess by lazy { Constant.getContext().packageName }
+    val MainProcess by lazy { Constant.context.packageName }
 
     //易信聊天进程
     val NimCoreProcess = "$MainProcess:core"
@@ -26,7 +26,7 @@ object ProcessName {
      * @param ctx
      * @return
      */
-    fun getCurrentProcessName(ctx: Context = Constant.getContext()): String {
+    fun getCurrentProcessName(ctx: Context = Constant.context): String {
         val processId = android.os.Process.myPid()
         val manager = ctx.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
         for (info in manager.runningAppProcesses) {

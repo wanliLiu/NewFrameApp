@@ -1,30 +1,31 @@
-package com.soli.libcommon.base;
+package com.soli.libcommon.base
 
-import android.content.Context;
+import android.content.Context
 
 /**
  * @author Soli
  * @Time 18-5-15 上午11:18
  */
-public class Constant {
+object Constant {
 
-    public static boolean Debug;
+    @JvmStatic
+    var Debug = false
 
     /**
      * 服务器地址 todo 根据到时候服务器来填
      */
-    public static String webServer = "http://fb.ci.dev.showstart.com:9527/suapp/";
+    var webServer = "http://fb.ci.dev.showstart.com:9527/suapp/"
 
-    private static Context ctx;
+    private var ctx: Context? = null
+
+    @JvmStatic
+    val context: Context
+        get() = ctx!!
 
     /**
      * @param context
      */
-    public static void init(Context context) {
-        ctx = context.getApplicationContext();
-    }
-
-    public static Context getContext() {
-        return ctx;
+    fun init(mCtx: Context) {
+        ctx = mCtx.applicationContext
     }
 }

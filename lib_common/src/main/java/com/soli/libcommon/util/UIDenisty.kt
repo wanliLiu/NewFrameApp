@@ -33,7 +33,7 @@ object UIDenisty {
     fun setCustomDensity(
         activity: Activity? = null,
         uiDesign: Int = defaultUiSize,
-        application: Application = Constant.getContext() as Application
+        application: Application = Constant.context as Application
     ) {
 
         if (!needUseThis) return

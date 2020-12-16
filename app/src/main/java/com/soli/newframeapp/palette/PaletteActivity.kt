@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 import com.facebook.drawee.view.SimpleDraweeView
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.base.BaseRecycleAdapter
@@ -58,19 +59,21 @@ class PaletteActivity : BaseActivity() {
     }
 
 
-    private class paletteAdapter(ctx: Context, list: ArrayList<String>) : BaseRecycleAdapter<String>(ctx, list) {
-        override fun onCreateViewHolder_impl(parent: ViewGroup?, viewType: Int): androidx.recyclerview.widget.RecyclerView.ViewHolder {
+    private class paletteAdapter(ctx: Context, list: ArrayList<String>) :
+        BaseRecycleAdapter<String>(ctx, list) {
+
+        override fun onCreateView(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
             return ViewHolder(inflater.inflate(R.layout.item_palette, parent, false))
         }
 
-        override fun onBindViewHolder_impl(
-            mholder: androidx.recyclerview.widget.RecyclerView.ViewHolder?,
+        override fun onBindView(
+            mholder: RecyclerView.ViewHolder?,
             itemType: Int,
-            original_position: Int,
-            real_position: Int
+            originalPosition: Int,
+            realPosition: Int,
+            payloads: List<Any>
         ) {
-
-            val path = getItemData(real_position) ?: return
+            val path = getItemData(realPosition) ?: return
 
             (mholder as ViewHolder).apply {
 
@@ -98,10 +101,10 @@ class PaletteActivity : BaseActivity() {
         }
 
 
-        class ViewHolder(view: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(view) {
-            val image = view.findViewById<SimpleDraweeView>(R.id.palette)
-            val title = view.findViewById<TextView>(R.id.tv1)
-            val content = view.findViewById<TextView>(R.id.tv2)
+        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+            val image = view.findViewById<SimpleDraweeView>(R.id.palette)!!
+            val title = view.findViewById<TextView>(R.id.tv1)!!
+            val content = view.findViewById<TextView>(R.id.tv2)!!
 
         }
     }

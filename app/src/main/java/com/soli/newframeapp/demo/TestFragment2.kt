@@ -23,14 +23,11 @@ class TestFragment2 : BaseFragment() {
     }
 
     override fun initData() {
-        artDetailList.adapter = object : BaseRecycleAdapter<String>(ctx) {
+        artDetailList.adapter = object : BaseRecycleAdapter<String>(ctx!!) {
 
             override fun getItemCount(): Int = 1000
 
-            override fun onCreateViewHolder_impl(
-                parent: ViewGroup?,
-                viewType: Int
-            ): RecyclerView.ViewHolder {
+            override fun onCreateView(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
                 return object : RecyclerView.ViewHolder(
                     inflater.inflate(
                         R.layout.item_test_fragment,
@@ -40,15 +37,15 @@ class TestFragment2 : BaseFragment() {
                 ) {}
             }
 
-            override fun onBindViewHolder_impl(
+            override fun onBindView(
                 mholder: RecyclerView.ViewHolder?,
                 itemType: Int,
-                original_position: Int,
-                real_position: Int
+                originalPosition: Int,
+                realPosition: Int,
+                payloads: List<Any>
             ) {
-
                 mholder?.itemView?.findViewById<TextView>(R.id.testItem)?.text =
-                    "数据开始-->$real_position"
+                    "数据开始-->$realPosition"
             }
 
         }

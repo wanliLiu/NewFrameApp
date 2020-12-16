@@ -35,7 +35,7 @@ class ActivityStackRecord private constructor(app: Application) :
         /**
          *
          */
-        fun init(app: Application = Constant.getContext() as Application) {
+        fun init(app: Application = Constant.context as Application) {
             instance ?: synchronized(this) {
                 instance ?: ActivityStackRecord(app).also {
                     instance = it

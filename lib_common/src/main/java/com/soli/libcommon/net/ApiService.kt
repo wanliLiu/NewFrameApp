@@ -1,21 +1,19 @@
-package com.soli.libcommon.net;
+package com.soli.libcommon.net
 
-import okhttp3.MultipartBody;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import retrofit2.Call;
-import retrofit2.http.*;
-
-import java.util.Map;
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.http.*
 
 /**
  * @author Soli
  * @Time 18-5-17 下午4:39
  */
-public interface ApiService {
+interface ApiService {
 
     @GET
-    Call<ResponseBody> executeGet(@Url String url);
+    fun executeGet(@Url url: String): Call<ResponseBody>
 
     /**
      * POST方式将以表单的方式传递键值对作为请求体发送到服务器
@@ -26,23 +24,23 @@ public interface ApiService {
      */
     @FormUrlEncoded
     @POST
-    Call<ResponseBody> executePost(@Url String url, @FieldMap Map<String, String> map);
-
+    fun executePost(@Url url: String, @FieldMap map: Map<String, String>): Call<ResponseBody>
 
     /**
      * 流式下载,不加这个注解的话,会整个文件字节数组全部加载进内存,可能导致oom
      */
     @Streaming
     @GET
-    Call<ResponseBody> executeDownloadFile(@Url String fileUrl);
-
-
-    @Multipart
-    @POST
-    Call<ResponseBody> uploadFile(@Url String url, @Part MultipartBody.Part file);
+    fun executeDownloadFile(@Url fileUrl: String): Call<ResponseBody>
 
     @Multipart
     @POST
-    Call<ResponseBody> uploadFileNew(@Url String url, @PartMap Map<String, RequestBody> params);
+    fun uploadFile(@Url url: String, @Part file: MultipartBody.Part): Call<ResponseBody>
 
+    @Multipart
+    @POST
+    fun uploadFileNew(
+        @Url url: String,
+        @PartMap params: Map<String, RequestBody>
+    ): Call<ResponseBody>
 }

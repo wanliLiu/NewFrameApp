@@ -4,4 +4,8 @@
 
     <string name="special_bottom_sheet_behavior">com.soli.libcommon.bottomsheet.behavior.SpecialBottomSheetBehavior
     </string>
+
+
+    <string name="str_security_des">"检测到不安全的VPN,为了你在使用过程中信息不被泄露，请关闭VPN"</string>
+    <string name="str_security_close">去关闭</string>
 </resources>

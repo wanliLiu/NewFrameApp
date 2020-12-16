@@ -2,6 +2,7 @@ package com.soli.newframeapp.main
 
 import androidx.core.app.ActivityCompat
 import com.soli.libcommon.base.BaseMultiFragmentActivity
+import com.soli.libcommon.util.SecurityUtil
 import com.soli.libcommon.util.ToastUtils
 import com.soli.newframeapp.R
 
@@ -31,6 +32,7 @@ class MainActivity : BaseMultiFragmentActivity() {
             pop()
         } else {
             if (System.currentTimeMillis() - TOUCH_TIME < WAIT_TIME) {
+                SecurityUtil.doSomething(true)
                 ActivityCompat.finishAfterTransition(this)
             } else {
                 TOUCH_TIME = System.currentTimeMillis()

@@ -40,36 +40,43 @@ class FileDownloadProcess(
         return Observable.create { source ->
             if (!source.isDisposed) {
                 val origin =
-                    FileUtil.getDownLoadFilePath(Constant.getContext(), url, saveInInnerStorage)
+                    FileUtil.getDownLoadFilePath(Constant.context, url, saveInInnerStorage)
                 val savePath = customSavePath(url, origin)
 
                 if (savePath.exists()) {
                     //要下载的文件如果存在就直接返回
                     source.onNext(savePath.absolutePath)
                 } else {
-                    ApiHelper.Builder()
-                        .tag(url)
-                        .fileUrl(url)
-                        .saveFile(savePath)
-                        .build()
-                        .downloadFile({ result ->
-                            if (stop) {
-                                ApiHelper.Builder().build().cancel(url)
-                                source.onError(IllegalArgumentException("停止下载"))
-                            } else {
-                                if (result.isSuccess) {
-                                    source.onNext(result.result.absolutePath)
-                                } else
-                                    source.onError(IllegalArgumentException(result.errormsg))
-                            }
-                        }, { progress, _, _, _, _ ->
+                    ApiHelper.build {
+                        tag = url
+                        fileUrl = url
+                        saveFile = savePath
+                    }.downloadFile({ result ->
+                        if (stop) {
+                            ApiHelper.cancel(url)
+                            source.onError(IllegalArgumentException("停止下载"))
+                        } else {
+                            if (result.isSuccess && result.result != null) {
+                                source.onNext(result.result!!.absolutePath)
+                            } else
+                                source.onError(IllegalArgumentException(result.errormsg))
+                        }
+                    }, object : FileProgressListener {
+                        override fun progress(
+                            progress: Int,
+                            bytes: Long,
+                            updateBytes: Long,
+                            fileSize: Long,
+                            isDone: Boolean
+                        ) {
                             downloadProgress?.invoke(progress)
                             MLog.d("文件下载：$url<-->$progress")
                             if (stop) {
-                                ApiHelper.Builder().build().cancel(url)
+                                ApiHelper.cancel(url)
                                 source.onError(IllegalArgumentException("停止下载"))
                             }
-                        })
+                        }
+                    })
                 }
             }
         }

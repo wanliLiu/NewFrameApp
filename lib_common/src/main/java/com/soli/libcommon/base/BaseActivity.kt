@@ -114,7 +114,7 @@ abstract class BaseActivity : BaseFunctionActivity() {
     /**
      *
      */
-    fun errorHappen(pageNo: Int = 1, result: ApiResult<Any>, listener: () -> Unit) {
+    fun <T> errorHappen(pageNo: Int = 1, result: ApiResult<T>, listener: () -> Unit) {
         if (pageNo == 1)
             rootView.errorHappen(listener, R.layout.error_trouble_layout, R.id.btnRetry)
         else

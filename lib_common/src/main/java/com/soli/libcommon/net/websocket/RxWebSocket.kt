@@ -27,7 +27,7 @@ class RxWebSocket private constructor() {
 
     private val logTag = "RxWebSocket"
 
-    private val client = ApiHelper.getHttpClient().newBuilder().pingInterval(5, TimeUnit.SECONDS).build()
+    private val client = ApiHelper.client.newBuilder().pingInterval(5, TimeUnit.SECONDS).build()
 
     private var observableWe: Observable<WebSocketInfo>? = null
     private var webSocketClient: WebSocket? = null
@@ -153,7 +153,7 @@ class RxWebSocket private constructor() {
          * @param emitter
          */
         private fun initWebSocket(emitter: ObservableEmitter<WebSocketInfo>) {
-            creatWebSocket("wss://demos.kaazing.com/echo", emitter)
+            creatWebSocket("ws://echo.websocket.org", emitter)
 //            val params = ApiParams()
 //            params["token"] = AuthInfo.getToken()
 //            ApiHelper.Builder()
