@@ -40,6 +40,8 @@ class ApiResult<T>(
 
     constructor(mCode: ResultCode, mErrormsg: String) : this(code = mCode, errormsg = mErrormsg)
 
+    constructor(mResult: T, mfullData: String) : this(code = ResultCode.RESULT_OK,result = mResult, fullData = mfullData)
+
     /**
      * @return
      */

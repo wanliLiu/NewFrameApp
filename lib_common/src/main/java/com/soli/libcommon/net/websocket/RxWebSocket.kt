@@ -22,10 +22,9 @@ import java.util.concurrent.TimeUnit
 class RxWebSocket private constructor() {
 
     companion object {
+        const val logTag = "RxWebSocket"
         val Instance by lazy(mode = LazyThreadSafetyMode.SYNCHRONIZED) { RxWebSocket() }
     }
-
-    private val logTag = "RxWebSocket"
 
     private val client = ApiHelper.client.newBuilder().pingInterval(5, TimeUnit.SECONDS).build()
 
@@ -121,7 +120,10 @@ class RxWebSocket private constructor() {
          * @param webSocketUrl
          * @param emitter
          */
-        private fun creatWebSocket(webSocketUrl: String, emitter: ObservableEmitter<WebSocketInfo>) {
+        private fun creatWebSocket(
+            webSocketUrl: String,
+            emitter: ObservableEmitter<WebSocketInfo>
+        ) {
             MLog.e(logTag, "开始连接：$webSocketUrl")
             client.newWebSocket(getRequest(webSocketUrl), object : WebSocketListener() {
                 override fun onOpen(webSocket: WebSocket, response: Response) {
@@ -187,6 +189,10 @@ class RxWebSocket private constructor() {
                 if (result != null) {
                     //FIXME 服务端主动下发处理，估计到时候根据token特定值来做 这里没有处理服务器主动下发的数据
                     MLog.e(logTag, "$result")
+
+                    if (!ApiHelper.dealWebSocketResult(result)) {
+                        //数据没有被处理
+                    }
 //                    JSON.parseObject(result)?.apply {
 //                        val token = getString("token")
 //                        val code = getString("code")

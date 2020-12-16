@@ -3,14 +3,14 @@ package com.soli.libcommon.net
 import android.text.TextUtils
 import android.webkit.MimeTypeMap
 import com.alibaba.fastjson.JSON
-import com.alibaba.fastjson.JSONObject
-import com.google.gson.Gson
 import com.soli.libcommon.base.Constant
 import com.soli.libcommon.net.cookie.https.HttpsUtils
 import com.soli.libcommon.net.download.FileProgressListener
 import com.soli.libcommon.net.download.ProgressInterceptor
 import com.soli.libcommon.net.upload.ProgressRequestBody
+import com.soli.libcommon.net.websocket.RxWebSocket
 import com.soli.libcommon.net.websocket.RxWebSocket.Companion.Instance
+import com.soli.libcommon.net.websocket.WebSocketData
 import com.soli.libcommon.util.*
 import com.soli.libcommon.util.Utils.MD5
 import com.soli.libcommon.util.Utils.getFileMD5
@@ -29,6 +29,7 @@ import java.io.File
 import java.net.Proxy
 import java.net.URLEncoder
 import java.util.*
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.TimeUnit
 
 /**
@@ -44,7 +45,8 @@ class ApiHelper private constructor(private val builder: Builder) {
          */
         inline fun build(block: Builder.() -> Unit): ApiHelper = Builder().apply(block).build()
 
-        private val CALL_MAP = HashMap<String, Call<*>>()
+        private val OkHttpCallMap = ConcurrentHashMap<String, Call<*>>()
+        private val WebSocketCallMap = ConcurrentHashMap<String, WebSocketData>()
 
         @Volatile
         private var okHttpClient: OkHttpClient? = null
@@ -148,10 +150,18 @@ class ApiHelper private constructor(private val builder: Builder) {
         /**
          * 添加某个请求
          */
-        @Synchronized
-        private fun putCall(builder: Builder?, call: Call<*>) {
-            if (builder!!.tag == null) return
-            synchronized(CALL_MAP) { CALL_MAP.put(builder.tag.toString() + builder.url, call) }
+        private fun putCall(builder: Builder, call: Call<*>) {
+            builder.tag ?: return
+            OkHttpCallMap[builder.tag.toString() + builder.url] = call
+        }
+
+        /**
+         *
+         */
+        private fun removeCall(builder: Builder?) {
+            builder ?: return
+            builder.tag ?: return
+            OkHttpCallMap.remove(builder.tag)
         }
 
         /**
@@ -160,42 +170,100 @@ class ApiHelper private constructor(private val builder: Builder) {
          *
          * @param tag 请求标签
          */
-        @Synchronized
         @JvmStatic
         fun cancel(tag: Any?) {
-            if (tag == null) return
-            val list: MutableList<String?> = ArrayList()
-            synchronized(CALL_MAP) {
-                for (key in CALL_MAP.keys) {
-                    if (key!!.startsWith(tag.toString())) {
-                        CALL_MAP[key]!!.cancel()
-                        list.add(key)
-                    }
+            tag ?: return
+            val list: MutableList<String> = ArrayList()
+            for (key in OkHttpCallMap.keys) {
+                if (key.startsWith(tag.toString())) {
+                    OkHttpCallMap[key]?.cancel()
+                    list.add(key)
                 }
             }
-            for (s in list) {
-                removeCall(s)
-            }
+
+            list.forEach { OkHttpCallMap.remove(it) }
         }
 
         /**
-         * 移除某个请求
+         * websocket这个请求这里很重要，每次请求的都缓存起来，回来在处理
          *
-         * @param url 添加的url
+         * todo 这里用作测试，具体每个websocket请求都有一个标识这个请求的唯一token
          */
-        @Synchronized
-        private fun removeCall(url: String?) {
-            var url = url
-            if (TextUtils.isEmpty(url)) return
-            synchronized(CALL_MAP) {
-                for (key in CALL_MAP.keys) {
-                    if (!TextUtils.isEmpty(url) && key!!.contains(url!!)) {
-                        url = key
-                        break
+        private fun putWebCall(builder: Builder, data: ApiCallBack<Any>?) {
+            data ?: return
+            val token = builder.params["token"]
+            if (!TextUtils.isEmpty(token))
+                WebSocketCallMap[token!!] = WebSocketData(builder, data)
+        }
+
+        /**
+         *
+         */
+        private fun getWebCall(token: String?): WebSocketData? {
+            token ?: return null
+            return if (WebSocketCallMap.contains(token)) WebSocketCallMap[token] else null
+        }
+
+        /**
+         *
+         */
+        private fun cancleWebCall(token: String?) {
+            token ?: return
+            if (WebSocketCallMap.contains(token))
+                WebSocketCallMap.remove(token)
+        }
+
+        /**
+         *
+         */
+        fun dealWebSocketResult(webBackStr: String?): Boolean {
+
+            var isDealData = false
+
+            webBackStr ?: return isDealData
+
+            val json = JSON.parseObject(webBackStr)
+            val backToken = json.getString("token")
+            if (!TextUtils.isEmpty(backToken)) {
+                val socketData = getWebCall(backToken)
+                if (socketData != null) {
+                    var result: ApiResult<Any>
+                    try {
+                        val code = json.getString("code")
+                        val content = json.getString("content")
+                        val builder = socketData.builer
+                        val forwardToken = builder.params["token"].toString()
+                        var isOkay = false
+                        val tokenMsg = "请求的token:$forwardToken--服务器返回的token:$backToken\t"
+                        var msg = tokenMsg + "websocket返回的数据有问题,返回的数据:" + webBackStr
+                        if (forwardToken != backToken) {
+                            msg = tokenMsg + "请求的token和服务器返回的token不一致"
+                        } else if (code == "0" &&
+                            !TextUtils.isEmpty(backToken)
+                            && !TextUtils.isEmpty(content)
+                        ) {
+                            isOkay = true
+                            msg = tokenMsg
+                        }
+                        result = if (isOkay) {
+                            DataParseUtil.parseOriginData(builder, content) as ApiResult<Any>
+                        } else {
+                            MLog.e(RxWebSocket.logTag, msg)
+                            ApiResult(ResultCode.RESULT_FAILED, msg)
+                        }
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        result = ApiResult(ResultCode.RESULT_FAILED, "${e.message}")
+                    }
+                    if (socketData.callback != null) {
+                        socketData.callback.invoke(result)
+                        cancleWebCall(backToken)
+                        isDealData = true
                     }
                 }
-                if (!TextUtils.isEmpty(url)) CALL_MAP.remove(url)
             }
+
+            return isDealData
         }
     }
 
@@ -253,7 +321,6 @@ class ApiHelper private constructor(private val builder: Builder) {
     fun <T> get(callBack: ApiCallBack<T>) {
         require(retrofit != null) { "Retrofit不能为空" }
         val mCall = retrofit!!.create(ApiService::class.java).executeGet(builder.getUrl)
-        putCall(builder, mCall)
         startRequest(callBack, mCall)
     }
 
@@ -265,7 +332,6 @@ class ApiHelper private constructor(private val builder: Builder) {
     fun <T> post(callBack: ApiCallBack<T>?) {
         val mCall =
             retrofit!!.create(ApiService::class.java).executePost(builder.url, builder.params)
-        putCall(builder, mCall)
         startRequest(callBack, mCall)
     }
 
@@ -295,7 +361,7 @@ class ApiHelper private constructor(private val builder: Builder) {
                         ApiResult(
                             code = ResultCode.RESULT_OK,
                             fullData = data ?: "",
-                            result = parseData(
+                            result = DataParseUtil.parseData(
                                 builder.isJavaModel,
                                 data ?: "",
                                 builder.clazz,
@@ -341,31 +407,12 @@ class ApiHelper private constructor(private val builder: Builder) {
         if (dealNetWorkInfo(callBack)) return
 
         //        builder.params = builder.params.getWebSocketParams(builder.url);
-        listenerWebSocketResult(callBack)
-        Instance.asyncSend(builder.params.params)
-    }
+        putWebCall(builder, callBack as ApiCallBack<Any>)
 
-    /**
-     * @param builder
-     * @param content
-     * @return
-     */
-    private fun <T> parseOriginData(content: String): ApiResult<T> {
-        val result = ApiResult<T>(fullData = content)
-        val json = JSONObject.parseObject(content)
-        if (json.containsKey("state") && json.getBoolean("state")) {
-            //网络数据，逻辑成功
-            result.code = ResultCode.RESULT_OK
-            val data = json.getString("data")
-            if (!TextUtils.isEmpty(data))
-                result.result =
-                    parseData(builder.isJavaModel, data, builder.clazz, builder.bodyType)
-        } else {
-            result.code = ResultCode.RESULT_FAILED
-            result.errorCode = json.getString("errcode")
-            result.errormsg = json.getString("errmsg")
-        }
-        return result
+        //todo  listenerWebSocketResult下面这个函数，正常情况下，不需要，回来的数据会走【RxWebSocket.keepOnline】来处理
+        listenerWebSocketResult(callBack)
+
+        Instance.asyncSend(builder.params.params)
     }
 
     /**
@@ -403,7 +450,7 @@ class ApiHelper private constructor(private val builder: Builder) {
         val url =
             "/?upload=1&fileMode=$fileMode&fileExt=$fileExt&safe=$safe&cache=$cache&mode=upload&secureKey=$secureKey"
         val mCall = retrofit!!.create(ApiService::class.java).uploadFile(url, filePart)
-        putCall(builder, mCall)
+
         startRequest(callBack, mCall)
     }
 
@@ -457,7 +504,6 @@ class ApiHelper private constructor(private val builder: Builder) {
         var mCall =
             retrofit!!.create(ApiService::class.java).uploadFileNew(builder.url, fileUploadParams)
         mCall = mCall.clone()
-        putCall(builder, mCall)
         startRequest(callBack, mCall)
     }
 
@@ -506,53 +552,19 @@ class ApiHelper private constructor(private val builder: Builder) {
                     e.printStackTrace()
                     onFailure(null, e)
                 }
+
+                removeCall(builder)
                 progressListener = null
             }
 
             override fun onFailure(call: Call<ResponseBody>?, t: Throwable) {
-                t.printStackTrace()
-                callBack?.invoke(
-                    ApiResult(ResultCode.RESULT_FAILED, t.message!!)
-                )
-                if (null != builder.tag) {
-                    removeCall(builder.url)
-                }
+                removeCall(builder)
                 progressListener = null
+                t.printStackTrace()
+                callBack?.invoke(ApiResult(ResultCode.RESULT_FAILED, t.message!!))
             }
         })
     }
-
-    /**
-     * 数据解析方法,兼容kotlin的解析
-     *
-     * @param data     要解析的数据
-     * @param clazz    解析类
-     * @param bodyType 解析数据类型
-     */
-    private fun <T> parseData(
-        isJavaModel: Boolean,
-        data: String, clazz: Class<*>?, @DataType.Type bodyType: Int
-    ): T? {
-        return if (isJavaModel) {
-            when (bodyType) {
-                DataType.STRING -> data as T
-                DataType.JSON_OBJECT -> JSON.parseObject(data, clazz) as T
-                DataType.JSON_ARRAY -> JSON.parseArray(data, clazz) as T
-                else -> null
-            }
-        } else {
-            when (bodyType) {
-                DataType.STRING -> data as T
-                DataType.JSON_OBJECT -> Gson().fromJson(data, clazz) as T
-                DataType.JSON_ARRAY -> Gson().fromJson<List<T>>(
-                    data,
-                    ParameterizedTypeImpl(clazz!!)
-                ) as T
-                else -> null
-            }
-        }
-    }
-
 
     /**
      * 发送网络请求
@@ -564,6 +576,8 @@ class ApiHelper private constructor(private val builder: Builder) {
 
         if (dealNetWorkInfo(callBack)) return
 
+        putCall(builder, mCall)
+
         mCall.enqueue(object : Callback<ResponseBody> {
             override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                 // TODO: 2018/5/19 这里可以根据实际情况做相应的调整 比如
@@ -571,10 +585,11 @@ class ApiHelper private constructor(private val builder: Builder) {
                 if (200 == response.code()) {
                     result = try {
                         val data = response.body()!!.string()
+//                        DataParseUtil.parseOriginData(builder,data) as ApiResult<T>
                         ApiResult(
                             code = ResultCode.RESULT_OK,
                             fullData = data,
-                            result = parseData(
+                            result = DataParseUtil.parseData(
                                 builder.isJavaModel,
                                 data,
                                 builder.clazz,
@@ -592,9 +607,8 @@ class ApiHelper private constructor(private val builder: Builder) {
                 }
                 if (result != null)
                     callBack?.invoke(result)
-                if (null != builder.tag) {
-                    removeCall(builder.url)
-                }
+
+                removeCall(builder)
 
 //                ApiResult result;
 //                try {
@@ -614,10 +628,8 @@ class ApiHelper private constructor(private val builder: Builder) {
 
             override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
                 t.printStackTrace()
+                removeCall(builder)
                 callBack?.invoke(ApiResult(ResultCode.RESULT_FAILED, t.message!!))
-                if (null != builder.tag) {
-                    removeCall(builder.url)
-                }
             }
         })
     }
@@ -640,7 +652,16 @@ class ApiHelper private constructor(private val builder: Builder) {
         var tag: Any? = null
 
         var fileUrl = ""
+            set(value) {
+                field = value
+                MLog.d("多媒体加载downUp", value)
+            }
+
         var saveFile: File? = null
+            set(value) {
+                field = value
+                MLog.d("多媒体加载save", value?.absolutePath)
+            }
 
         //true表示webSocket请求
         var isWebSocketRequest = false
