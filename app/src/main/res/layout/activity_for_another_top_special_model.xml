@@ -68,6 +68,8 @@
                 android:layout_height="wrap_content"
                 app:collapseMode="pin" />
 
+            <include layout="@layout/content_layout" />
+
         </com.soli.libcommon.view.nest.CollapsingToolbarLayout>
 
         <com.flyco.tablayout.CommonTabLayout

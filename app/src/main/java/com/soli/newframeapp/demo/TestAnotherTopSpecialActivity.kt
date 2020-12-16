@@ -15,6 +15,7 @@ import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.activity_for_another_top_special_model.*
 import kotlinx.android.synthetic.main.activity_for_top_special_model.appBarLayout
 import kotlinx.android.synthetic.main.activity_for_top_special_model.zoom_image
+import kotlinx.android.synthetic.main.content_layout.*
 
 /**
  *
@@ -73,6 +74,8 @@ class TestAnotherTopSpecialActivity : BaseTopSpecialActivity() {
             zoom_image,
             "https://dev-img01-joker.taihe.com/0209/M00/58/27/ChR47Fw9QpWABNZ4AALxJ3a2MZ8350.jpg"
         )
+
+        ImageLoader.loadImage(avator,"http://img01-joker.taihe.com/0209/M00/59/55/ChR47FycdmuAThMwAAtdi0_Ss5A481.png")
 
         setContentListData()
     }

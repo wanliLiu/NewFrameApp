@@ -56,7 +56,7 @@ object InstallUtil {
      * 通过Root方式安装
      */
     private fun installRoot(context: Context, apkPath: File) {
-        Observable.just(apkPath)
+      val dis =  Observable.just(apkPath)
                 .map { "pm install -r $it" }
                 .map { ShellUtils.execCmd(it, true) }
                 .subscribeOn(Schedulers.io())
