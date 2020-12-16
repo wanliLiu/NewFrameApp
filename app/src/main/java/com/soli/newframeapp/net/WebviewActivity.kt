@@ -3,6 +3,7 @@ package com.soli.newframeapp.net
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.util.browse
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.activity_webview.*
 
@@ -19,11 +20,13 @@ class WebviewActivity : BaseActivity() {
         webView.webViewClient = object : WebViewClient() {
 
             override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
-                view?.loadUrl(url ?: "")
+                if (url!!.startsWith("http"))
+                    view?.loadUrl(url ?: "")
+                else {
+                    ctx.browse(url, true)
+                }
                 return true
             }
-
-
         }
     }
 

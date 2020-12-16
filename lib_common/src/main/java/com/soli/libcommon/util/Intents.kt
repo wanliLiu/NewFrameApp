@@ -166,7 +166,7 @@ fun Context.browse(url: String, newTask: Boolean = false): Boolean {
         true
     } catch (e: Exception) {
         e.printStackTrace()
-        ToastUtils.showShortToast("url有误或者您的设备不支持调用浏览器")
+//        ToastUtils.showShortToast("url有误或者您的设备不支持调用浏览器")
         false
     }
 }
