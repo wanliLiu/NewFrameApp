@@ -12,6 +12,14 @@
             app:layout_constraintBottom_toTopOf="@id/name"
             app:layout_constraintStart_toStartOf="parent" />
 
+        <!--        applyMotionScene 不用场景动画 -->
+        <!--        visibilityMode ignore 不用ConstraintSet 的visiable 用本身的-->
+        <Constraint android:id="@+id/avator">
+            <PropertySet
+                app:applyMotionScene="false"
+                app:visibilityMode="ignore" />
+        </Constraint>
+
         <Constraint
             android:id="@id/name"
             android:layout_width="wrap_content"
@@ -31,7 +39,7 @@
             android:layout_height="30dp"
             android:layout_marginStart="60dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Constraint
             android:id="@id/name"
