@@ -10,7 +10,7 @@ import com.soli.libcommon.base.Constant
 class FrameApplication : BaseApplication() {
 
     override fun beforeLaunch() {
-        Constant.Debug = BuildConfig.DEBUG
+        Constant.envInit(BuildConfig.DEBUG)
     }
 
     override fun onCreate() {

@@ -43,7 +43,7 @@ object SecurityUtil {
         val proxyPort = System.getProperty("http.proxyPort", "-1")
         val proxyHost_s = System.getProperty("https.proxyHost", "")
         val proxyPort_s = System.getProperty("https.proxyPort", "-1")
-        MLog.d("手机代理情况：http->$proxyHost:$proxyPort   https->$proxyHost_s:$proxyPort_s")
+        MLog.d(MLog.DEFAULT_LOG_TAG,"手机代理情况：http->$proxyHost:$proxyPort   https->$proxyHost_s:$proxyPort_s")
         return !(TextUtils.isEmpty(proxyHost) && proxyPort == "-1" && TextUtils.isEmpty(proxyHost_s) && proxyPort_s == "-1")
     }
 

@@ -124,7 +124,7 @@ inline val Context.isAppOnForeground: Boolean
             false
         }
 
-        MLog.d("app运行在前台：$value")
+        MLog.d(MLog.DEFAULT_LOG_TAG,"app运行在前台：$value")
 
         return value
     }

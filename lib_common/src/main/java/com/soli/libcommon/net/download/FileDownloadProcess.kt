@@ -70,7 +70,7 @@ class FileDownloadProcess(
                             isDone: Boolean
                         ) {
                             downloadProgress?.invoke(progress)
-                            MLog.d("文件下载：$url<-->$progress")
+                            MLog.d("文件下载","文件下载：$url<-->$progress")
                             if (stop) {
                                 ApiHelper.cancel(url)
                                 source.onError(IllegalArgumentException("停止下载"))

@@ -1,11 +1,8 @@
 package com.soli.libcommon
 
-import android.content.Context
 import android.os.Build
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatDelegate
-import com.bytedance.boost_multidex.BoostMultiDex
-import com.bytedance.boost_multidex.Utility
 import com.facebook.stetho.Stetho
 import com.gu.toolargetool.TooLargeTool
 import com.soli.libcommon.base.Constant
@@ -102,9 +99,9 @@ abstract class BaseApplication : InnerBoostMultiDexApplication() {
      */
     private fun setWebViewSuffix(processName: String) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            MLog.e("setWebViewSuffix: $processName")
+            MLog.e("setWebViewSuffix", "setWebViewSuffix: $processName")
             if (processName != packageName) {
-                MLog.e("setWebViewSuffix: $processName---real")
+                MLog.e("setWebViewSuffix", "setWebViewSuffix: $processName---real")
                 WebView.setDataDirectorySuffix(processName)
             }
         }
