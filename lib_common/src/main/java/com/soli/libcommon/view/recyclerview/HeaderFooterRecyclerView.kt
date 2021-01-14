@@ -3,14 +3,13 @@ package com.soli.libcommon.view.recyclerview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 
 /**
  * 用于支持有自定义顶部和脚部的功能
  * @author Soli
  * @Time 1/14/21 5:21 PM
  */
-open class HeaderFooterRecyclerView : RecyclerView {
+open class HeaderFooterRecyclerView : RecyclerViewEmpty {
 
     private var mAdapter: HeaderFooterAdapter? = null
 
