@@ -3,7 +3,6 @@ package com.soli.libcommon.view.recyclerview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import androidx.recyclerview.widget.RecyclerView
 import com.wechat.moments.view.HeaderFooterAdapter
 
 /**
