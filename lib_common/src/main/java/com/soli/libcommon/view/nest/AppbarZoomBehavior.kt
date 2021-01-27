@@ -115,6 +115,16 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
     }
 
     /**
+     *
+     */
+    private fun canChildScrollUp(view: View) =
+        when (view) {
+            is AppBarLayout -> view.top != 0
+            is CoordinatorLayout -> view.childCount > 0 && view.getChildAt(0).top != 0
+            else -> view.canScrollVertically(-1)
+        }
+
+    /**
      * 在这里做具体的滑动处理
      *
      * @param coordinatorLayout
@@ -134,19 +144,20 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
         consumed: IntArray,
         type: Int
     ) {
+        val isTop = !canChildScrollUp(target)
 
         MLog.e(
             Tag,
-            "onNestedPreScroll--> type :$type  dy:$dy child.bottom:${child.bottom}  mAppbarHeight:$mAppbarHeight topImageMinHeight:$mImageViewHeight"
+            "onNestedPreScroll--> type :$type  dy:$dy child.bottom:${child.bottom}  mAppbarHeight:$mAppbarHeight topImageMinHeight:$mImageViewHeight targetView:${target::class.java.simpleName} isTop : $isTop"
         )
 
 //        valueAnimator?.cancel()
 
-        if (mImageView != null && child.bottom >= mAppbarHeight && dy < 0 && type == ViewCompat.TYPE_TOUCH) {//
+        if (isTop && mImageView != null && child.bottom >= mAppbarHeight && dy < 0 && type == ViewCompat.TYPE_TOUCH) {//
             zoomHeaderImageView(child, dy)
             consumed[1] = dy
         } else {
-            if (mImageView != null && child.bottom > mAppbarHeight && dy > 0 && type == ViewCompat.TYPE_TOUCH) {//
+            if (isTop && mImageView != null && child.bottom > mAppbarHeight && dy > 0 && type == ViewCompat.TYPE_TOUCH) {//
                 zoomHeaderImageView(child, dy)
                 consumed[1] = dy
             } else {

@@ -3,7 +3,6 @@ package com.soli.libcommon.view.recyclerview
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
-import com.wechat.moments.view.HeaderFooterAdapter
 
 /**
  * 用于支持有自定义顶部和脚部的功能

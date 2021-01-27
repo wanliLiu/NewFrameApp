@@ -1,4 +1,4 @@
-package com.wechat.moments.view
+package com.soli.libcommon.view.recyclerview
 
 import android.view.View
 import android.view.ViewGroup
