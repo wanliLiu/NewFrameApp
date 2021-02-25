@@ -15,6 +15,10 @@ import com.soli.libcommon.util.*
 import com.soli.libcommon.util.Utils.MD5
 import com.soli.libcommon.util.Utils.getFileMD5
 import io.reactivex.android.schedulers.AndroidSchedulers
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
@@ -540,14 +544,19 @@ class ApiHelper private constructor(private val builder: Builder) {
                     if (!file!!.exists()) {
                         file.createNewFile()
                     }
-                    FileUtil.getFileFromBytes(response.body()!!.bytes(), file)
-                    callBack?.invoke(
-                        ApiResult(
-                            code = ResultCode.RESULT_OK,
-                            result = file,
-                            fullData = file.absolutePath
-                        )
-                    )
+                    GlobalScope.launch {
+                        FileUtil.getFileFromBytes(response.body()!!.bytes(), file)
+                        withContext(Dispatchers.Main) {
+                            callBack?.invoke(
+                                ApiResult(
+                                    code = ResultCode.RESULT_OK,
+                                    result = file,
+                                    fullData = file.absolutePath
+                                )
+                            )
+                        }
+                    }
+
                 } catch (e: Exception) {
                     e.printStackTrace()
                     onFailure(null, e)

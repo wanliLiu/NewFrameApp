@@ -91,6 +91,19 @@ object FileUtil {
     }
 
     /**
+     * 删除文件
+     */
+    fun delete(filePath: String?): Boolean {
+        if (TextUtils.isEmpty(filePath)) {
+            return false
+        }
+        val file = File(filePath!!)
+        return if (file.isFile && file.exists()) {
+            file.delete()
+        } else false
+    }
+
+    /**
      * 上传图片临时存放文件的位置
      *
      * @param context
