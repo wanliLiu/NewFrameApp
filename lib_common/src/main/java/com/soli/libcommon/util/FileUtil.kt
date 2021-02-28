@@ -204,6 +204,27 @@ object FileUtil {
     }
 
     /**
+     *
+     */
+    fun getFileFromInputStream(inputStrem: InputStream, file: File): File {
+        val bis = BufferedInputStream(inputStrem)
+        val buffer = ByteArray(8192)
+        val stream = FileOutputStream(file)
+
+        var bytesRead = bis.read(buffer)
+        while (bytesRead != -1) {
+            //不是暂停命令，不是取消命令，数据没写入完，就执行下面代码
+            stream.write(buffer, 0, bytesRead)
+            //获取当前进度值
+            bytesRead = bis.read(buffer)
+        }
+        stream.close()
+        bis.close()
+
+        return file
+    }
+
+    /**
      * @param b
      * @param ret
      * @return

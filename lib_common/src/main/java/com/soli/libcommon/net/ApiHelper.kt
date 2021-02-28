@@ -545,7 +545,7 @@ class ApiHelper private constructor(private val builder: Builder) {
                         file.createNewFile()
                     }
                     GlobalScope.launch {
-                        FileUtil.getFileFromBytes(response.body()!!.bytes(), file)
+                        FileUtil.getFileFromInputStream(response.body()!!.byteStream(), file)
                         withContext(Dispatchers.Main) {
                             callBack?.invoke(
                                 ApiResult(
