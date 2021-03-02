@@ -3,6 +3,9 @@ package com.soli.libcommon.util
 import android.app.ActivityManager
 import android.content.Context
 import com.soli.libcommon.base.Constant
+import java.io.BufferedReader
+import java.io.File
+import java.io.FileReader
 
 /**
  *
@@ -37,4 +40,20 @@ object ProcessName {
 
         return ""
     }
+
+    /**
+     * 另外一种获取进程信息
+     */
+    fun getProcessName(): String =
+        try {
+            val file = File("/proc/self/cmdline")
+            val bufferReader = BufferedReader(FileReader(file))
+            val processName = bufferReader.readLine().trim()
+            bufferReader.close()
+            processName
+        } catch (e: Exception) {
+            e.printStackTrace()
+            ""
+        }
+
 }
