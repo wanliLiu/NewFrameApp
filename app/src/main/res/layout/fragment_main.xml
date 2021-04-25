@@ -146,10 +146,10 @@
         android:layout_height="wrap_content"
         android:text="文件全盘扫描" />
 
-    <Button
-        android:id="@+id/flutterIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Flutter模块" />
+<!--    <Button-->
+<!--        android:id="@+id/flutterIn"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:text="Flutter模块" />-->
 
 </com.google.android.flexbox.FlexboxLayout>

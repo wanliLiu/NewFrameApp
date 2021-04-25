@@ -118,6 +118,6 @@ dependencies {
     api (name: 'fragmentation_core-1.0.3', ext: 'aar')
     api (name: 'fragmentation_swipeback-1.0.3', ext: 'aar')
 
-    debugApi 'com.soli.flutter_module:flutter_debug:1.1.2'
-    releaseApi 'com.soli.flutter_module:flutter_release:1.1.2'
+//    debugApi 'com.soli.flutter_module:flutter_debug:1.1.2'
+//    releaseApi 'com.soli.flutter_module:flutter_release:1.1.2'
 }

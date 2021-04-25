@@ -3,18 +3,19 @@ package com.soli.libcommon
 import android.os.Build
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatDelegate
+import com.bytedance.boost_multidex.BoostMultiDexApplication
 import com.facebook.stetho.Stetho
 import com.gu.toolargetool.TooLargeTool
 import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.*
-import io.flutter.app.FlutterApplication
+//import io.flutter.app.FlutterApplication
 import io.reactivex.plugins.RxJavaPlugins
 import me.yokeyword.fragmentation.Fragmentation
 
 /**
  *
  */
-open class InnerBoostMultiDexApplication : FlutterApplication() {
+open class InnerBoostMultiDexApplication : BoostMultiDexApplication(){//FlutterApplication()
 
     // TODO: 2020/11/12  参考 BoostMultiDexApplication 
 //    override fun attachBaseContext(base: Context?) {
