@@ -22,7 +22,7 @@ class BridgeWebViewClient(
 
     private val TAG = BridgeWebViewClient::class.java.simpleName
 
-    private var mPrevUrl: String? = null
+    private var mPrevUrl = ""
 
     override fun onReceivedSslError(view: WebView?, handler: SslErrorHandler?, error: SslError?) {
         handler?.proceed()
