@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<WebView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/webView"
+<com.soli.libcommon.view.web.BridgeWebView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/mWebView"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-
-</WebView>
+    android:layout_height="match_parent"/>

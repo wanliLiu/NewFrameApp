@@ -33,6 +33,7 @@ versions.skin_support = "1.+"
 
 versions.cordova = "1.+"
 versions.fragmentation = "1.0.2"
+versions.jsoup = "1.+"
 
 
 def deps = [:]
@@ -117,6 +118,7 @@ deps.stethoOkhttp3 = "com.facebook.stetho:stetho-okhttp3:$versions.stetho"
 //other
 deps.event_bus = "org.greenrobot:eventbus:$versions.event_bus"
 deps.gson = "com.google.code.gson:gson:$versions.gson"
+deps.jsoup = "org.jsoup:jsoup:$versions.jsoup"
 //deps.fastjson = "com.alibaba:fastjson:$versions.fastjson"
 deps.fastjson = "com.alibaba:fastjson:1.1.71.android"
 deps.arouter_api = "com.alibaba:arouter-api:$versions.arouter_api"

@@ -85,6 +85,8 @@ dependencies {
     //third lib support
     api deps.fastjson
     api deps.gson
+    implementation deps.jsoup
+
     api deps.event_bus
     api deps.rxpermissions
     api deps.materialishPro

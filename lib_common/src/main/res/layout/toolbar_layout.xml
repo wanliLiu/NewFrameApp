@@ -1,44 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:app="http://schemas.android.com/apk/res-auto" xmlns:tools="http://schemas.android.com/tools"
-             android:id="@+id/barRoot"
-             android:background="@color/B2"
-             android:layout_width="match_parent"
-             android:layout_height="wrap_content"
-             android:minHeight="@dimen/toolbar_height">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/barRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/B2"
+    android:minHeight="@dimen/toolbar_height">
 
-    <View android:layout_width="@dimen/toolbar_height"
-          android:visibility="invisible"
-          android:layout_height="@dimen/toolbar_height"/>
+    <View
+        android:layout_width="@dimen/toolbar_height"
+        android:layout_height="@dimen/toolbar_height"
+        android:visibility="invisible" />
 
     <ImageView
-            android:id="@+id/barBackIcon"
-            android:padding="15dp"
-            android:layout_width="@dimen/toolbar_height"
-            app:srcCompat="@drawable/ic_arrow_left"
-            android:background="@drawable/default_view_press_selector"
-            android:layout_height="@dimen/toolbar_height"/>
+        android:id="@+id/barBackIcon"
+        android:layout_width="@dimen/toolbar_height"
+        android:layout_height="@dimen/toolbar_height"
+        android:background="@drawable/default_view_press_selector"
+        android:padding="15dp"
+        app:srcCompat="@drawable/ic_arrow_left" />
 
     <TextView
-            android:id="@+id/barTitle"
-            tools:text="薛之谦"
-            android:textSize="18sp"
-            android:textColor="@color/C1"
-            android:layout_gravity="center"
-            android:gravity="center"
-            android:layout_width="wrap_content"
-            android:layout_height="@dimen/toolbar_height"/>
+        android:id="@+id/barTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/toolbar_height"
+        android:layout_gravity="center"
+        android:layout_marginStart="96dp"
+        android:layout_marginEnd="96dp"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:singleLine="true"
+        android:textColor="@color/C1"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="ToolBar" />
 
     <ProgressBar
-            android:id="@+id/loadprogress"
-            style="?android:attr/progressBarStyleHorizontal"
-            android:layout_width="fill_parent"
-            android:layout_height="2dp"
-            android:layout_gravity="top"
-            android:max="100"
-            android:visibility="gone"
-            android:progress="0"
-            android:progressDrawable="@drawable/progressbar_color"/>
+        android:id="@+id/loadprogress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="2dp"
+        android:layout_gravity="top"
+        android:max="100"
+        android:progress="0"
+        android:progressDrawable="@drawable/progressbar_color"
+        android:visibility="gone" />
 
 </FrameLayout>
 
