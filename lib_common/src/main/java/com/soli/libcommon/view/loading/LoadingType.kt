@@ -1,4 +1,4 @@
-package com.soli.libcommon.view.root
+package com.soli.libcommon.view.loading
 
 /**
  * @author Soli

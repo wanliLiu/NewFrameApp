@@ -13,7 +13,7 @@ import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
 import com.soli.libcommon.util.*
-import com.soli.libcommon.view.root.LoadingType
+import com.soli.libcommon.view.loading.LoadingType
 import com.soli.newframeapp.*
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity

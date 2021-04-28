@@ -8,7 +8,6 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
-import com.soli.libcommon.base.SearchView
 import com.soli.libcommon.R
 import com.soli.libcommon.util.MLog
 import com.soli.libcommon.util.ViewUtil

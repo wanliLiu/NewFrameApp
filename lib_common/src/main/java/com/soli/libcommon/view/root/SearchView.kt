@@ -1,4 +1,4 @@
-package com.soli.libcommon.base
+package com.soli.libcommon.view.root
 
 import android.content.Context
 import android.text.Editable

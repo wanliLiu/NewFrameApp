@@ -71,6 +71,7 @@ dependencies {
     api deps.okhttp
 //    api deps.retrofit.gson
 
+    implementation deps.svga
     //picture
     api deps.fresco
     implementation deps.frescoOkhttp
@@ -116,9 +117,9 @@ dependencies {
 //    api deps.fragmentationx_swipeback
 //    api deps.fragmentationx_eventbus
 
-    api (name: 'fragmentation-1.0.3', ext: 'aar')
-    api (name: 'fragmentation_core-1.0.3', ext: 'aar')
-    api (name: 'fragmentation_swipeback-1.0.3', ext: 'aar')
+    api(name: 'fragmentation-1.0.3', ext: 'aar')
+    api(name: 'fragmentation_core-1.0.3', ext: 'aar')
+    api(name: 'fragmentation_swipeback-1.0.3', ext: 'aar')
 
 //    debugApi 'com.soli.flutter_module:flutter_debug:1.1.2'
 //    releaseApi 'com.soli.flutter_module:flutter_release:1.1.2'

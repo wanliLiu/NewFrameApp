@@ -8,7 +8,7 @@ import com.soli.libcommon.R
 import com.soli.libcommon.util.KeyBoardUtils
 import com.soli.libcommon.util.StatusBarUtil
 import com.soli.libcommon.util.setCustomDensity
-import com.soli.libcommon.view.root.LoadingDialog
+import com.soli.libcommon.view.loading.LoadingDialog
 
 /**
  * @author Soli

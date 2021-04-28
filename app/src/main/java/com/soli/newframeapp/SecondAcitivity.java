@@ -10,7 +10,7 @@ import com.soli.libcommon.net.ApiResult;
 import com.soli.libcommon.net.DataType;
 import com.soli.libcommon.util.NetworkUtil;
 import com.soli.libcommon.util.TabFragmentManager;
-import com.soli.libcommon.view.root.LoadingType;
+import com.soli.libcommon.view.loading.LoadingType;
 import com.soli.newframeapp.model.StoryList;
 
 import java.text.SimpleDateFormat;

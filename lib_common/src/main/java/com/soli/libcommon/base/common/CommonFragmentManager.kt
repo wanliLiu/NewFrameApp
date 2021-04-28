@@ -1,4 +1,4 @@
-package com.ting.mp3.appcore.common
+package com.soli.libcommon.base.common
 
 import me.yokeyword.fragmentation.SupportFragment
 

@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import com.soli.libcommon.R
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.util.ToastUtils
-import com.soli.libcommon.view.root.LoadingType
+import com.soli.libcommon.view.loading.LoadingType
 import com.soli.libcommon.view.root.RootView
 
 /**

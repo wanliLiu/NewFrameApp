@@ -6,26 +6,26 @@
 
     <TextView
         android:id="@+id/iv_bg"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="55dp"
+        android:layout_height="55dp"
         android:layout_gravity="center"
-        android:background="@drawable/shape_shadow" />
+        android:background="@drawable/loading_dialog_background_ng" />
 
-    <com.soli.libcommon.view.PullLoadingImageView
-        android:id="@+id/image_anim"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+
+    <com.soli.libcommon.view.loading.ProgressLoadingImageView
+        android:id="@+id/loadingImageView"
+        android:layout_width="@dimen/new_pull_loading_width"
+        android:layout_height="@dimen/new_pull_loading_height"
         android:layout_gravity="center" />
 
     <com.soli.libcommon.view.RingProgressBar
         android:id="@+id/progBarView"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
         android:layout_gravity="center"
         android:visibility="gone"
         app:max="100"
-        app:ringprogress="0"
         app:ringWidth="2dp"
+        app:ringprogress="0"
         app:style="FILL" />
-
 </FrameLayout>

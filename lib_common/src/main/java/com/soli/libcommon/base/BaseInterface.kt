@@ -1,6 +1,6 @@
 package com.soli.libcommon.base
 
-import com.soli.libcommon.view.root.LoadingType
+import com.soli.libcommon.view.loading.LoadingType
 
 /**
  * @author Soli

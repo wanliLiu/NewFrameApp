@@ -2,5 +2,7 @@
 <resources>
     <dimen name="toolbar_height">48dp</dimen>
 
+    <dimen name="new_pull_loading_height">50dp</dimen>
+    <dimen name="new_pull_loading_width">50dp</dimen>
     <dimen name="default_display_avatar_size">50dp</dimen>
 </resources>

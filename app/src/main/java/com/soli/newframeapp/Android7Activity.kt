@@ -18,7 +18,7 @@ import androidx.core.content.FileProvider
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.download.FileDownloadProcess
 import com.soli.libcommon.util.*
-import com.soli.libcommon.view.root.LoadingType
+import com.soli.libcommon.view.loading.LoadingType
 import com.soli.permissions.RxPermissions
 import kotlinx.android.synthetic.main.activity_android7.*
 import java.io.File

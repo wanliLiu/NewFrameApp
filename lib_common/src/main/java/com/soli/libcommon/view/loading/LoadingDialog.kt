@@ -1,20 +1,21 @@
-package com.soli.libcommon.view.root
+package com.soli.libcommon.view.loading
 
 import android.app.Dialog
 import android.content.Context
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.soli.libcommon.R
-import com.soli.libcommon.view.PullLoadingImageView
 import com.soli.libcommon.view.RingProgressBar
 
 
 /**
- * 加载进度条
+ *
+ * <p>
+ * Created by sofia on 4/28/2021.
  */
 class LoadingDialog(context: Context) : Dialog(context, R.style.CustomProgressDialog) {
 
-    private val imageView: PullLoadingImageView
+    private val imageView: ProgressLoadingImageView
     private val progBarView: RingProgressBar
 
     init {
@@ -25,7 +26,7 @@ class LoadingDialog(context: Context) : Dialog(context, R.style.CustomProgressDi
         lp.dimAmount = 0.0f
         window!!.attributes = lp
 
-        imageView = contentView.findViewById(R.id.image_anim)
+        imageView = contentView.findViewById(R.id.loadingImageView)
         progBarView = contentView.findViewById(R.id.progBarView)
         progBarView.ringProgressColor = ContextCompat.getColor(context, R.color.A1)
         progBarView.ringColor = ContextCompat.getColor(context, R.color.A1)
@@ -33,6 +34,12 @@ class LoadingDialog(context: Context) : Dialog(context, R.style.CustomProgressDi
 
         setOnDismissListener { imageView.stopAnim() }
     }
+
+    override fun dismiss() {
+        imageView.stopAnim()
+        super.dismiss()
+    }
+
 
     /**
      *
@@ -51,3 +58,4 @@ class LoadingDialog(context: Context) : Dialog(context, R.style.CustomProgressDi
         progBarView.progress = progress
     }
 }
+

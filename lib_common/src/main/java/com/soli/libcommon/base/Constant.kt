@@ -1,11 +1,13 @@
 package com.soli.libcommon.base
 
+import android.annotation.SuppressLint
 import android.content.Context
 
 /**
  * @author Soli
  * @Time 18-5-15 上午11:18
  */
+@SuppressLint("StaticFieldLeak")
 object Constant {
 
     private var ctx: Context? = null

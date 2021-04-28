@@ -157,6 +157,8 @@ deps.flycoTab = "com.taihe.tablayout:flycotablayout:2.+"
 
 deps.toolargetool = "com.gu.android:toolargetool:0.2.1@aar"
 
+deps.svga = 'com.github.yyued:SVGAPlayer-Android:2.5.11'
+
 ext.deps = deps
 
 //编译版本
@@ -176,6 +178,8 @@ def addRepos(RepositoryHandler handler) {
     handler.mavenCentral()
     handler.jcenter()
     handler.google()
+    handler.maven { url 'https://jitpack.io' }
+
     //Add the JitPack repository
 //    handler.maven { url 'http://10.20.120.200:8081/nexus/content/repositories/taiheRepo/' }
 

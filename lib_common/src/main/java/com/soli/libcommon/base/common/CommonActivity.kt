@@ -4,7 +4,6 @@ import android.content.Context
 import com.soli.libcommon.R
 import com.soli.libcommon.base.BaseMultiFragmentActivity
 import com.soli.libcommon.util.openActivity
-import com.ting.mp3.appcore.common.CommonFragmentManager
 import me.yokeyword.fragmentation.ISupportFragment
 import me.yokeyword.fragmentation.SupportFragment
 
