@@ -1,17 +1,17 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:id="@+id/viewRoot"
-             android:background="@color/B2"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent">
+<com.soli.libcommon.view.RootFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/viewRoot"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/B2">
 
     <FrameLayout
-            android:id="@id/root_content"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="@dimen/toolbar_height"/>
+        android:id="@id/root_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="@dimen/toolbar_height" />
 
     <com.soli.libcommon.view.root.Toolbar
-            android:id="@id/tool_bar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-</FrameLayout>
+        android:id="@id/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</com.soli.libcommon.view.RootFrameLayout>

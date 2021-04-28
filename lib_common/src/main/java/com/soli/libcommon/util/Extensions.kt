@@ -48,6 +48,9 @@ inline fun Context.dip2px(dp: Int): Int {
     ).toInt()
 }
 
+
+fun Context.dimens(resourceId: Int) = this.resources.getDimensionPixelOffset(resourceId)
+
 /**
  *
  */

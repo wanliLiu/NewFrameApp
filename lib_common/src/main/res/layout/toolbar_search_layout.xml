@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/toolbar_height"
+    android:gravity="center_vertical"
+    android:orientation="horizontal">
+
+    <FrameLayout
+        android:layout_width="0dp"
+        android:layout_height="35dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="3dp"
+        android:layout_weight="1">
+
+        <EditText
+            android:id="@+id/searchInput"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:layout_gravity="center_vertical"
+            android:background="@drawable/shape_local_search_background"
+            android:gravity="center_vertical"
+            android:hint="想搜索什么?"
+            android:inputType="text"
+            android:paddingLeft="49dp"
+            android:paddingRight="49dp"
+            android:singleLine="true"
+            android:textColor="@color/C1"
+            android:textColorHint="@color/C3"
+            android:textSize="15sp" />
+
+        <com.soli.libcommon.view.SvgImageView
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:layout_gravity="center_vertical|left"
+            android:layout_marginStart="18dp"
+            app:srcCompat="@drawable/ic_local_search"
+            app:svg_color="@color/C3" />
+
+        <ImageView
+            android:id="@+id/searchClear"
+            android:layout_width="30dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical|right"
+            android:paddingRight="15dp"
+            app:srcCompat="@drawable/ic_toolbar_search_clear" />
+    </FrameLayout>
+
+    <TextView
+        android:id="@+id/searchFinish"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/toolbar_height"
+        android:gravity="center"
+        android:paddingStart="15dp"
+        android:paddingEnd="20dp"
+        android:text="取消"
+        android:textColor="@color/C3"
+        android:textSize="14sp" />
+</LinearLayout>

@@ -13,7 +13,7 @@
     <item name="specialHead" type="id" />
     <item name="tips_layout" type="id" />
 
-
+    <item name="tool_search" type="id" />
     <item name="zoom_image" type="id" />
     <item name="id_main_container" type="id" />
 </resources>

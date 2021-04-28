@@ -1,29 +1,33 @@
 package com.soli.libcommon.util
 
-import android.app.Activity
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import androidx.appcompat.app.AppCompatActivity
 
-//打开或关闭软键盘
+/**
+ *打开或关闭软键盘
+ * @author Soli
+ * @Time 2020/3/20 14:14
+ */
 object KeyBoardUtils {
 
 
     /**
      * 本段代码用来处理如果输入法还显示的话就消失掉输入键盘
      */
-    fun dismissSoftKeyboard(activity: Activity) {
+    fun dismissSoftKeyboard(activity: AppCompatActivity) {
         try {
-            val inputMethodManage = activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManage =
+                activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManage.hideSoftInputFromWindow(
                 activity.currentFocus!!.windowToken,
                 InputMethodManager.HIDE_NOT_ALWAYS
             )
         } catch (e: Exception) {
-            e.printStackTrace()
         }
 
     }
@@ -33,9 +37,10 @@ object KeyBoardUtils {
      *
      * @param view
      */
-    fun showKeyboard(activity: Activity, view: View) {
+    fun showKeyboard(activity: AppCompatActivity, view: View) {
         try {
-            val inputMethodManage = activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            val inputMethodManage =
+                activity.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             inputMethodManage.showSoftInput(view, InputMethodManager.SHOW_FORCED)
         } catch (e: Exception) {
             e.printStackTrace()
@@ -50,9 +55,15 @@ object KeyBoardUtils {
      */
     fun openKeybord(mEditText: EditText, mContext: Context) {
         try {
-            val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(mEditText, InputMethodManager.RESULT_SHOWN)
-            imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
+            val imm = mContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+            if (imm != null) {
+                mEditText.requestFocus()
+                imm.showSoftInput(mEditText, 0)
+                imm.toggleSoftInput(
+                    InputMethodManager.SHOW_FORCED,
+                    InputMethodManager.HIDE_IMPLICIT_ONLY
+                )
+            }
         } catch (e: Exception) {
             e.printStackTrace()
         }
@@ -66,7 +77,7 @@ object KeyBoardUtils {
      */
     fun closeKeybord(mEditText: EditText, mContext: Context) {
         try {
-            val imm = mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm = mContext.getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(mEditText.windowToken, 0)
         } catch (e: Exception) {
             e.printStackTrace()

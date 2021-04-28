@@ -8,6 +8,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.*
+import com.soli.libcommon.base.SearchView
 import com.soli.libcommon.R
 import com.soli.libcommon.util.MLog
 import com.soli.libcommon.util.ViewUtil
@@ -109,7 +110,7 @@ class Toolbar(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int =
     /**
      * 添加图标按钮
      */
-    private fun getImageView(idIndex: Int, resId: Int):ImageView {
+    private fun getImageView(idIndex: Int, resId: Int): ImageView {
         return ImageView(ctx).apply {
             id = idIndex
             val _dp = dpto(15f)
@@ -146,21 +147,25 @@ class Toolbar(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int =
     /**
      *
      */
-    fun setCustomView(layoutId: Int) = {
+    fun setCustomView(layoutId: Int): View {
         val view = LayoutInflater.from(ctx).inflate(layoutId, null)
         setCustomView(view)
-        view
+        return view
     }
 
     /**
      * 自定义toolbar的内容
      */
-    fun setCustomView(view: View) {
-        barRoot.removeAllViews()
-        val params = FrameLayout.LayoutParams(
-            FrameLayout.LayoutParams.MATCH_PARENT,
+    fun setCustomView(
+        view: View,
+        needClear: Boolean = true,
+        params: LayoutParams = LayoutParams(
+            LayoutParams.MATCH_PARENT,
             ctx.resources.getDimensionPixelOffset(R.dimen.toolbar_height)
         )
+    ) {
+        if (needClear)
+            barRoot.removeAllViews()
         barRoot.addView(view, params)
     }
 
@@ -182,7 +187,7 @@ class Toolbar(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int =
     /**
      *
      */
-    fun getIconMenu(idIndex: Int):ImageView = getMenuContainer().findViewById(idIndex)
+    fun getIconMenu(idIndex: Int): ImageView = getMenuContainer().findViewById(idIndex)
 
     /**
      *
@@ -225,4 +230,27 @@ class Toolbar(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int =
     fun getBarRoot() = barRoot
 
 
+    /**
+     * 进入搜索模式
+     */
+    fun inSearchModel(
+        needClick: Boolean = false,
+        needClear: Boolean = true,
+        params: LayoutParams = LayoutParams(
+            LayoutParams.MATCH_PARENT,
+            ctx.resources.getDimensionPixelOffset(R.dimen.toolbar_height)
+        ),
+        listener: ((content: String, clickSearch: Boolean) -> Unit)?
+    ): SearchView {
+        val searchView = SearchView(ctx).apply { id = R.id.tool_search }
+        searchView.setOnSearchListener(needClick) { text, clickSearch ->
+            listener?.invoke(
+                text,
+                clickSearch
+            )
+        }
+        setCustomView(searchView, needClear, params)
+
+        return searchView
+    }
 }

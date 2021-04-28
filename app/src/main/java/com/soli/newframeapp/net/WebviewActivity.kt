@@ -5,7 +5,9 @@ import android.util.Log
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
+import android.widget.FrameLayout
 import com.soli.libcommon.base.BaseActivity
+import com.soli.libcommon.util.dimens
 import com.soli.newframeapp.R
 import kotlinx.android.synthetic.main.activity_webview.*
 import java.net.URLDecoder
@@ -18,10 +20,30 @@ class WebviewActivity : BaseActivity() {
 
     private val TAG = WebviewActivity::class.java.simpleName
 
+    private val DefaultLoadUrl = "https://m.bilibili.com/"
+
     override fun getContentView() = R.layout.activity_webview
 
     override fun initView() {
-        title = "WebView"
+
+        rootView.getToolbar()
+            ?.inSearchModel(
+                needClick = true,
+                needClear = false,
+                params = FrameLayout.LayoutParams(
+                    FrameLayout.LayoutParams.MATCH_PARENT, ctx.dimens(R.dimen.toolbar_height)
+                ).apply {
+                    leftMargin = ctx.dimens(R.dimen.toolbar_height) / 2
+                    rightMargin = leftMargin
+                }
+            ) { content, clickSearch ->
+                if (clickSearch) {
+                    goToWebView(content)
+                }
+            }?.apply {
+                hideFinishButtom()
+                setInputText(DefaultLoadUrl)
+            }
     }
 
     override fun initListener() {
@@ -33,7 +55,7 @@ class WebviewActivity : BaseActivity() {
 
             override fun onReceivedTitle(view: WebView?, mtitle: String?) {
                 super.onReceivedTitle(view, mtitle)
-                title = mtitle ?: "WebView"
+//                title = mtitle ?: "WebView"
             }
         }
         mWebView.setWebViewClientFromSide(object : WebViewClient() {
@@ -60,7 +82,14 @@ class WebviewActivity : BaseActivity() {
     }
 
     override fun initData() {
-        mWebView.loadUrl("https://m.bilibili.com/")
+        goToWebView(DefaultLoadUrl)
+    }
+
+    /**
+     *
+     */
+    private fun goToWebView(url: String) {
+        mWebView.loadUrl(if (!url.startsWith("http")) "http://$url" else url)
     }
 
     override fun onBackPressedSupport() {
