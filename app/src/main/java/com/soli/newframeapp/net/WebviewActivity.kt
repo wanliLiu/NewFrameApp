@@ -2,6 +2,7 @@ package com.soli.newframeapp.net
 
 import android.graphics.Bitmap
 import android.util.Log
+import android.webkit.CookieManager
 import android.webkit.WebChromeClient
 import android.webkit.WebView
 import android.webkit.WebViewClient
@@ -76,7 +77,24 @@ class WebviewActivity : BaseActivity() {
 
             override fun onLoadResource(view: WebView?, url: String?) {
                 super.onLoadResource(view, url)
-                Log.e(TAG, "onLoadResource-->${URLDecoder.decode(url, "UTF-8")}")
+
+                val includeVideo = url!!.indexOf(".mp4") != -1 || url.indexOf(".m3u8") != -1
+                if (includeVideo) {
+                    Log.e(
+                        "captureVideo",
+                        "$url \n cookie : ${CookieManager.getInstance().getCookie(url)}"
+                    )
+                }
+                Log.e("webViewTargetUrl", view!!.url.toString())
+                Log.e(
+                    TAG,
+                    "onLoadResource-->${
+                        URLDecoder.decode(
+                            url,
+                            "UTF-8"
+                        )
+                    } \n cookie : ${CookieManager.getInstance().getCookie(url)}"
+                )
             }
         })
     }
