@@ -19,6 +19,7 @@ import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.demo.TestTopSpecialActivity
 import com.soli.newframeapp.download.DownloadTestActivity
+import com.soli.newframeapp.drag.DragFragment
 import com.soli.newframeapp.event.openFragment
 //import com.soli.newframeapp.flutter.FlutterEntranceActivity
 import com.soli.newframeapp.fragment.LaunchUIHome
@@ -135,6 +136,7 @@ class MainFragment : BaseToolbarFragment() {
                 else
                     start(ScanFileFagment())
             }
+            R.id.dragTest -> start(DragFragment())
 //            R.id.flutterIn -> openActivity<FlutterEntranceActivity>(
 //                "initial_route" to "/",
 //                "background_mode" to "opaque",
