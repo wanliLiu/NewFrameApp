@@ -1,6 +1,7 @@
 package com.soli.newframeapp.event
 
 import android.content.Context
+import android.os.Bundle
 import androidx.appcompat.app.AppCompatDialogFragment
 import com.soli.libcommon.base.common.CommonActivity
 import com.soli.libcommon.util.ToastUtils
@@ -54,6 +55,12 @@ fun SupportFragment.openFragment(
     requireActivity().openFragment(fragment, launchMode, useEventBus,newActivity)
 }
 
+
+inline fun <reified T : SupportFragment> Context.startFragment(params: Bundle? = null) {
+    CommonActivity.startFragment(this, T::class.java.name, params)
+}
+
+
 /**
  *
  */
@@ -65,7 +72,7 @@ fun Context.openFragment(
     newActivity: Boolean = false
 ) {
     when {
-        newActivity -> CommonActivity.startFragment(this, fragment)
+//        newActivity -> CommonActivity.startFragment(this, fragment)
         this is CommonActivity -> start(fragment, launchMode)
         useEventBus -> EventBus.getDefault().post(OpenFragmentEvent(fragment, launchMode))
         else -> {

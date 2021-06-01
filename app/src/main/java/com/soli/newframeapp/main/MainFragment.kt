@@ -1,5 +1,6 @@
 package com.soli.newframeapp.main
 
+//import com.soli.newframeapp.flutter.FlutterEntranceActivity
 import android.Manifest
 import android.os.Build
 import android.os.Handler
@@ -20,8 +21,7 @@ import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.demo.TestTopSpecialActivity
 import com.soli.newframeapp.download.DownloadTestActivity
 import com.soli.newframeapp.drag.DragFragment
-import com.soli.newframeapp.event.openFragment
-//import com.soli.newframeapp.flutter.FlutterEntranceActivity
+import com.soli.newframeapp.event.startFragment
 import com.soli.newframeapp.fragment.LaunchUIHome
 import com.soli.newframeapp.motion.MotionLayoutFragment
 import com.soli.newframeapp.net.NetWorkTestActivity
@@ -119,7 +119,7 @@ class MainFragment : BaseToolbarFragment() {
             R.id.webViewTest -> openActivity<WebviewActivity>()
             R.id._23Test -> openActivity<Android7Activity>()
             R.id.websocket -> openActivity<WebsocketActivity>()
-            R.id.btnColorMatrix -> openFragment(PicDealFragment(), newActivity = true)
+            R.id.btnColorMatrix -> context?.startFragment<PicDealFragment>()//openFragment(PicDealFragment(), newActivity = true)
             R.id.btnBottomSheet -> openActivity<BottomSheetTestActivity>()
             R.id.btnCustFlex -> openActivity<AutoWrapLayoutTestActivity>()
             R.id.btnSpecialDemo -> openActivity<TestTopSpecialActivity>()

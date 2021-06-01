@@ -1,6 +1,7 @@
 package com.soli.libcommon.base.common
 
 import android.content.Context
+import android.os.Bundle
 import com.soli.libcommon.R
 import com.soli.libcommon.base.BaseMultiFragmentActivity
 import com.soli.libcommon.util.openActivity
@@ -16,34 +17,49 @@ class CommonActivity : BaseMultiFragmentActivity() {
 
 
     companion object {
-        private val requestFragment = "requestFragment"
-        fun startFragment(ctx: Context, fragment: SupportFragment) {
-            val tag = CommonFragmentManager.Instance.addFragment(fragment)
-            ctx.openActivity<CommonActivity>(requestFragment to tag)
+
+        private val FlagName = "fragment_class_name"
+        private val FlagParams = "fragment_params"
+
+        fun startFragment(ctx: Context, fragmentClassName: String, params: Bundle? = null) {
+            ctx.openActivity<CommonActivity>(FlagName to fragmentClassName, FlagParams to params)
         }
     }
 
-    private val fragmentTag: Long
-        get() = intent.getLongExtra(requestFragment, 0)
+    private val fragmentClass: String
+        get() = intent.getStringExtra(FlagName) ?: ""
 
-    private val fragment by lazy { CommonFragmentManager.Instance[fragmentTag] }
+    private val params: Bundle?
+        get() = intent.getBundleExtra(FlagParams)
+
+    private val fragment by lazy {
+        supportFragmentManager.fragmentFactory.instantiate(classLoader, fragmentClass).apply {
+            arguments = params
+        } as SupportFragment
+    }
 
     override fun getContentView() = R.layout.activity_common
 
-    override fun initView() = Unit
-    override fun initListener() = Unit
 
-    override fun initData() {
+    override fun onBackPressedSupport() {
+        if (fragment.onBackPressedSupport()) {
+            //do nothing
+        } else
+            super.onBackPressedSupport()
+    }
+
+
+    override fun initView() {
 
         check(fragment != null) { "CommonActivity 中的fragment不能为空" }
 
-        check(fragment is ISupportFragment) { "打开的fragment必须是ISupportFragment子类" }
+        check(fragment is SupportFragment) { "打开的fragment必须是BaseToolbarFragment子类" }
 
-        loadRootFragment(R.id.common_container, fragment as ISupportFragment)
+        supportFragmentManager.beginTransaction()
+            .add(R.id.common_container, fragment, fragmentClass).commit()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        CommonFragmentManager.Instance.popFragment(fragmentTag)
-    }
+    override fun initListener() = Unit
+
+    override fun initData() = Unit
 }
