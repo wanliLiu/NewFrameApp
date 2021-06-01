@@ -5,7 +5,6 @@ import android.os.Bundle
 import com.soli.libcommon.R
 import com.soli.libcommon.base.BaseMultiFragmentActivity
 import com.soli.libcommon.util.openActivity
-import me.yokeyword.fragmentation.ISupportFragment
 import me.yokeyword.fragmentation.SupportFragment
 
 /**
