@@ -10,8 +10,6 @@ android {
     defaultConfig {
         minSdkVersion build_versions.min_sdk
         targetSdkVersion build_versions.target_sdk
-        versionCode 1
-        versionName "1.0"
 
         //vectorDrawable 使用android.support库支持，支持低版本，默认是使用系统的
         vectorDrawables.useSupportLibrary = true
@@ -110,7 +108,7 @@ dependencies {
 //    api deps.flycoTab
     api deps.swipelayout
 
-    implementation deps.toolargetool
+//    implementation deps.toolargetool
 
 //    api deps.fragmentationx
 //    api deps.fragmentationx_core

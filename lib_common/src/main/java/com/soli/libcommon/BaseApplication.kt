@@ -5,7 +5,7 @@ import android.webkit.WebView
 import androidx.appcompat.app.AppCompatDelegate
 import com.bytedance.boost_multidex.BoostMultiDexApplication
 import com.facebook.stetho.Stetho
-import com.gu.toolargetool.TooLargeTool
+//import com.gu.toolargetool.TooLargeTool
 import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.*
 //import io.flutter.app.FlutterApplication
@@ -70,7 +70,7 @@ abstract class BaseApplication : InnerBoostMultiDexApplication() {
     open fun initForMainProcess() {
         if (Constant.Debug) {
             Stetho.initializeWithDefaults(this)
-            TooLargeTool.startLogging(this)
+//            TooLargeTool.startLogging(this)
         }
 
         initSkin()
