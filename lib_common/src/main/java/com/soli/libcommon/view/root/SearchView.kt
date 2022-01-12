@@ -12,12 +12,12 @@ import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.appcompat.app.AppCompatActivity
-import com.jakewharton.rxbinding2.widget.RxTextView
+import com.jakewharton.rxbinding4.widget.textChanges
 import com.soli.libcommon.R
 import com.soli.libcommon.util.KeyBoardUtils
 import com.soli.libcommon.util.clickView
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
 import me.yokeyword.fragmentation.SupportActivity
 import java.util.concurrent.TimeUnit
 
@@ -167,7 +167,7 @@ class SearchView(context: Context, attrs: AttributeSet? = null, defStyleAttr: In
             searchInput.imeOptions = EditorInfo.IME_ACTION_NONE
         }
 
-        return RxTextView.textChanges(searchInput)
+        return searchInput.textChanges()
             .debounce(300, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
             .subscribe {
                 if (isFromManuSet) {

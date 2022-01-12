@@ -61,7 +61,7 @@ dependencies {
     //Rxjava
     api deps.rx_android
     api deps.rxbinding
-    api deps.rxjava2
+    api deps.rxjava3
     api deps.rxlifecycle
 
     //network

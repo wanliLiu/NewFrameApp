@@ -78,6 +78,7 @@ dependencies {
     implementation(name: 'flycotablayout-2.1.5', ext: 'aar')
 //    implementation deps.okhttp_mockwebserver
     implementation deps.rxbinding
+    implementation deps.rxbindingAppCompat
     implementation deps.rxlifecycleAndroid_kotlin
 //    implementation deps.rxlifecycle_kotlin
 

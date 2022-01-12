@@ -1,8 +1,7 @@
 package com.soli.newframeapp
 
 import android.widget.ScrollView
-import com.dhh.rxlifecycle2.RxLifecycle
-import com.jakewharton.rxbinding2.view.RxView
+import com.jakewharton.rxbinding4.view.*
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.net.apiParamsOf
@@ -17,7 +16,7 @@ import kotlinx.android.synthetic.main.activity_websocket.*
 
 class WebsocketActivity : BaseActivity() {
 
-//    TODO Echo test地址：http://www.websocket.org/echo.html
+    //    TODO Echo test地址：http://www.websocket.org/echo.html
     private var url: String = "ws://echo.websocket.org"
 
     override fun getContentView() = R.layout.activity_websocket
@@ -28,8 +27,8 @@ class WebsocketActivity : BaseActivity() {
 
     override fun initListener() {
 
-        val disposable = RxView.clicks(btnSend)
-            .compose(RxLifecycle.with(this).bindToLifecycle())
+        val disposable = btnSend.clicks()
+//            .compose(RxLifecycle.with(this).bindToLifecycle())
             .subscribe {
                 val str = msgSend.text.toString()
                 sendThrowWebSocket(msg = str)

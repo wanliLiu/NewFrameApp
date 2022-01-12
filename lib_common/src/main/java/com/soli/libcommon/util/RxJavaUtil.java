@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewConfiguration;
-import com.jakewharton.rxbinding2.view.RxView;
+import com.jakewharton.rxbinding4.view.RxView;
 import io.reactivex.Observable;
 import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
