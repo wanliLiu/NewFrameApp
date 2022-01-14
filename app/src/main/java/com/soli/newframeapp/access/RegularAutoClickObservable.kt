@@ -1,6 +1,7 @@
 package com.soli.newframeapp.access
 
 import android.accessibilityservice.AccessibilityService
+import android.graphics.Rect
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.annotation.Keep
@@ -22,7 +23,7 @@ class RegularAutoClickObservable(
     private val isEnd: () -> Boolean,
     private val pauseControl: PauseControl,
     private val permissionCLick: Boolean = false,
-    private val duration: Long = 15 * 60 * 1000L, //还是要限制最大的时间，不然有些情况下点击死了
+    private val duration: Long = 10 * 60 * 1000L, //还是要限制最大的时间，不然有些情况下点击死了
 ) {
 
     companion object {
@@ -36,7 +37,9 @@ class RegularAutoClickObservable(
     private val maxClickCount = 30
     private var windowIndex = 0
 
-    private var preNode: ActivityModel? = null
+    //没有可以点击的试图连续多少次退出
+    private val noneClickMax = 4
+    private var noneIndex = 0
 
     @Keep
     private data class ActivityModel(
@@ -44,10 +47,10 @@ class RegularAutoClickObservable(
         val viewMd5: String,
         var clickIndex: Int,
         var canClickList: MutableList<AccessibilityNodeInfo>,
-        val window: AccessibilityWindowInfo
+        val packageName: String,
     ) {
         override fun toString(): String {
-            return "mId: $mId viewMd5: $viewMd5 clickIndex: $clickIndex canClickList: ${canClickList.size} windows: ${window.hashCode()}"
+            return "mId: $mId viewMd5: $viewMd5 clickIndex: $clickIndex canClickList: ${canClickList.size} packageName: $packageName"
         }
     }
 
@@ -93,32 +96,42 @@ class RegularAutoClickObservable(
     /**
      *实际的点击操作
      */
-    private fun doActualClick() {
+    private fun doActualClick(model: ActivityModel? = null) {
         val index = windowIndex - 1
-        val data = if (index >= 0) windowsList[index] else return
+        val data = when (model) {
+            null -> if (index >= 0) windowsList[index] else return
+            else -> model
+        }
         MLog.d(TAG, "doActualClick--->($data)")
         pauseControl.checkWait()
-        if (data.clickIndex < data.canClickList.size && data.clickIndex < maxClickCount) {
+        if (data.packageName == packageName && data.clickIndex < data.canClickList.size && data.clickIndex < maxClickCount) {
             backToTargetApp()
-//            val model = data.canClickList[data.canClickList.size - data.clickIndex - 1]
-            val model = data.canClickList[data.clickIndex]
+            val model = data.canClickList[data.canClickList.size - data.clickIndex - 1]
+//            val model = data.canClickList[data.clickIndex]
+            data.clickIndex += 1
             when (model.viewIdResourceName) {
                 "com.android.systemui:id/home",
                 "com.android.systemui:id/back",
-                "com.android.systemui:id/recent_apps"
+                "com.android.systemui:id/recent_apps",
+//                "com.soli.newframeapp:id/barBackIcon"
                 -> MLog.d(TAG, "规律点击过程中屏蔽点击home back recent_apps")
                 else -> {
                     service.performClick(model)
-                    data.clickIndex += 1
                     MLog.d(TAG, "当前页面的点击次数：${data.clickIndex} 点击的节点信息：$model")
                     pauseControl.checkWait()
                 }
             }
         } else {
-            MLog.d(
-                TAG,
-                "当前页面达到最大限制点击次数：$maxClickCount 当前页面可点击的数量：${data.canClickList.size} 执行返回界面操作"
-            )
+            if (data.packageName == packageName) {
+                MLog.d(
+                    TAG,
+                    "当前页面达到最大限制点击次数：$maxClickCount 当前页面可点击的数量：${data.canClickList.size} 执行返回界面操作"
+                )
+            } else {
+                MLog.d(TAG, "只点击被测app $packageName 的界面，其他界面直接返回,并排除去")
+                windowsList.remove(data)
+            }
+
             performBack()
             windowIndex--
         }
@@ -145,24 +158,24 @@ class RegularAutoClickObservable(
     private fun addNode(node: AccessibilityNodeInfo, json: JSONObject) {
         json["packageName"] = node.packageName ?: ""
         json["className"] = node.className ?: ""
-//        json["text"] = node.text ?: ""
-//        json["contentDescription"] = node.contentDescription ?: ""
-//        json["childCount"] = node.childCount
-//        json["checkable"] = node.isCheckable
-//        json["checked"] = node.isChecked
-//        json["focusable"] = node.isFocusable
-//        json["focused"] = node.isFocused
-//        json["selected"] = node.isSelected
-//        json["clickable"] = node.isClickable
-//        json["enabled"] = node.isEnabled
-//        json["scrollable"] = node.isScrollable
-//        json["visible"] = node.isVisibleToUser
+        json["text"] = node.text ?: ""
+        json["contentDescription"] = node.contentDescription ?: ""
+        json["childCount"] = node.childCount
+        json["checkable"] = node.isCheckable
+        json["checked"] = node.isChecked
+        json["focusable"] = node.isFocusable
+        json["focused"] = node.isFocused
+        json["selected"] = node.isSelected
+        json["clickable"] = node.isClickable
+        json["enabled"] = node.isEnabled
+        json["scrollable"] = node.isScrollable
+        json["visible"] = node.isVisibleToUser
         json["viewIdResName"] = node.viewIdResourceName ?: ""
-//        var zoom = Rect()
-//        node.getBoundsInScreen(zoom)
-//        json["boundsInParent"] = zoom.toString()
-//        node.getBoundsInParent(zoom)
-//        json["boundsInScreen"] = zoom.toString()
+        var zoom = Rect()
+        node.getBoundsInScreen(zoom)
+        json["boundsInParent"] = zoom.toString()
+        node.getBoundsInParent(zoom)
+        json["boundsInScreen"] = zoom.toString()
     }
 
     /**
@@ -224,19 +237,21 @@ class RegularAutoClickObservable(
                 pauseControl.checkWait()
 
                 val tmpWindows = service.windows.firstOrNull { it.isActive } ?: continue
+                val rootNode = service.rootInActiveWindow
                 val canClicklist = mutableListOf<AccessibilityNodeInfo>()
-                tmpWindows.root ?: continue
-                val hierachery = dumpHierachry(tmpWindows.root, canClicklist).toJSONString()
+                rootNode ?: continue
+                val hierachery = dumpHierachry(rootNode, canClicklist).toJSONString()
                 val currentHierachery = hierachery.md5String()
                 if (canClicklist.size == 0) {
-                    MLog.d(TAG, "当前窗口视图可点击数量为0，有可能当前正在请求数据")
-                    continue
-                }
-
-                val haveSameWindow = windowsList.indexOfLast { tmpWindows.hashCode() == it.mId }
-                if (haveSameWindow != -1) {
-                    sleep(2000)
-                    MLog.d(TAG, "单Activity多framgent情况，这种延时后在进行获取一下")
+                    noneIndex++
+                    MLog.d(
+                        TAG,
+                        "当前窗口视图可点击数量为0，有可能当前正在请求数据->noneIndex=$noneIndex  noneClickMax = $noneClickMax"
+                    )
+                    if (noneIndex > noneClickMax) {
+                        performBack()
+                        noneIndex = 0
+                    }
                     continue
                 }
 
@@ -251,21 +266,20 @@ class RegularAutoClickObservable(
                     pauseControl.checkWait()
 
                     if (haveExist == -1) {
-                        windowsList.add(
-                            ActivityModel(
-                                tmpWindows.hashCode(),
-                                currentHierachery,
-                                0,
-                                canClicklist,
-                                tmpWindows
-                            )
+                        val model = ActivityModel(
+                            tmpWindows.hashCode(),
+                            currentHierachery,
+                            0,
+                            canClicklist,
+                            rootNode.packageName?.toString() ?: ""
                         )
+                        windowsList.add(model)
                         windowIndex++
                         MLog.d(
                             TAG,
                             "新页面添加,当前待点击的页面数量：$windowIndex 可点击的视图数量：${canClicklist.size} windowIndex=$windowIndex \n cacheWindowList: ${dumpWindowsListStr()}"
                         )
-                        doActualClick()
+                        doActualClick(model)
                         pauseControl.checkWait()
                     } else {
                         MLog.d(TAG, "当前页面已存在，更新数据")
@@ -280,6 +294,11 @@ class RegularAutoClickObservable(
                         MLog.d(TAG, "达到最多点击的页面数：$maxDetectWindowsCount 又有新的页面产生，先回退再点击")
                         if (windowIndex == 1) {
                             performBack()
+                        }
+                        noneIndex++
+                        if (noneIndex > noneClickMax) {
+                            performBack()
+                            noneIndex = 0
                         }
                     } else {
                         windowIndex = haveExist + 1
@@ -303,7 +322,7 @@ class RegularAutoClickObservable(
             MLog.e(TAG, e.message)
             observer.onError(e)
         } finally {
-            MLog.d(TAG, "自动点击结束")
+            MLog.d(TAG, "自动点击结束,总耗时：${(System.currentTimeMillis() - startTime) / 1000}s")
             observer.onComplete()
         }
     }

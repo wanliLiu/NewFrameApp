@@ -292,7 +292,7 @@ class MainFragment : BaseToolbarFragment() {
                     val hierachy = dumpHierachry(service.rootInActiveWindow,canClicklist).toJSONString()
                     MLog.d(
                         AutoClickObservable.TAG,
-                        "canClicklist = ${canClicklist.size} current windown \n ${service.rootInActiveWindow} \n current hierachy MD5 = ${hierachy.md5String()} \n $hierachy"
+                        "canClicklist = ${canClicklist.size} current hierachy MD5 = ${hierachy.md5String()} \n "
                     )
                 }
             }
@@ -318,24 +318,24 @@ class MainFragment : BaseToolbarFragment() {
     private fun addNode(node: AccessibilityNodeInfo, json: JSONObject) {
         json["packageName"] = node.packageName ?: ""
         json["className"] = node.className ?: ""
-        json["text"] = node.text ?: ""
-        json["contentDescription"] = node.contentDescription ?: ""
-        json["childCount"] = node.childCount
-        json["checkable"] = node.isCheckable
-        json["checked"] = node.isChecked
-        json["focusable"] = node.isFocusable
-        json["focused"] = node.isFocused
-        json["selected"] = node.isSelected
-        json["clickable"] = node.isClickable
-        json["enabled"] = node.isEnabled
-        json["scrollable"] = node.isScrollable
-        json["visible"] = node.isVisibleToUser
+//        json["text"] = node.text ?: ""
+//        json["contentDescription"] = node.contentDescription ?: ""
+//        json["childCount"] = node.childCount
+//        json["checkable"] = node.isCheckable
+//        json["checked"] = node.isChecked
+//        json["focusable"] = node.isFocusable
+//        json["focused"] = node.isFocused
+//        json["selected"] = node.isSelected
+//        json["clickable"] = node.isClickable
+//        json["enabled"] = node.isEnabled
+//        json["scrollable"] = node.isScrollable
+//        json["visible"] = node.isVisibleToUser
         json["viewIdResName"] = node.viewIdResourceName ?: ""
-        var zoom = Rect()
-        node.getBoundsInScreen(zoom)
-        json["boundsInParent"] = zoom.toString()
-        node.getBoundsInParent(zoom)
-        json["boundsInScreen"] = zoom.toString()
+//        var zoom = Rect()
+//        node.getBoundsInScreen(zoom)
+//        json["boundsInParent"] = zoom.toString()
+//        node.getBoundsInParent(zoom)
+//        json["boundsInScreen"] = zoom.toString()
     }
 
     /**
@@ -377,7 +377,10 @@ class MainFragment : BaseToolbarFragment() {
 
         val autoCLickSubscribe = RegularAutoClickObservable(
             KiwiAccessibilityService.instance!!,
-            requireActivity().packageName,
+//            requireActivity().packageName,
+//            "com.bankscene.bes.financialmall",
+//            "com.ting.mp3.android",
+            "com.showstartfans.activity",
             { pauseControl.isPause() }, pauseControl, true
         )
             .newInstance()
