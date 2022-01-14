@@ -2,13 +2,21 @@ package com.soli.newframeapp.main
 
 //import com.soli.newframeapp.flutter.FlutterEntranceActivity
 import android.Manifest
+import android.content.Intent
+import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
+import android.provider.Settings
 import android.util.Log
 import android.view.View
+import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.forEach
+import com.alibaba.fastjson.JSONArray
+import com.alibaba.fastjson.JSONObject
 import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.libcommon.net.ApiResult
@@ -16,6 +24,7 @@ import com.soli.libcommon.net.ResultCode
 import com.soli.libcommon.util.*
 import com.soli.libcommon.view.loading.LoadingType
 import com.soli.newframeapp.*
+import com.soli.newframeapp.access.*
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.demo.TestTopSpecialActivity
@@ -33,7 +42,11 @@ import com.soli.newframeapp.scanfile.ScanFileFagment
 import com.soli.newframeapp.span.SpecialSpanFragment
 import com.soli.newframeapp.toast.CustomToastActivity
 import com.soli.permissions.RxPermissions
+import com.yhao.floatwindow.FloatWindow
+import com.yhao.floatwindow.Screen
+import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
+import kotlin.concurrent.thread
 
 /**
  *
@@ -45,7 +58,7 @@ class MainFragment : BaseToolbarFragment() {
     private val retryIndex: Int = 1
     private var retry: Int = 0
     private val rxPermissions by lazy { RxPermissions(this) }
-
+    private val pauseControl = PauseControl()
 
     override fun needSwipeBack() = false
 
@@ -136,6 +149,7 @@ class MainFragment : BaseToolbarFragment() {
                 else
                     start(ScanFileFagment())
             }
+            R.id.autoClick -> autoClickTest()
             R.id.dragTest -> start(DragFragment())
 //            R.id.flutterIn -> openActivity<FlutterEntranceActivity>(
 //                "initial_route" to "/",
@@ -150,20 +164,243 @@ class MainFragment : BaseToolbarFragment() {
     /**
      *
      */
-    private fun checkStorePermission(callBack: () -> Unit) {
-        val diapose =
-            rxPermissions.request(
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
+    private fun autoClickTest() {
+
+        if (AccessibilityUtil.isOpen(
+                requireContext(),
+                requireActivity().packageName,
+                KiwiAccessibilityService::class.java
             )
-                .compose(RxLifecycle.with(this).bindToLifecycle())
-                .subscribe { pass ->
-                    if (pass)
-                        callBack()
-                    else {
-                        ToastUtils.showShortToast("需要文件读写权限")
+            && rxPermissions.isGranted(Manifest.permission.SYSTEM_ALERT_WINDOW)
+        ) {
+            thread {
+                if (KiwiAccessibilityService.instance == null) {
+                    //开启无障碍
+                    KiwiAccessibilityService.startService(requireContext())
+
+                    //检测无障碍启动
+                    for (i in 0..10) {
+                        if (KiwiAccessibilityService.instance != null) break
+                        Thread.sleep(1000)
+                    }
+
+
+                } else {
+                    MLog.d("AutoClickObservable", "无障碍服务开启成功")
+                }
+
+                RxJavaUtil.runOnUiThread {
+                    if (KiwiAccessibilityService.instance == null) {
+                        ToastUtils.showShortToast("无障碍服务开启失败，请重启手机试一下")
+                    } else {
+                        showControlView()
+                        showTest()
                     }
                 }
+            }
+        } else {
+            if (!AccessibilityUtil.isOpen(
+                    requireContext(),
+                    requireActivity().packageName,
+                    KiwiAccessibilityService::class.java
+                )
+            ) {
+                requireActivity().startActivity(
+                    Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS).addFlags(
+                        Intent.FLAG_ACTIVITY_NEW_TASK
+                    )
+                )
+            } else if (!rxPermissions.isGranted(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
+                val diapose = rxPermissions.request(
+                    Manifest.permission.SYSTEM_ALERT_WINDOW,
+                )
+                    .compose(RxLifecycle.with(this).bindToLifecycle())
+                    .subscribe { pass ->
+                    }
+            }
+        }
+    }
+
+    /**
+     *
+     */
+    private fun showControlView() {
+        val controlImageView = ImageView(context).apply { id = R.id.id_control }
+        var paused = true
+        pauseControl.change(paused)
+        controlImageView.setImageResource(if (paused) R.drawable.start else R.drawable.pause)
+        FloatWindow
+            .with(requireActivity().application)
+            .setTag("control")
+            .setView(controlImageView)
+            .setWidth(Screen.width, 0.10f) //设置悬浮控件宽高
+            .setHeight(Screen.width, 0.10f)
+            .setY(Screen.height, 0.4f)
+            .setDesktopShow(true)
+            .setViewStateListener(ViewStateListenerAdapter())
+            .build()
+
+        controlImageView.setOnClickListener {
+            paused = !paused
+            pauseControl.change(paused)
+
+            if (paused) {
+                controlImageView.setImageResource(R.drawable.start)
+//                FloatWindow.get().show()
+            } else {
+                controlImageView.setImageResource(R.drawable.pause)
+//                FloatWindow.get().hide()
+                startClick()
+            }
+        }
+
+        FloatWindow.get("control")?.show()
+        rootView.getContentView()?.findViewById<View>(R.id.autoClick)?.visibility = View.GONE
+    }
+
+    private fun showTest() {
+        val imageView = ImageView(context).apply { id = R.id.id_demo }
+        imageView.setImageResource(R.drawable.screenshot)
+        FloatWindow
+            .with(requireActivity().application)
+            .setView(imageView)
+            .setTag("click")
+            .setWidth(Screen.width, 0.10f) //设置悬浮控件宽高
+            .setHeight(Screen.width, 0.10f)
+            .setX(Screen.width, 0.8f)
+            .setY(Screen.height, 0.3f)
+            .setDesktopShow(true)
+            .setViewStateListener(ViewStateListenerAdapter())
+            .build()
+
+        imageView.clickView {
+            thread {
+                //KiwiAccessibilityService.instance?.printAllNode()
+                KiwiAccessibilityService.instance?.let { service ->
+                    service.windows.let { windows ->
+                        MLog.d(AutoClickObservable.TAG, "windows size: ${windows.size}")
+                        windows.forEach { win ->
+                            if (win.isActive) {
+                                MLog.d(
+                                    AutoClickObservable.TAG,
+                                    "-------->hash:${win.hashCode()} \n $win \n -------->root node hash:${win.root.hashCode()} \n root node：\n ${win.root} \n parent windows: \n${win.parent} \n getChildCount= ${win.childCount} "
+                                )
+                            }
+                        }
+                    }
+                    val canClicklist = JSONArray()
+                    val hierachy = dumpHierachry(service.rootInActiveWindow,canClicklist).toJSONString()
+                    MLog.d(
+                        AutoClickObservable.TAG,
+                        "canClicklist = ${canClicklist.size} current windown \n ${service.rootInActiveWindow} \n current hierachy MD5 = ${hierachy.md5String()} \n $hierachy"
+                    )
+                }
+            }
+        }
+        FloatWindow.get("click")?.show()
+    }
+
+    /**
+     *
+     */
+    private fun decideCanClick(node: AccessibilityNodeInfo, list: JSONArray) {
+        if (node.isEnabled && node.isVisibleToUser) {
+            if (node.isClickable ) { //|| node.isFocusable || node.isCheckable
+                list.add(node)
+            }
+        }
+    }
+
+
+    /**
+     *
+     */
+    private fun addNode(node: AccessibilityNodeInfo, json: JSONObject) {
+        json["packageName"] = node.packageName ?: ""
+        json["className"] = node.className ?: ""
+        json["text"] = node.text ?: ""
+        json["contentDescription"] = node.contentDescription ?: ""
+        json["childCount"] = node.childCount
+        json["checkable"] = node.isCheckable
+        json["checked"] = node.isChecked
+        json["focusable"] = node.isFocusable
+        json["focused"] = node.isFocused
+        json["selected"] = node.isSelected
+        json["clickable"] = node.isClickable
+        json["enabled"] = node.isEnabled
+        json["scrollable"] = node.isScrollable
+        json["visible"] = node.isVisibleToUser
+        json["viewIdResName"] = node.viewIdResourceName ?: ""
+        var zoom = Rect()
+        node.getBoundsInScreen(zoom)
+        json["boundsInParent"] = zoom.toString()
+        node.getBoundsInParent(zoom)
+        json["boundsInScreen"] = zoom.toString()
+    }
+
+    /**
+     *
+     */
+    private fun dumpHierachry(node: AccessibilityNodeInfo, canClickNode: JSONArray): JSONObject {
+        val hierarchy = JSONObject()
+        if (node.childCount > 0) {
+            addNode(node, hierarchy)
+            decideCanClick(node, canClickNode)
+            val array = JSONArray()
+            for (index in 0 until node.childCount) {
+                node.getChild(index)?.apply { array.add(dumpHierachry(this, canClickNode)) }
+            }
+            hierarchy["childs"] = array
+        } else {
+            addNode(node, hierarchy)
+            decideCanClick(node, canClickNode)
+        }
+
+        return hierarchy
+    }
+
+
+    /**
+     *
+     */
+    private fun startClick() {
+        KiwiAccessibilityService.instance!!.registerEvent { event ->
+            if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
+                val text = event.text
+                    .firstOrNull()
+                    .let { it ?: event.contentDescription }
+                    ?.toString()
+                    ?.replace(Regex("\\s"), "")
+                MLog.d(RegularAutoClickObservable.TAG, "click：$text")
+            }
+        }
+
+        val autoCLickSubscribe = RegularAutoClickObservable(
+            KiwiAccessibilityService.instance!!,
+            requireActivity().packageName,
+            { pauseControl.isPause() }, pauseControl, true
+        )
+            .newInstance()
+            .subscribeOn(Schedulers.newThread())
+            .subscribe({}, {})
+    }
+
+    /**
+     *
+     */
+    private fun checkStorePermission(callBack: () -> Unit) {
+        val diapose = rxPermissions.request(
+            Manifest.permission.WRITE_EXTERNAL_STORAGE,
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        )
+            .compose(RxLifecycle.with(this).bindToLifecycle())
+            .subscribe { pass ->
+                if (pass)
+                    callBack()
+                else {
+                    ToastUtils.showShortToast("需要文件读写权限")
+                }
+            }
     }
 
 

@@ -85,4 +85,7 @@ dependencies {
     implementation deps.support.palette
 
 //    debugImplementation deps.retrofit.leakcanary
+
+    // 悬浮窗 https://github.com/yhaolpz/FloatWindow
+    implementation("com.github.yhaolpz:FloatWindow:1.0.9")
 }

@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">NewFrameApp</string>
     <string name="title_activity_net_work_test">NetWorkTestActivity</string>
+    <string name="click_test">点击测试,用来测试自动点击方式</string>
+    <item name="id_control" type="id"/>
+    <item name="id_demo" type="id"/>
 </resources>

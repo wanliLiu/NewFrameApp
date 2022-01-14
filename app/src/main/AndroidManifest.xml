@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.soli.newframeapp">
 
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <!-- 适配全面屏手机 -->
     <meta-data
         android:name="android.max_aspect"
@@ -70,6 +71,21 @@
         <!--            android:value="2" />-->
 
         <service android:name=".download.DownloadService" />
+
+        <service
+            android:name=".access.KiwiAccessibilityService"
+            android:enabled="true"
+            android:exported="true"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+
+            <intent-filter android:priority="2147483647">
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/accessibility" />
+        </service>
     </application>
 
 </manifest>

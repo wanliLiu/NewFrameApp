@@ -130,7 +130,7 @@ abstract class BaseApplication : InnerBoostMultiDexApplication() {
      */
     private fun initFragmentation() {
         Fragmentation.builder()
-            .stackViewMode(Fragmentation.BUBBLE)
+            .stackViewMode(Fragmentation.NONE)
             .debug(Constant.Debug)
             .handleException {
                 MLog.e("fragment", it.message)
