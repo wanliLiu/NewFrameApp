@@ -1,6 +1,6 @@
 package com.soli.libcommon.util
 
-import android.util.Log
+import com.orhanobut.logger.Logger
 import com.soli.libcommon.base.Constant
 
 /**
@@ -32,6 +32,7 @@ object MLog {
 //        buffer.append(getMessage(msg));
 //
 //        return buffer.toString();
+
         return msg
     }
 
@@ -40,14 +41,18 @@ object MLog {
         msg ?: return
 
         if (Debug) {
-            Log.i(TAG, getMessage(msg))
+//            Log.i(TAG, getMessage(msg))
+//            Logger.i("[$TAG] ${getMessage(msg)}")
+            Logger.i(msg)
         }
     }
 
     fun e(TAG: String, msg: String?) {
         msg ?: return
         if (Debug) {
-            Log.e(TAG, getMessage(msg))
+//            Log.e(TAG, getMessage(msg))
+//            Logger.e("[$TAG] ${getMessage(msg)}")
+            Logger.e(msg)
         }
     }
 
@@ -55,21 +60,27 @@ object MLog {
     fun d(TAG: String, msg: String?) {
         msg ?: return
         if (Debug) {
-            Log.d(TAG, getMessage(msg))
+//            Log.d(TAG, getMessage(msg))
+//            Logger.d("[$TAG] ${getMessage(msg)}")
+            Logger.d(msg)
         }
     }
 
     fun v(msg: String?, TAG: String = DEFAULT_LOG_TAG) {
         msg ?: return
         if (Debug) {
-            Log.v(TAG, getMessage(msg))
+//            Log.v(TAG, getMessage(msg))
+//            Logger.v("[$TAG] ${getMessage(msg)}")
+            Logger.v(msg)
         }
     }
 
     fun w(msg: String?, TAG: String = DEFAULT_LOG_TAG) {
         msg ?: return
         if (Debug) {
-            Log.w(TAG, getMessage(msg))
+//            Log.w(TAG, getMessage(msg))
+//            Logger.w("[$TAG] ${getMessage(msg)}")
+            Logger.w(msg)
         }
     }
 }

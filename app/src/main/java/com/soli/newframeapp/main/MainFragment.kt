@@ -44,6 +44,8 @@ import com.soli.newframeapp.toast.CustomToastActivity
 import com.soli.permissions.RxPermissions
 import com.yhao.floatwindow.FloatWindow
 import com.yhao.floatwindow.Screen
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
 import kotlinx.android.synthetic.main.fragment_main.*
 import kotlin.concurrent.thread
@@ -224,15 +226,17 @@ class MainFragment : BaseToolbarFragment() {
     /**
      *
      */
+    private var autoCLickSubscribe: Disposable? = null
+    private var controlImageView: ImageView? = null
     private fun showControlView() {
-        val controlImageView = ImageView(context).apply { id = R.id.id_control }
+        controlImageView = ImageView(context).apply { id = R.id.id_control }
         var paused = true
         pauseControl.change(paused)
-        controlImageView.setImageResource(if (paused) R.drawable.start else R.drawable.pause)
+        controlImageView!!.setImageResource(if (paused) R.drawable.start else R.drawable.pause)
         FloatWindow
             .with(requireActivity().application)
             .setTag("control")
-            .setView(controlImageView)
+            .setView(controlImageView!!)
             .setWidth(Screen.width, 0.10f) //设置悬浮控件宽高
             .setHeight(Screen.width, 0.10f)
             .setY(Screen.height, 0.4f)
@@ -240,15 +244,16 @@ class MainFragment : BaseToolbarFragment() {
             .setViewStateListener(ViewStateListenerAdapter())
             .build()
 
-        controlImageView.setOnClickListener {
+        controlImageView!!.setOnClickListener {
+            autoCLickSubscribe?.dispose()
             paused = !paused
             pauseControl.change(paused)
 
             if (paused) {
-                controlImageView.setImageResource(R.drawable.start)
+                controlImageView!!.setImageResource(R.drawable.start)
 //                FloatWindow.get().show()
             } else {
-                controlImageView.setImageResource(R.drawable.pause)
+                controlImageView!!.setImageResource(R.drawable.pause)
 //                FloatWindow.get().hide()
                 startClick()
             }
@@ -289,7 +294,8 @@ class MainFragment : BaseToolbarFragment() {
                         }
                     }
                     val canClicklist = JSONArray()
-                    val hierachy = dumpHierachry(service.rootInActiveWindow,canClicklist).toJSONString()
+                    val hierachy =
+                        dumpHierachry(service.rootInActiveWindow, canClicklist).toJSONString()
                     MLog.d(
                         AutoClickObservable.TAG,
                         "canClicklist = ${canClicklist.size} current hierachy MD5 = ${hierachy.md5String()} \n "
@@ -305,7 +311,7 @@ class MainFragment : BaseToolbarFragment() {
      */
     private fun decideCanClick(node: AccessibilityNodeInfo, list: JSONArray) {
         if (node.isEnabled && node.isVisibleToUser) {
-            if (node.isClickable ) { //|| node.isFocusable || node.isCheckable
+            if (node.isClickable) { //|| node.isFocusable || node.isCheckable
                 list.add(node)
             }
         }
@@ -375,17 +381,21 @@ class MainFragment : BaseToolbarFragment() {
             }
         }
 
-        val autoCLickSubscribe = RegularAutoClickObservable(
+        autoCLickSubscribe = RegularAutoClickObservable(
             KiwiAccessibilityService.instance!!,
 //            requireActivity().packageName,
 //            "com.bankscene.bes.financialmall",
+//            "com.taihe.fans",
 //            "com.ting.mp3.android",
             "com.showstartfans.activity",
             { pauseControl.isPause() }, pauseControl, true
         )
             .newInstance()
             .subscribeOn(Schedulers.newThread())
-            .subscribe({}, {})
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                controlImageView?.performClick()
+            }, {})
     }
 
     /**

@@ -3,12 +3,11 @@ package com.soli.newframeapp.access
 import android.accessibilityservice.AccessibilityService
 import android.graphics.Rect
 import android.view.accessibility.AccessibilityNodeInfo
-import android.view.accessibility.AccessibilityWindowInfo
 import androidx.annotation.Keep
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
+import com.orhanobut.logger.Logger
 import com.soli.libcommon.base.Constant
-import com.soli.libcommon.util.MLog
 import com.soli.libcommon.util.md5String
 import com.soli.newframeapp.util.AppUtils
 import io.reactivex.rxjava3.core.Observable
@@ -38,7 +37,7 @@ class RegularAutoClickObservable(
     private var windowIndex = 0
 
     //没有可以点击的试图连续多少次退出
-    private val noneClickMax = 4
+    private val noneClickMax = 2
     private var noneIndex = 0
 
     @Keep
@@ -102,33 +101,34 @@ class RegularAutoClickObservable(
             null -> if (index >= 0) windowsList[index] else return
             else -> model
         }
-        MLog.d(TAG, "doActualClick--->($data)")
+        Logger.d("doActualClick--->($data)")
         pauseControl.checkWait()
         if (data.packageName == packageName && data.clickIndex < data.canClickList.size && data.clickIndex < maxClickCount) {
             backToTargetApp()
-            val model = data.canClickList[data.canClickList.size - data.clickIndex - 1]
+//            val model = data.canClickList[data.canClickList.size - data.clickIndex - 1]
 //            val model = data.canClickList[data.clickIndex]
+            val model = data.canClickList.random()
             data.clickIndex += 1
             when (model.viewIdResourceName) {
                 "com.android.systemui:id/home",
                 "com.android.systemui:id/back",
                 "com.android.systemui:id/recent_apps",
 //                "com.soli.newframeapp:id/barBackIcon"
-                -> MLog.d(TAG, "规律点击过程中屏蔽点击home back recent_apps")
+                -> Logger.d("规律点击过程中屏蔽点击home back recent_apps")
                 else -> {
                     service.performClick(model)
-                    MLog.d(TAG, "当前页面的点击次数：${data.clickIndex} 点击的节点信息：$model")
+                    Logger.d("当前页面的点击次数：${data.clickIndex} 点击的节点信息：$model")
                     pauseControl.checkWait()
                 }
             }
         } else {
             if (data.packageName == packageName) {
-                MLog.d(
-                    TAG,
+                Logger.d(
+
                     "当前页面达到最大限制点击次数：$maxClickCount 当前页面可点击的数量：${data.canClickList.size} 执行返回界面操作"
                 )
             } else {
-                MLog.d(TAG, "只点击被测app $packageName 的界面，其他界面直接返回,并排除去")
+                Logger.d("只点击被测app $packageName 的界面，其他界面直接返回,并排除去")
                 windowsList.remove(data)
             }
 
@@ -224,7 +224,7 @@ class RegularAutoClickObservable(
 
         try {
             startTime = System.currentTimeMillis()
-            MLog.d(TAG, "开始有规则的自动点击，能允许最多点击时间：${duration / (60 * 1000L)}分钟")
+            Logger.d("开始有规则的自动点击，能允许最多点击时间：${duration / (60 * 1000L)}分钟")
             while ((System.currentTimeMillis() - startTime) < duration &&
                 !observer.isDisposed
                 && Thread.currentThread().isAlive
@@ -244,8 +244,7 @@ class RegularAutoClickObservable(
                 val currentHierachery = hierachery.md5String()
                 if (canClicklist.size == 0) {
                     noneIndex++
-                    MLog.d(
-                        TAG,
+                    Logger.d(
                         "当前窗口视图可点击数量为0，有可能当前正在请求数据->noneIndex=$noneIndex  noneClickMax = $noneClickMax"
                     )
                     if (noneIndex > noneClickMax) {
@@ -256,10 +255,9 @@ class RegularAutoClickObservable(
                 }
 
                 val haveExist =
-                    windowsList.indexOfLast { it.mId == tmpWindows.id && it.viewMd5 == currentHierachery }
+                    windowsList.indexOfLast { it.viewMd5 == currentHierachery }//it.mId == tmpWindows.id &&
 
-                MLog.d(
-                    TAG,
+                Logger.d(
                     "haveExist: $haveExist current hash = ${tmpWindows.hashCode()} currentHierachery=$currentHierachery  windowIndex = $windowIndex windowsList.size = ${windowsList.size} canClicklist = ${canClicklist.size} \n cacheWindowList: ${dumpWindowsListStr()} \n current Activity window: $this"
                 )
                 if (windowsList.size < maxDetectWindowsCount) {
@@ -275,14 +273,13 @@ class RegularAutoClickObservable(
                         )
                         windowsList.add(model)
                         windowIndex++
-                        MLog.d(
-                            TAG,
+                        Logger.d(
                             "新页面添加,当前待点击的页面数量：$windowIndex 可点击的视图数量：${canClicklist.size} windowIndex=$windowIndex \n cacheWindowList: ${dumpWindowsListStr()}"
                         )
                         doActualClick(model)
                         pauseControl.checkWait()
                     } else {
-                        MLog.d(TAG, "当前页面已存在，更新数据")
+                        Logger.d("当前页面已存在，更新数据")
                         windowsList[haveExist].canClickList = canClicklist
                         windowIndex = haveExist + 1
                         doActualClick()
@@ -291,15 +288,13 @@ class RegularAutoClickObservable(
                 } else if (windowsList.size == maxDetectWindowsCount) {
                     if (haveExist == -1) {
                         //达到最大点击页面说，然后又有新的页面点击，这个时候先退回，然后再点击
-                        MLog.d(TAG, "达到最多点击的页面数：$maxDetectWindowsCount 又有新的页面产生，先回退再点击")
-                        if (windowIndex == 1) {
-                            performBack()
-                        }
-                        noneIndex++
-                        if (noneIndex > noneClickMax) {
-                            performBack()
-                            noneIndex = 0
-                        }
+//                        noneIndex++
+//                        if (noneIndex > noneClickMax) {
+                        doActualClick()
+//                            noneIndex = 0
+//                        }
+                        Logger.d(" windowIndex=$windowIndex 达到最多点击的页面数：$maxDetectWindowsCount 又有新的页面产生，先回退再点击 ")// noneIndex=$noneIndex noneClickMax = $noneClickMax
+                        performBack()
                     } else {
                         windowIndex = haveExist + 1
                         doActualClick()
@@ -307,22 +302,23 @@ class RegularAutoClickObservable(
                 }
 
                 if (windowIndex <= 0) {
+                    Logger.d("所有的页面点击完了，结束自动点击")
                     break
                 }
 
                 pauseControl.checkWait()
                 if (!sleep(500)) break
 
-                MLog.d(TAG, "自动点击进行了：${(System.currentTimeMillis() - startTime) / 1000}s ")
+                Logger.d("点击的最多页数：$maxDetectWindowsCount 每个页面最多点击的次数：$maxClickCount 最多能点击的时间：${duration / (60 * 1000L)}分钟 目前自动点击进行了：${(System.currentTimeMillis() - startTime) / 1000}s 或 ${(System.currentTimeMillis() - startTime) / (1000 * 60)}分钟")
             }
 
             observer.onNext(true)
         } catch (e: Exception) {
             e.printStackTrace()
-            MLog.e(TAG, e.message)
+            Logger.e(e.message ?: "")
             observer.onError(e)
         } finally {
-            MLog.d(TAG, "自动点击结束,总耗时：${(System.currentTimeMillis() - startTime) / 1000}s")
+            Logger.d("点击结束----》 点击的最多页数：$maxDetectWindowsCount 每个页面最多点击的次数：$maxClickCount 最多能点击的时间：${duration / (60 * 1000L)}分钟 自动点击结束,总耗时：${(System.currentTimeMillis() - startTime) / 1000}s 或 ${(System.currentTimeMillis() - startTime) / (1000 * 60)}分钟")
             observer.onComplete()
         }
     }
