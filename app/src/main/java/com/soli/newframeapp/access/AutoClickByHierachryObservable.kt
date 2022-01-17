@@ -14,9 +14,9 @@ import io.reactivex.rxjava3.core.Observable
 import kotlin.concurrent.thread
 
 /**
- * 有规律的自动点击实现方式
+ * 以页面为维度，实现点击
  */
-class RegularAutoClickObservable(
+class AutoClickByHierachryObservable(
     private val service: AccessibilityService,
     private val packageName: String,
     private val isEnd: () -> Boolean,
@@ -26,13 +26,27 @@ class RegularAutoClickObservable(
 ) {
 
     companion object {
-        val TAG = RegularAutoClickObservable::class.java.simpleName
+        val TAG = AutoClickByHierachryObservable::class.java.simpleName
     }
 
     private var startTime = System.currentTimeMillis()
 
+    private val NAF_EXCLUDED_CLASSES = arrayListOf(
+        "ScrollView",
+        "GridView",
+        "GridLayout",
+        "RecyclerView",
+        "ListView",
+        "TableLayout",
+        "NestedScrollView"
+    )
+
+    private val listLayoutExclude: Regex by lazy {
+        Regex(NAF_EXCLUDED_CLASSES.joinToString(separator = "|"))
+    }
+
     //每次机测自动点击的最多页面数量 最终执行的次数是 maxDetectWindowsCount * maxClickCount
-    private val maxDetectWindowsCount = 50
+    private val maxDetectWindowsCount = 100
     private val maxClickCount = 30
     private var windowIndex = 0
 
@@ -40,16 +54,47 @@ class RegularAutoClickObservable(
     private val noneClickMax = 2
     private var noneIndex = 0
 
+    //每个window root node
+    private val windowsList = mutableListOf<ActivityModel>()
+
+    @Keep
+    private data class ClickModel(
+        var markClick: Boolean,
+        val node: AccessibilityNodeInfo,
+    ) {
+        constructor(node: AccessibilityNodeInfo) : this(false, node)
+    }
+
     @Keep
     private data class ActivityModel(
         val mId: Int,
         val viewMd5: String,
         var clickIndex: Int,
-        var canClickList: MutableList<AccessibilityNodeInfo>,
+        var nextClickIndex: Int,
+        var canClickList: MutableList<ClickModel>,
         val packageName: String,
     ) {
         override fun toString(): String {
             return "mId: $mId viewMd5: $viewMd5 clickIndex: $clickIndex canClickList: ${canClickList.size} packageName: $packageName"
+        }
+
+        /**
+         * 查找没有点击的
+         */
+        fun forClickNode(): AccessibilityNodeInfo {
+            //过滤没有点击的
+            val notClickList = canClickList.filter { !it.markClick }
+            if (notClickList.size == 1) {
+                return notClickList.first().let {
+                    it.markClick = true
+                    it.node
+                }
+            }
+
+            return notClickList.random().let {
+                it.markClick = true
+                it.node
+            }
         }
     }
 
@@ -66,9 +111,6 @@ class RegularAutoClickObservable(
         sp.appendLine()
         return sp.toString()
     }
-
-    //每个window root node
-    private val windowsList = mutableListOf<ActivityModel>()
 
     /**
      * 回到正在检测的app界面
@@ -105,9 +147,17 @@ class RegularAutoClickObservable(
         pauseControl.checkWait()
         if (data.packageName == packageName && data.clickIndex < data.canClickList.size && data.clickIndex < maxClickCount) {
             backToTargetApp()
+            //当前可点击节点倒序点击
 //            val model = data.canClickList[data.canClickList.size - data.clickIndex - 1]
+            //当前可点击节点正序点击
 //            val model = data.canClickList[data.clickIndex]
-            val model = data.canClickList.random()
+            //当前可点击节点随机点击
+
+//            val scrollAbleIndex = data.canClickList.indexOfFirst { it.node.isScrollable }
+//            val model = if (scrollAbleIndex != -1 && !data.canClickList[scrollAbleIndex].markClick)
+//                data.canClickList[scrollAbleIndex].node else data.forClickNode()
+
+            val model = data.forClickNode()
             data.clickIndex += 1
             when (model.viewIdResourceName) {
                 "com.android.systemui:id/home",
@@ -116,15 +166,17 @@ class RegularAutoClickObservable(
 //                "com.soli.newframeapp:id/barBackIcon"
                 -> Logger.d("规律点击过程中屏蔽点击home back recent_apps")
                 else -> {
-                    service.performClick(model)
-                    Logger.d("当前页面的点击次数：${data.clickIndex} 点击的节点信息：$model")
+                    if (model.isScrollable)
+                        service.performScrollForward(model)
+                    else
+                        service.performClick(model)
+                    Logger.d("当前页面的点击次数：${data.clickIndex} 当前事件类型：isClickable = ${model.isClickable} isScrollable = ${model.isScrollable} \n点击的节点信息：$model")
                     pauseControl.checkWait()
                 }
             }
         } else {
             if (data.packageName == packageName) {
                 Logger.d(
-
                     "当前页面达到最大限制点击次数：$maxClickCount 当前页面可点击的数量：${data.canClickList.size} 执行返回界面操作"
                 )
             } else {
@@ -138,28 +190,94 @@ class RegularAutoClickObservable(
     }
 
     /**
+     * This should be used when it's already determined that the node is NAF and
+     * a further check of its children is in order. A node maybe a container
+     * such as LinerLayout and may be set to be clickable but have no text or
+     * content description but it is counting on one of its children to fulfill
+     * the requirement for being accessibility friendly by having one or more of
+     * its children fill the text or content-description. Such a combination is
+     * considered by this dumper as acceptable for accessibility.
+     *
+     * @param node
+     * @return false if node fails the check.
+     */
+    private fun childNafCheck(node: AccessibilityNodeInfo): Boolean {
+        val childCount = node.childCount
+        for (x in 0 until childCount) {
+            val childNode = node.getChild(x)
+            if (childNode == null) {
+                Logger.d(
+                    String.format(
+                        "Null child %d/%d, parent: %s",
+                        x,
+                        childCount,
+                        node.toString()
+                    )
+                )
+                continue
+            }
+            if (safeCharSeqToString(childNode.contentDescription).isNotEmpty()
+                || safeCharSeqToString(childNode.text).isNotEmpty()
+            )
+                return true
+            if (childNafCheck(childNode)) return true
+        }
+        return false
+    }
+
+
+    /**
      *  当前组件使能，并且可见，只要可点击、可聚集、可选择都算能点击的组件
      */
     private fun decideCanClick(
         node: AccessibilityNodeInfo,
-        list: MutableList<AccessibilityNodeInfo>
+        list: MutableList<ClickModel>
     ) {
         if (node.isEnabled && node.isVisibleToUser) {
-            if (node.isClickable) {//|| node.isFocusable || node.isCheckable
-                list.add(node)
+            if ((node.isClickable || node.isFocused) && !(safeCharSeqToString(node.className)).matches(listLayoutExclude)) {
+                if (node.childCount > 0) {
+                    if (safeCharSeqToString(node.viewIdResourceName).isNotEmpty() &&
+                        childNafCheck(node)
+                    ) {
+                        list.add(ClickModel(node))
+                    }
+                } else if ((safeCharSeqToString(node.contentDescription).isNotEmpty()
+                            || safeCharSeqToString(node.text).isNotEmpty()) &&
+                    safeCharSeqToString(node.viewIdResourceName).isNotEmpty()
+                ) {
+                    list.add(ClickModel(node))
+                }
             }
+//            else if (node.isScrollable) {
+//                list.add(ClickModel(node))
+//            }
         }
     }
 
+    /**
+     *
+     */
+    private fun safeCharSeqToString(cs: CharSequence?) =
+        if (cs == null) "" else stripInvalidXMLChars(cs)
+
+    /**
+     *
+     */
+    private fun stripInvalidXMLChars(cs: CharSequence): String {
+        val xml10pattern =
+            "[^" + "\u0009\r\n" + "\u0020-\uD7FF" + "\uE000-\uFFFD" + "\ud800\udc00-\udbff\udfff" + "]"
+
+        return cs.toString().replace(Regex(xml10pattern), "?")
+    }
 
     /**
      *
      */
     private fun addNode(node: AccessibilityNodeInfo, json: JSONObject) {
-        json["packageName"] = node.packageName ?: ""
-        json["className"] = node.className ?: ""
-        json["text"] = node.text ?: ""
-        json["contentDescription"] = node.contentDescription ?: ""
+        json["packageName"] = safeCharSeqToString(node.packageName)
+        json["className"] = safeCharSeqToString(node.className)
+        json["text"] = safeCharSeqToString(node.text)
+        json["contentDescription"] = safeCharSeqToString(node.contentDescription)
         json["childCount"] = node.childCount
         json["checkable"] = node.isCheckable
         json["checked"] = node.isChecked
@@ -170,7 +288,7 @@ class RegularAutoClickObservable(
         json["enabled"] = node.isEnabled
         json["scrollable"] = node.isScrollable
         json["visible"] = node.isVisibleToUser
-        json["viewIdResName"] = node.viewIdResourceName ?: ""
+        json["viewIdResName"] = safeCharSeqToString(node.viewIdResourceName)
         var zoom = Rect()
         node.getBoundsInScreen(zoom)
         json["boundsInParent"] = zoom.toString()
@@ -183,7 +301,7 @@ class RegularAutoClickObservable(
      */
     private fun dumpHierachry(
         node: AccessibilityNodeInfo,
-        canClickNode: MutableList<AccessibilityNodeInfo>
+        canClickNode: MutableList<ClickModel>
     ): JSONObject {
         val hierarchy = JSONObject()
         if (node.childCount > 0) {
@@ -191,9 +309,14 @@ class RegularAutoClickObservable(
             decideCanClick(node, canClickNode)
             val array = JSONArray()
             for (index in 0 until node.childCount) {
-                node.getChild(index)?.apply { array.add(dumpHierachry(this, canClickNode)) }
+                node.getChild(index)?.apply {
+                    if (this.isVisibleToUser) {
+                        array.add(dumpHierachry(this, canClickNode))
+                    }
+                }
             }
-            hierarchy["childs"] = array
+            if (array.size > 0)
+                hierarchy["childs"] = array
         } else {
             addNode(node, hierarchy)
             decideCanClick(node, canClickNode)
@@ -208,7 +331,7 @@ class RegularAutoClickObservable(
      *  @param packageName 包名
      *  @param isEnd 是否结束
      */
-    fun newInstance(): Observable<Boolean> = Observable.create { observer ->
+    fun observable(): Observable<Boolean> = Observable.create { observer ->
         if (permissionCLick) {
             thread {
                 while (!observer.isDisposed && !isEnd() && sleep(1000)) {
@@ -238,7 +361,7 @@ class RegularAutoClickObservable(
 
                 val tmpWindows = service.windows.firstOrNull { it.isActive } ?: continue
                 val rootNode = service.rootInActiveWindow
-                val canClicklist = mutableListOf<AccessibilityNodeInfo>()
+                val canClicklist = mutableListOf<ClickModel>()
                 rootNode ?: continue
                 val hierachery = dumpHierachry(rootNode, canClicklist).toJSONString()
                 val currentHierachery = hierachery.md5String()
@@ -251,15 +374,23 @@ class RegularAutoClickObservable(
                         performBack()
                         noneIndex = 0
                     }
+                    service.findNodes(scrollable = true, visible = true)
+                        .randomOrNull()
+                        .apply {
+                            if (this == null) {
+                                Logger.d("performBack")
+                                performBack()
+                            } else {
+                                Logger.d("performScrollForward")
+                                service.performScrollForward(this)
+                            }
+                        }
                     continue
                 }
 
                 val haveExist =
                     windowsList.indexOfLast { it.viewMd5 == currentHierachery }//it.mId == tmpWindows.id &&
 
-                Logger.d(
-                    "haveExist: $haveExist current hash = ${tmpWindows.hashCode()} currentHierachery=$currentHierachery  windowIndex = $windowIndex windowsList.size = ${windowsList.size} canClicklist = ${canClicklist.size} \n cacheWindowList: ${dumpWindowsListStr()} \n current Activity window: $this"
-                )
                 if (windowsList.size < maxDetectWindowsCount) {
                     pauseControl.checkWait()
 
@@ -267,14 +398,14 @@ class RegularAutoClickObservable(
                         val model = ActivityModel(
                             tmpWindows.hashCode(),
                             currentHierachery,
-                            0,
+                            0, -1,
                             canClicklist,
                             rootNode.packageName?.toString() ?: ""
                         )
                         windowsList.add(model)
                         windowIndex++
                         Logger.d(
-                            "新页面添加,当前待点击的页面数量：$windowIndex 可点击的视图数量：${canClicklist.size} windowIndex=$windowIndex \n cacheWindowList: ${dumpWindowsListStr()}"
+                            "新页面添加,当前待点击的页面数量：$windowIndex 可点击的视图数量：${canClicklist.size} windowIndex=$windowIndex}"
                         )
                         doActualClick(model)
                         pauseControl.checkWait()
@@ -301,8 +432,12 @@ class RegularAutoClickObservable(
                     }
                 }
 
+                Logger.d(
+                    "haveExist: $haveExist current hash = ${tmpWindows.hashCode()} currentHierachery=$currentHierachery  windowIndex = $windowIndex windowsList.size = ${windowsList.size} canClicklist = ${canClicklist.size} \n\ncurrent Activity window: $this \n\ncacheWindowList: ${dumpWindowsListStr()}\n"
+                )
+
                 if (windowIndex <= 0) {
-                    Logger.d("所有的页面点击完了，结束自动点击")
+                    Logger.d("所有的页面点击完了，结束自动点击---->真实情况这个比较少")
                     break
                 }
 

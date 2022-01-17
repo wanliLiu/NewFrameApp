@@ -3,7 +3,6 @@ package com.soli.newframeapp.main
 //import com.soli.newframeapp.flutter.FlutterEntranceActivity
 import android.Manifest
 import android.content.Intent
-import android.graphics.Rect
 import android.os.Build
 import android.os.Handler
 import android.os.Looper
@@ -377,20 +376,21 @@ class MainFragment : BaseToolbarFragment() {
                     .let { it ?: event.contentDescription }
                     ?.toString()
                     ?.replace(Regex("\\s"), "")
-                MLog.d(RegularAutoClickObservable.TAG, "click：$text")
+                MLog.d(AutoClickByHierachryObservable.TAG, "click：$text")
             }
         }
 
-        autoCLickSubscribe = RegularAutoClickObservable(
+        autoCLickSubscribe = AutoClickByHierachryObservable(
             KiwiAccessibilityService.instance!!,
 //            requireActivity().packageName,
 //            "com.bankscene.bes.financialmall",
 //            "com.taihe.fans",
+            "com.zeekrlife.mobile",
 //            "com.ting.mp3.android",
-            "com.showstartfans.activity",
+//            "com.showstartfans.activity",
             { pauseControl.isPause() }, pauseControl, true
         )
-            .newInstance()
+            .observable()
             .subscribeOn(Schedulers.newThread())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
