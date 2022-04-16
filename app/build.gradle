@@ -1,11 +1,10 @@
 plugins {
     id 'com.android.application'
-    id 'kotlin-android'
+    id 'org.jetbrains.kotlin.android'
     id 'kotlin-android-extensions'
 }
 
 android {
-
     compileSdk build_versions.target_sdk
 //    buildToolsVersion build_versions.build_tools
 
@@ -27,7 +26,7 @@ android {
         setProperty("archivesBaseName", "NewFrame")
 
         //android 3.0  flavor
-        flavorDimensions "packageChannel"
+//        flavorDimensions "packageChannel"
 
 
         //vectorDrawable 使用android.support库支持，支持低版本，默认是使用系统的
@@ -56,26 +55,20 @@ android {
         }
     }
 
-    productFlavors {
-        _28Target {}
-
-        _Target23 {
-            targetSdkVersion 23
-        }
-    }
-}
-
-repositories {
-    flatDir {
-        dirs 'libs'
-    }
+//    productFlavors {
+//        _28Target {}
+//
+//        _Target23 {
+//            targetSdkVersion 23
+//        }
+//    }
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(dir: 'libs', include: ['*.jar', '*.aar'])
     implementation project(':lib_common')
 
-    implementation(name: 'flycotablayout-2.1.5', ext: 'aar')
+    implementation files('libs/flycotablayout-2.1.5.aar')
 //    implementation deps.okhttp_mockwebserver
     implementation deps.rxbinding
     implementation deps.rxbindingAppCompat

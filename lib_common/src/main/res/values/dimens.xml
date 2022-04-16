@@ -5,4 +5,5 @@
     <dimen name="new_pull_loading_height">50dp</dimen>
     <dimen name="new_pull_loading_width">50dp</dimen>
     <dimen name="default_display_avatar_size">50dp</dimen>
+    <dimen name="design_bottom_sheet_peek_height_min">10dp</dimen>
 </resources>

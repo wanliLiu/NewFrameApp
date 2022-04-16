@@ -6,4 +6,9 @@
     <color name="color_bg">#f2f4f5</color>
     <color name="color_white">#ffffff</color>
     <color name="transparent">#00000000</color><!-- 透明 -->
+
+    <!--文字原色-->
+    <color name="C1">#333333</color>
+    <color name="C2">#666666</color>
+    <color name="C3">#999999</color>
 </resources>

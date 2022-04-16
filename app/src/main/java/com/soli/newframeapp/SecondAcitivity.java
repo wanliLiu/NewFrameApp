@@ -38,7 +38,7 @@ public class SecondAcitivity extends BaseActivity {
     @Override
     protected void initListener() {
 
-        findViewById(R.id.button).setOnClickListener(v -> hasNoResult(R.layout.has_no_content_layout));
+//        findViewById(R.id.button).setOnClickListener(v -> hasNoResult(R.layout.has_no_content_layout));
     }
 
     @Override
@@ -59,10 +59,10 @@ public class SecondAcitivity extends BaseActivity {
      *
      */
     private void pageFragmentManager() {
-        TabFragmentManager manager = new TabFragmentManager(this, R.id.root_content);
-        manager.addTab(1, TestFragment.Companion.getInstance("dksld").getClass(), null);
-        manager.addTab(2, TestFragment.Companion.getInstance("dksl2332d").getClass(), null);
-        manager.setCurrentTab(1);
+//        TabFragmentManager manager = new TabFragmentManager(this, R.id.root_content);
+//        manager.addTab(1, TestFragment.Companion.getInstance("dksld").getClass(), null);
+//        manager.addTab(2, TestFragment.Companion.getInstance("dksl2332d").getClass(), null);
+//        manager.setCurrentTab(1);
     }
 
     private void loadingErrorTest() {
