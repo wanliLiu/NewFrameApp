@@ -382,10 +382,10 @@ class MainFragment : BaseToolbarFragment() {
 
         autoCLickSubscribe = AutoClickByHierachryObservable(
             KiwiAccessibilityService.instance!!,
-//            requireActivity().packageName,
+            requireActivity().packageName,
 //            "com.bankscene.bes.financialmall",
 //            "com.taihe.fans",
-            "com.zeekrlife.mobile",
+//            "com.zeekrlife.mobile",
 //            "com.ting.mp3.android",
 //            "com.showstartfans.activity",
             { pauseControl.isPause() }, pauseControl, true

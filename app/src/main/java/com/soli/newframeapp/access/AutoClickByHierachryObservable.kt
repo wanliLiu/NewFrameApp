@@ -147,17 +147,27 @@ class AutoClickByHierachryObservable(
         pauseControl.checkWait()
         if (data.packageName == packageName && data.clickIndex < data.canClickList.size && data.clickIndex < maxClickCount) {
             backToTargetApp()
-            //当前可点击节点倒序点击
-//            val model = data.canClickList[data.canClickList.size - data.clickIndex - 1]
-            //当前可点击节点正序点击
-//            val model = data.canClickList[data.clickIndex]
-            //当前可点击节点随机点击
 
+            //当前可点击节点倒序点击
+//            val model = data.canClickList[data.canClickList.size - data.clickIndex - 1].let {
+//                it.markClick = true
+//                it.node
+//            }
+
+            //当前可点击节点正序点击
+            val model = data.canClickList[data.clickIndex].let {
+                it.markClick = true
+                it.node
+            }
+
+            //当前可点击节点随机点击
 //            val scrollAbleIndex = data.canClickList.indexOfFirst { it.node.isScrollable }
 //            val model = if (scrollAbleIndex != -1 && !data.canClickList[scrollAbleIndex].markClick)
 //                data.canClickList[scrollAbleIndex].node else data.forClickNode()
 
-            val model = data.forClickNode()
+            //默认的方式
+//            val model = data.forClickNode()
+
             data.clickIndex += 1
             when (model.viewIdResourceName) {
                 "com.android.systemui:id/home",
