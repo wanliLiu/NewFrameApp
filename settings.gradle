@@ -19,3 +19,6 @@ dependencyResolutionManagement {
 rootProject.name = "NewFrameApp"
 include ':app'
 include ':lib_common'
+include ':libfragment'
+include ':libfragment_core'
+include ':libfragment_swipe'
