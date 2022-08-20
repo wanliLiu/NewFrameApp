@@ -5,18 +5,13 @@ import android.content.Context
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.os.Build
-import android.text.TextUtils
 import android.util.AttributeSet
 import android.webkit.JavascriptInterface
 import android.webkit.WebSettings
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import android.widget.ZoomButtonsController
-import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.NetworkUtil
-import com.soli.libcommon.util.ScreenWidth
-import org.jsoup.Jsoup
-import java.util.*
 
 /**
  *
@@ -91,9 +86,9 @@ class BridgeWebView @JvmOverloads constructor(
             databaseEnabled = true
             databasePath = context.cacheDir.absolutePath + "/webwiew_dataBase"
             //H5缓存
-            setAppCacheEnabled(true) // 开启缓存
-            setAppCacheMaxSize((8 * 1024 * 1024).toLong()) // 设置最大缓存为8M
-            setAppCachePath(context.cacheDir.absolutePath + "/H5Cache")
+//            setAppCacheEnabled(true) // 开启缓存
+//            setAppCacheMaxSize((8 * 1024 * 1024).toLong()) // 设置最大缓存为8M
+//            setAppCachePath(context.cacheDir.absolutePath + "/H5Cache")
             setSupportMultipleWindows(true)
             useWideViewPort = true
             loadWithOverviewMode = true

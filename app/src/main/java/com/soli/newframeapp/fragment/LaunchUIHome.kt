@@ -180,7 +180,7 @@ class LaunchUIHome : BaseLaunchUI() {
 
         minibar.animate().alpha(1.0f - minibar.alpha)
             .setListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
                     if (!show) minibar.visibility = View.GONE
                 }

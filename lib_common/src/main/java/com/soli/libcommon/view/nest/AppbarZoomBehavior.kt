@@ -319,7 +319,7 @@ class AppbarZoomBehavior : AppBarLayout.Behavior {
                     stickLayout?.bottom = fraction.toInt()
                 }
                 valueAnimator!!.addListener(object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         dealTool?.apply {
                             MLog.e(Tag, "end up fling type :$type lastVelocityY:$lastVelocityY")
                             if (lastVelocityY != 0f) {
