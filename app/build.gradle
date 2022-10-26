@@ -5,6 +5,7 @@ plugins {
 }
 
 android {
+    namespace 'com.soli.newframeapp'
     compileSdk build_versions.target_sdk
 //    buildToolsVersion build_versions.build_tools
 
