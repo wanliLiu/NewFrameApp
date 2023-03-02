@@ -5,8 +5,7 @@ import android.os.Handler
 import android.os.Looper
 import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.libcommon.util.clickView
-import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.fragment_scan_file.*
+import com.soli.newframeapp.databinding.FragmentScanFileBinding
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 
@@ -15,25 +14,23 @@ import java.util.concurrent.Executors
  * @author Soli
  * @Time 2020/10/22 10:55
  */
-class ScanFileFagment : BaseToolbarFragment() {
+class ScanFileFagment : BaseToolbarFragment<FragmentScanFileBinding>() {
 
     private var start = 0L
     private val mhander = Handler(Looper.getMainLooper()) {
-        scanResult.text = "扫描结束\n"
-        scanResult.append("扫描时间：${System.currentTimeMillis() - start}ms\n")
-        scanResult.append(it.obj.toString())
+        binding.scanResult.text = "扫描结束\n"
+        binding.scanResult.append("扫描时间：${System.currentTimeMillis() - start}ms\n")
+        binding.scanResult.append(it.obj.toString())
         true
     }
-
-    override fun getContentView(): Int = R.layout.fragment_scan_file
 
     override fun initView() {
         setTitle("扫描本地文件")
     }
 
     override fun initListener() {
-        scanFileView.clickView {
-            scanResult.text = "扫描中......"
+        binding.scanFileView.clickView {
+            binding.scanResult.text = "扫描中......"
             start = System.currentTimeMillis()
             scanFile()
         }

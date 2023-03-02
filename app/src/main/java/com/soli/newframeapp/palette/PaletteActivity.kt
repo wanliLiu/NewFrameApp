@@ -1,5 +1,6 @@
 package com.soli.newframeapp.palette
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
@@ -11,21 +12,20 @@ import com.soli.libcommon.base.BaseRecycleAdapter
 import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.ImageLoader
 import com.soli.newframeapp.R
+import com.soli.newframeapp.databinding.ActivityPaletteBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.activity_palette.*
 
 /**
  *
  * @author Soli
  * @Time 2019/4/12 11:10
  */
-class PaletteActivity : BaseActivity() {
-
-    override fun getContentView() = R.layout.activity_palette
+class PaletteActivity : BaseActivity<ActivityPaletteBinding>() {
 
     override fun initView() {
         title = "Android Palette"
-        paletteRecyclerView.layoutManager = androidx.recyclerview.widget.GridLayoutManager(ctx, 2)
+        binding.paletteRecyclerView.layoutManager =
+            androidx.recyclerview.widget.GridLayoutManager(ctx, 2)
     }
 
     override fun initListener() {
@@ -55,7 +55,7 @@ class PaletteActivity : BaseActivity() {
         list.add("https://dev-img01-joker.taihe.com/0209/M00/59/47/ChR461yTY8SAdLzQAADzojuQHpI78.jpeg")
         list.add("https://dev-img01-joker.taihe.com/0208/M00/54/34/ChR461yTMLOAXyxrAAKl998iy1o395.png")
 
-        paletteRecyclerView.adapter = paletteAdapter(ctx, list)
+        binding.paletteRecyclerView.adapter = paletteAdapter(ctx, list)
     }
 
 
@@ -66,6 +66,7 @@ class PaletteActivity : BaseActivity() {
             return ViewHolder(inflater.inflate(R.layout.item_palette, parent, false))
         }
 
+        @SuppressLint("CheckResult")
         override fun onBindView(
             mholder: RecyclerView.ViewHolder?,
             itemType: Int,

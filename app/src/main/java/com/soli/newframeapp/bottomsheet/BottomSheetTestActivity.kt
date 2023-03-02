@@ -7,14 +7,14 @@ import android.widget.TextView
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.bottomsheet.BottomDialog
 import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.activity_bottom_sheet.*
+import com.soli.newframeapp.databinding.ActivityBottomSheetBinding
 
 /**
  *
  * @author Soli
  * @Time 2018/11/12 09:53
  */
-class BottomSheetTestActivity : BaseActivity() {
+class BottomSheetTestActivity : BaseActivity<ActivityBottomSheetBinding>() {
 
     private var vomView : View?= null
 
@@ -27,8 +27,6 @@ class BottomSheetTestActivity : BaseActivity() {
         }
     }
 
-    override fun getContentView() = R.layout.activity_bottom_sheet
-
     override fun initView() {
         title = "BottomSheet"
     }
@@ -38,7 +36,7 @@ class BottomSheetTestActivity : BaseActivity() {
         inputDialog.setOnDismissListener {
             vomView?.findViewById<FrameLayout>(R.id.background)?.setBackgroundResource(R.drawable.bottom_sheet_background)
         }
-        btnSheetDialog.setOnClickListener {
+        binding.btnSheetDialog.setOnClickListener {
             val commDialog = BottomDialog(ctx as Context)
             commDialog.topOffsetDefault()
 
@@ -54,7 +52,7 @@ class BottomSheetTestActivity : BaseActivity() {
             commDialog.show()
         }
 
-        btnSheetFragmentDialog.setOnClickListener {
+        binding.btnSheetFragmentDialog.setOnClickListener {
             BottomSheetFragment.instance.show(supportFragmentManager, "dialog")
         }
     }

@@ -3,16 +3,17 @@ package com.soli.newframeapp
 import android.os.Bundle
 import android.os.Handler
 import com.soli.libcommon.base.BaseFragment
-import kotlinx.android.synthetic.main.layout_framgent.*
+import com.soli.newframeapp.databinding.LayoutFramgentBinding
 
 /**
  * @author Soli
  * @Time 18-5-16 下午2:01
  */
-class TestFragment : BaseFragment() {
+class TestFragment : BaseFragment<LayoutFramgentBinding>() {
 
     companion object {
         val inputStr: String = "str"
+
         /**
          *
          */
@@ -25,19 +26,15 @@ class TestFragment : BaseFragment() {
         }
     }
 
-    override fun getContentView(): Int {
-        return R.layout.layout_framgent
-    }
-
     override fun initView() {
         arguments?.apply {
-            desc.text = getString(inputStr, "没有数据传入")
+            binding.desc.text = getString(inputStr, "没有数据传入")
         }
     }
 
     override fun initListener() {
-        tigger.setOnClickListener {
-            if ("java" in desc.text.toString()) {
+        binding.tigger.setOnClickListener {
+            if ("java" in binding.desc.text.toString()) {
                 hasNoResult()
             } else
                 initData()

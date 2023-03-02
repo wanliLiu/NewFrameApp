@@ -1,6 +1,5 @@
 package com.soli.newframeapp.main
 
-//import com.soli.newframeapp.flutter.FlutterEntranceActivity
 import android.Manifest
 import android.content.Intent
 import android.os.Build
@@ -26,6 +25,7 @@ import com.soli.newframeapp.*
 import com.soli.newframeapp.access.*
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
+import com.soli.newframeapp.databinding.FragmentMainBinding
 import com.soli.newframeapp.demo.TestTopSpecialActivity
 import com.soli.newframeapp.download.DownloadTestActivity
 import com.soli.newframeapp.drag.DragFragment
@@ -46,7 +46,6 @@ import com.yhao.floatwindow.Screen
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers
-import kotlinx.android.synthetic.main.fragment_main.*
 import kotlin.concurrent.thread
 
 /**
@@ -54,7 +53,7 @@ import kotlin.concurrent.thread
  * @author Soli
  * @Time 2020/6/1 13:55
  */
-class MainFragment : BaseToolbarFragment() {
+class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
 
     private val retryIndex: Int = 1
     private var retry: Int = 0
@@ -63,11 +62,9 @@ class MainFragment : BaseToolbarFragment() {
 
     override fun needSwipeBack() = false
 
-    override fun getContentView() = R.layout.fragment_main
-
     override fun initView() {
         setTitle("New Frame")
-        homeLayout.forEach {
+        binding.homeLayout.forEach {
             val click: (View) -> Unit = { child ->
                 onHomeClick(child)
             }
@@ -85,21 +82,21 @@ class MainFragment : BaseToolbarFragment() {
 
     override fun initListener() {
 
-        progressInTest.setOnClickListener {
+        binding.progressInTest.setOnClickListener {
             showProgress()
             Handler(Looper.getMainLooper()).postDelayed({
                 dismissProgress()
             }, 2000)
         }
 
-        progressDialogTest.setOnClickListener {
+        binding.progressDialogTest.setOnClickListener {
             showProgress(type = LoadingType.TypeDialog)
             Handler(Looper.getMainLooper()).postDelayed({
                 dismissProgress()
             }, 2000)
         }
 
-        loaddingErroTest.setOnClickListener {
+        binding.loaddingErroTest.setOnClickListener {
             retry = 0
             loadingErrorTest()
         }
@@ -113,11 +110,13 @@ class MainFragment : BaseToolbarFragment() {
         showProgress()
         Handler(Looper.getMainLooper()).postDelayed({
             dismissProgress()
-            if (retry < retryIndex)
-                errorHappen<Any>(1, ApiResult(ResultCode.NETWORK_TROBLE, "测试")) {
-                    retry++
-                    loadingErrorTest()
-                }
+            if (retry < retryIndex) errorHappen<Any>(
+                1,
+                ApiResult(ResultCode.NETWORK_TROBLE, "测试")
+            ) {
+                retry++
+                loadingErrorTest()
+            }
         }, 2000)
     }
 
@@ -131,7 +130,7 @@ class MainFragment : BaseToolbarFragment() {
             R.id.netWorkTest -> openActivity<NetWorkTestActivity>()
             R.id.fileDownload -> checkStorePermission { openActivity<DownloadTestActivity>() }
             R.id.webViewTest -> openActivity<WebviewActivity>()
-            R.id._23Test -> openActivity<Android7Activity>()
+            R.id.Test23 -> openActivity<Android7Activity>()
             R.id.websocket -> openActivity<WebsocketActivity>()
             R.id.btnColorMatrix -> context?.startFragment<PicDealFragment>()//openFragment(PicDealFragment(), newActivity = true)
             R.id.btnBottomSheet -> openActivity<BottomSheetTestActivity>()
@@ -145,10 +144,12 @@ class MainFragment : BaseToolbarFragment() {
             R.id.fragmentFramework -> openActivity<LaunchUIHome>()
             R.id.motionLayout -> start(MotionLayoutFragment())
             R.id.scanFile -> checkStorePermission {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q)
-                    Toast.makeText(ctx, "Android Q以上就没法用了哦", Toast.LENGTH_SHORT).show()
-                else
-                    start(ScanFileFagment())
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) Toast.makeText(
+                    ctx,
+                    "Android Q以上就没法用了哦",
+                    Toast.LENGTH_SHORT
+                ).show()
+                else start(ScanFileFagment())
             }
             R.id.autoClick -> autoClickTest()
             R.id.dragTest -> start(DragFragment())
@@ -171,8 +172,7 @@ class MainFragment : BaseToolbarFragment() {
                 requireContext(),
                 requireActivity().packageName,
                 KiwiAccessibilityService::class.java
-            )
-            && rxPermissions.isGranted(Manifest.permission.SYSTEM_ALERT_WINDOW)
+            ) && rxPermissions.isGranted(Manifest.permission.SYSTEM_ALERT_WINDOW)
         ) {
             thread {
                 if (KiwiAccessibilityService.instance == null) {
@@ -214,10 +214,8 @@ class MainFragment : BaseToolbarFragment() {
             } else if (!rxPermissions.isGranted(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
                 val diapose = rxPermissions.request(
                     Manifest.permission.SYSTEM_ALERT_WINDOW,
-                )
-                    .compose(RxLifecycle.with(this).bindToLifecycle())
-                    .subscribe { pass ->
-                    }
+                ).compose(RxLifecycle.with(this).bindToLifecycle()).subscribe { pass ->
+                }
             }
         }
     }
@@ -232,16 +230,10 @@ class MainFragment : BaseToolbarFragment() {
         var paused = true
         pauseControl.change(paused)
         controlImageView!!.setImageResource(if (paused) R.drawable.start else R.drawable.pause)
-        FloatWindow
-            .with(requireActivity().application)
-            .setTag("control")
-            .setView(controlImageView!!)
-            .setWidth(Screen.width, 0.10f) //设置悬浮控件宽高
-            .setHeight(Screen.width, 0.10f)
-            .setY(Screen.height, 0.4f)
-            .setDesktopShow(true)
-            .setViewStateListener(ViewStateListenerAdapter())
-            .build()
+        FloatWindow.with(requireActivity().application).setTag("control")
+            .setView(controlImageView!!).setWidth(Screen.width, 0.10f) //设置悬浮控件宽高
+            .setHeight(Screen.width, 0.10f).setY(Screen.height, 0.4f).setDesktopShow(true)
+            .setViewStateListener(ViewStateListenerAdapter()).build()
 
         controlImageView!!.setOnClickListener {
             autoCLickSubscribe?.dispose()
@@ -265,17 +257,10 @@ class MainFragment : BaseToolbarFragment() {
     private fun showTest() {
         val imageView = ImageView(context).apply { id = R.id.id_demo }
         imageView.setImageResource(R.drawable.screenshot)
-        FloatWindow
-            .with(requireActivity().application)
-            .setView(imageView)
-            .setTag("click")
+        FloatWindow.with(requireActivity().application).setView(imageView).setTag("click")
             .setWidth(Screen.width, 0.10f) //设置悬浮控件宽高
-            .setHeight(Screen.width, 0.10f)
-            .setX(Screen.width, 0.8f)
-            .setY(Screen.height, 0.3f)
-            .setDesktopShow(true)
-            .setViewStateListener(ViewStateListenerAdapter())
-            .build()
+            .setHeight(Screen.width, 0.10f).setX(Screen.width, 0.8f).setY(Screen.height, 0.3f)
+            .setDesktopShow(true).setViewStateListener(ViewStateListenerAdapter()).build()
 
         imageView.clickView {
             thread {
@@ -371,28 +356,22 @@ class MainFragment : BaseToolbarFragment() {
     private fun startClick() {
         KiwiAccessibilityService.instance!!.registerEvent { event ->
             if (event.eventType == AccessibilityEvent.TYPE_VIEW_CLICKED) {
-                val text = event.text
-                    .firstOrNull()
-                    .let { it ?: event.contentDescription }
-                    ?.toString()
-                    ?.replace(Regex("\\s"), "")
+                val text =
+                    event.text.firstOrNull().let { it ?: event.contentDescription }?.toString()
+                        ?.replace(Regex("\\s"), "")
                 MLog.d(AutoClickByHierachryObservable.TAG, "click：$text")
             }
         }
 
         autoCLickSubscribe = AutoClickByHierachryObservable(
-            KiwiAccessibilityService.instance!!,
-            requireActivity().packageName,
+            KiwiAccessibilityService.instance!!, requireActivity().packageName,
 //            "com.bankscene.bes.financialmall",
 //            "com.taihe.fans",
 //            "com.zeekrlife.mobile",
 //            "com.ting.mp3.android",
 //            "com.showstartfans.activity",
             { pauseControl.isPause() }, pauseControl, true
-        )
-            .observable()
-            .subscribeOn(Schedulers.newThread())
-            .observeOn(AndroidSchedulers.mainThread())
+        ).observable().subscribeOn(Schedulers.newThread()).observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 controlImageView?.performClick()
             }, {})
@@ -403,17 +382,13 @@ class MainFragment : BaseToolbarFragment() {
      */
     private fun checkStorePermission(callBack: () -> Unit) {
         val diapose = rxPermissions.request(
-            Manifest.permission.WRITE_EXTERNAL_STORAGE,
-            Manifest.permission.READ_EXTERNAL_STORAGE
-        )
-            .compose(RxLifecycle.with(this).bindToLifecycle())
-            .subscribe { pass ->
-                if (pass)
-                    callBack()
-                else {
-                    ToastUtils.showShortToast("需要文件读写权限")
-                }
+            Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
+        ).compose(RxLifecycle.with(this).bindToLifecycle()).subscribe { pass ->
+            if (pass) callBack()
+            else {
+                ToastUtils.showShortToast("需要文件读写权限")
             }
+        }
     }
 
 
@@ -469,12 +444,10 @@ mtPFZWCyL3HNRSURFiOCfVzLk9LG+a+qgqXL9gw0jMK/
 
     private fun dealPublckKey(): String =
         publick_key.replace("-----BEGIN PUBLIC KEY-----", "").replace(
-            "-----END PUBLIC KEY-----",
-            ""
+            "-----END PUBLIC KEY-----", ""
         ).replace("\n", "")
 
     private fun dealPrivateKey(): String = private_key.replace(
-        "-----BEGIN RSA PRIVATE KEY-----",
-        ""
+        "-----BEGIN RSA PRIVATE KEY-----", ""
     ).replace("-----END RSA PRIVATE KEY-----", "").replace("\n", "")
 }

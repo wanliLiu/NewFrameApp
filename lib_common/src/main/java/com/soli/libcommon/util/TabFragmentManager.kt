@@ -19,19 +19,19 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
 
     private data class TabInfo(
         val tag: String,
-        val clss: Class<out BaseFragment>,
+        val clss: Class<out BaseFragment<*>>,
         val args: Bundle? = null,
-        var fragment: BaseFragment? = null
+        var fragment: BaseFragment<*>? = null
     )
 
     /**
      * 添加tab
      */
-    fun addTab(id: Int, clss: Class<out BaseFragment>, args: Bundle? = null) {
+    fun addTab(id: Int, clss: Class<out BaseFragment<*>>, args: Bundle? = null) {
         val tag = id.toString()
         val info = TabInfo(tag, clss, args)
         val fragment = mActivity.supportFragmentManager.findFragmentByTag(tag)
-        fragment?.apply { info.fragment = this as BaseFragment }
+        fragment?.apply { info.fragment = this as BaseFragment<*> }
         mtabs[tag] = info
     }
 
@@ -66,7 +66,7 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
                 fragment = mActivity.supportFragmentManager.fragmentFactory.instantiate(
                     mActivity.classLoader,
                     clss.name
-                ).also { if (args != null) it.arguments = args } as BaseFragment
+                ).also { if (args != null) it.arguments = args } as BaseFragment<*>
                 ft.add(mContainerId, fragment!!, tag)
                 fragment!!.Resume()
             } else {
@@ -80,12 +80,12 @@ open class TabFragmentManager(activity: AppCompatActivity, containerId: Int) {
     /**
      *
      */
-    fun getFragment(id: Int): BaseFragment? = mtabs.get(id.toString())?.fragment
+    fun getFragment(id: Int): BaseFragment<*>? = mtabs.get(id.toString())?.fragment
 
     /**
      * fragment添加到Acitiivity的数量
      */
-    fun getAddedNum() = {
+    fun getAddedNum() = run {
         var num = 0
         mtabs.forEach {
             val tabInfo = it.value

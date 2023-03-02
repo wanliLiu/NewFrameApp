@@ -6,23 +6,20 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.fragment_span.*
+import com.soli.newframeapp.databinding.FragmentSpanBinding
 
 /**
  *
  * @author Soli
  * @Time 2019-08-08 18:04
  */
-class SpecialSpanFragment : BaseToolbarFragment() {
-
-    override fun getContentView() = R.layout.fragment_span
-
+class SpecialSpanFragment : BaseToolbarFragment<FragmentSpanBinding>() {
     override fun initView() {
 
         setTitle("富文本测试")
-        testSelect.anotherTest()
+        binding.testSelect.anotherTest()
 
-        demoList.visibility = View.GONE
+        binding.demoList.visibility = View.GONE
 //        demoList.adapter = DemoAdapte()
 //        demoList.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL).apply {
 //            setDrawable(
@@ -31,13 +28,15 @@ class SpecialSpanFragment : BaseToolbarFragment() {
 //        })
     }
 
-    override fun initListener()  = Unit
+    override fun initListener() = Unit
 
-    override fun initData()  = Unit
+    override fun initData() = Unit
 
     private class DemoAdapte : RecyclerView.Adapter<DemoAdapte.ViewHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-            return ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_demo_list, parent, false))
+            return ViewHolder(
+                LayoutInflater.from(parent.context).inflate(R.layout.item_demo_list, parent, false)
+            )
         }
 
         override fun getItemCount() = 20

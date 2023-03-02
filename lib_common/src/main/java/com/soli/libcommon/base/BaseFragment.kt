@@ -5,21 +5,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import com.soli.libcommon.R
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.util.ToastUtils
 import com.soli.libcommon.view.loading.LoadingType
 import com.soli.libcommon.view.root.RootView
+import java.lang.reflect.ParameterizedType
 
 /**
  * @author Soli
  * @Time 18-5-16 上午11:10
  */
-abstract class BaseFragment : BaseFunctionFragment() {
-
+abstract class BaseFragment<Binding : ViewBinding> : BaseFunctionFragment() {
     protected var defaultLoadingType = LoadingType.TypeInside
     private var loadingType = defaultLoadingType
     protected lateinit var rootView: RootView
+    protected lateinit var binding: Binding
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,7 +62,18 @@ abstract class BaseFragment : BaseFunctionFragment() {
      *
      */
     open fun setContentViews(view: View) {
-        rootView = RootView(ctx as Activity, view, getContentView(), needTopToolbar())
+        binding = initBindView()
+        rootView = RootView(ctx as Activity, view, binding.root, needTopToolbar())
+    }
+
+    /***
+     *
+     */
+    private fun initBindView(): Binding {
+        val type = javaClass.genericSuperclass as ParameterizedType
+        val aClass = type.actualTypeArguments[0] as Class<*>
+        val method = aClass.getDeclaredMethod("inflate", LayoutInflater::class.java)
+        return method.invoke(null, layoutInflater) as Binding
     }
 
     /**
@@ -73,11 +86,6 @@ abstract class BaseFragment : BaseFunctionFragment() {
     fun addTextMenu(idIndex: Int, text: String?, colorId: Int) {
         rootView.getToolbar()?.addTextMenu(idIndex, text, colorId)
     }
-
-    /**
-     * 获取内容视图
-     */
-    protected abstract fun getContentView(): Int
 
     protected abstract fun initView()
     protected abstract fun initListener()

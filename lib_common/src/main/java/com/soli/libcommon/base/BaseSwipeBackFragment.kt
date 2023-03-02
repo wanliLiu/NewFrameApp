@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.viewbinding.ViewBinding
 import com.soli.libcommon.util.MLog
 import me.yokeyword.fragmentation.SwipeBackLayout
 
@@ -13,7 +14,7 @@ import me.yokeyword.fragmentation.SwipeBackLayout
  * @author Soli
  * @Time 2020/4/20 14:33
  */
-abstract class BaseSwipeBackFragment : BaseFragment() {
+abstract class BaseSwipeBackFragment<Binding : ViewBinding> : BaseFragment<Binding>() {
     //该Fragment是否支持滑动退出
     open fun needSwipeBack() = true
 

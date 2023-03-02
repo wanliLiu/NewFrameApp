@@ -34,7 +34,7 @@ inline fun SupportFragment.popFragment() {
  */
 inline fun Context.popFragment() {
 
-    if (this is BaseLaunchUI)
+    if (this is BaseLaunchUI<*>)
         EventBus.getDefault().post(OpenFragmentEvent(isPopEvent = true))
 
     if (this is SupportActivity)

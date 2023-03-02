@@ -1,5 +1,6 @@
 package com.soli.libcommon.base
 
+import androidx.viewbinding.ViewBinding
 import com.soli.libcommon.util.StatusBarUtil
 
 /**
@@ -7,7 +8,7 @@ import com.soli.libcommon.util.StatusBarUtil
  * @author Soli
  * @Time 2018/11/15 11:16
  */
-abstract class BaseTopSpecialActivity : BaseActivity() {
+abstract class BaseTopSpecialActivity<Binding : ViewBinding> : BaseActivity<Binding>() {
 
     override fun needTopToolbar() = false
 

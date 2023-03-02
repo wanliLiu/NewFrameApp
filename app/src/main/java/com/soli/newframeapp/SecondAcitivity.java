@@ -9,8 +9,8 @@ import com.soli.libcommon.net.ApiHelper;
 import com.soli.libcommon.net.ApiResult;
 import com.soli.libcommon.net.DataType;
 import com.soli.libcommon.util.NetworkUtil;
-import com.soli.libcommon.util.TabFragmentManager;
 import com.soli.libcommon.view.loading.LoadingType;
+import com.soli.newframeapp.databinding.ActivitySecondBinding;
 import com.soli.newframeapp.model.StoryList;
 
 import java.text.SimpleDateFormat;
@@ -24,11 +24,7 @@ import kotlin.jvm.functions.Function1;
  * @author Soli
  * @Time 18-5-15 下午5:04
  */
-public class SecondAcitivity extends BaseActivity {
-    @Override
-    protected int getContentView() {
-        return R.layout.activity_second;
-    }
+public class SecondAcitivity extends BaseActivity<ActivitySecondBinding> {
 
     @Override
     protected void initView() {

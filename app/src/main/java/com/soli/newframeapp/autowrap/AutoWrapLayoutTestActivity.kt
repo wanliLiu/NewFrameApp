@@ -12,30 +12,29 @@ import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.util.ToastUtils
 import com.soli.libcommon.view.flexboxlayout.AutoWrapAdapter
 import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.activity_auto_wrap.*
+import com.soli.newframeapp.databinding.ActivityAutoWrapBinding
 
 /**
  *
  * @author Soli
  * @Time 2018/11/27 14:22
  */
-class AutoWrapLayoutTestActivity : BaseActivity() {
+class AutoWrapLayoutTestActivity : BaseActivity<ActivityAutoWrapBinding>() {
 
     private var showRecycle = false
-    override fun getContentView() = R.layout.activity_auto_wrap
 
     override fun initView() {
         title = "AutoWrapLayout"
-        AutoRecycle.visibility = if (showRecycle) View.VISIBLE else View.GONE
-        wrapLayout.visibility = if (!showRecycle) View.VISIBLE else View.GONE
+        binding.AutoRecycle.visibility = if (showRecycle) View.VISIBLE else View.GONE
+        binding.wrapLayout.visibility = if (!showRecycle) View.VISIBLE else View.GONE
     }
 
     override fun initListener() {
-        btnAdd.setOnClickListener {
+        binding.btnAdd.setOnClickListener {
             showRecycle = !showRecycle
-            AutoRecycle.visibility = if (showRecycle) View.VISIBLE else View.GONE
-            warp.visibility = if (!showRecycle) View.VISIBLE else View.GONE
-            btnAdd.text = if (showRecycle) "用FlexboxLayoutManager" else "自己定义的"
+            binding.AutoRecycle.visibility = if (showRecycle) View.VISIBLE else View.GONE
+            binding.warp.visibility = if (!showRecycle) View.VISIBLE else View.GONE
+            binding.btnAdd.text = if (showRecycle) "用FlexboxLayoutManager" else "自己定义的"
         }
     }
 
@@ -89,9 +88,9 @@ class AutoWrapLayoutTestActivity : BaseActivity() {
         //内容行，从左到右依次排列
         manager.justifyContent = JustifyContent.CENTER
 
-        AutoRecycle.adapter = adapter(list)
-        AutoRecycle.addItemDecoration(FlexboxItemDecoration(ctx).apply { setDrawable(ctx.resources.getDrawable(R.drawable.listdivider_5dp)) })
-        AutoRecycle.layoutManager = manager
+        binding.AutoRecycle.adapter = adapter(list)
+        binding.AutoRecycle.addItemDecoration(FlexboxItemDecoration(ctx).apply { setDrawable(ctx.resources.getDrawable(R.drawable.listdivider_5dp)) })
+        binding.AutoRecycle.layoutManager = manager
     }
 
 
@@ -119,8 +118,8 @@ class AutoWrapLayoutTestActivity : BaseActivity() {
     private class viewHolder(ctx: View) : androidx.recyclerview.widget.RecyclerView.ViewHolder(ctx)
 
     private fun useCustom(list: ArrayList<String>) {
-        wrapLayout.setAdapter(TestAutoWrapAdapter(ctx, list) as AutoWrapAdapter<String>)
-        wrapLayout.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, id ->
+        binding.wrapLayout.setAdapter(TestAutoWrapAdapter(ctx, list) as AutoWrapAdapter<String>)
+        binding.wrapLayout.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, id ->
             if (view is Button)
                 ToastUtils.showLongToast("$position -----内容：${view.text}")
         })

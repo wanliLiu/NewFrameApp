@@ -10,20 +10,18 @@ import android.widget.FrameLayout
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.util.dimens
 import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.activity_webview.*
+import com.soli.newframeapp.databinding.ActivityWebviewBinding
 import java.net.URLDecoder
 
 /**
  * @author Soli
  * @Time 18-7-19 下午2:12
  */
-class WebviewActivity : BaseActivity() {
+class WebviewActivity : BaseActivity<ActivityWebviewBinding>() {
 
     private val TAG = WebviewActivity::class.java.simpleName
 
     private val DefaultLoadUrl = "https://m.bilibili.com/"
-
-    override fun getContentView() = R.layout.activity_webview
 
     override fun initView() {
 
@@ -48,7 +46,7 @@ class WebviewActivity : BaseActivity() {
     }
 
     override fun initListener() {
-        mWebView.webChromeClient = object : WebChromeClient() {
+        binding.mWebView.webChromeClient = object : WebChromeClient() {
             override fun onProgressChanged(view: WebView, newProgress: Int) {
                 super.onProgressChanged(view, newProgress)
                 rootView.getToolbar()?.setLoadingProgress(newProgress)
@@ -59,7 +57,7 @@ class WebviewActivity : BaseActivity() {
 //                title = mtitle ?: "WebView"
             }
         }
-        mWebView.setWebViewClientFromSide(object : WebViewClient() {
+        binding.mWebView.setWebViewClientFromSide(object : WebViewClient() {
             override fun onPageStarted(view: WebView?, url: String?, favicon: Bitmap?) {
                 super.onPageStarted(view, url, favicon)
                 rootView.getToolbar()?.showLoadingProgress(true)
@@ -107,12 +105,12 @@ class WebviewActivity : BaseActivity() {
      *
      */
     private fun goToWebView(url: String) {
-        mWebView.loadUrl(if (!url.startsWith("http")) "http://$url" else url)
+        binding.mWebView.loadUrl(if (!url.startsWith("http")) "http://$url" else url)
     }
 
     override fun onBackPressedSupport() {
-        if (mWebView != null && mWebView.canGoBack()) {
-            mWebView.goBack() // goBack()表示返回WebView的上一页面
+        if (binding.mWebView != null && binding.mWebView.canGoBack()) {
+            binding.mWebView.goBack() // goBack()表示返回WebView的上一页面
         } else {
             finish()
         }

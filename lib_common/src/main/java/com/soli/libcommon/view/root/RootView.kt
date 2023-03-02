@@ -17,7 +17,7 @@ import com.soli.libcommon.util.StatusBarUtil
  * @author Soli
  * @Time 2017/8/8
  */
-class RootView(mctx: Activity, rooContent: View, showView: Int, isNeedToolbar: Boolean = false) {
+class RootView(mctx: Activity, rooContent: View, showView: View, isNeedToolbar: Boolean = false) {
     //内容根视图
     //视图窗根视图
     private var rootView: ViewGroup
@@ -45,7 +45,7 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isNeedToolbar: B
      * @param showView
      * @param isNeedToolbar
      */
-    constructor(mctx: Activity, showView: Int, isNeedToolbar: Boolean = false) : this(
+    constructor(mctx: Activity, showView: View, isNeedToolbar: Boolean = false) : this(
         mctx,
         mctx.findViewById<View>(R.id.viewRoot) as ViewGroup,
         showView,
@@ -73,7 +73,7 @@ class RootView(mctx: Activity, rooContent: View, showView: Int, isNeedToolbar: B
     /**
      *
      */
-    private fun initView(showView: Int, isNeedToolbar: Boolean) {
+    private fun initView(showView: View, isNeedToolbar: Boolean) {
         if (!isNeedToolbar) {
             rootView.removeAllViews()
             content = rootView

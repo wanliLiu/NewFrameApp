@@ -1,12 +1,12 @@
 package com.soli.newframeapp
 
 import android.widget.ScrollView
-import com.jakewharton.rxbinding4.view.*
+import com.jakewharton.rxbinding4.view.clicks
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.net.apiParamsOf
 import com.soli.libcommon.net.websocket.RxWebSocket
-import kotlinx.android.synthetic.main.activity_websocket.*
+import com.soli.newframeapp.databinding.ActivityWebsocketBinding
 
 /**
  *
@@ -14,12 +14,10 @@ import kotlinx.android.synthetic.main.activity_websocket.*
  * @Time 2018/10/8 17:19
  */
 
-class WebsocketActivity : BaseActivity() {
+class WebsocketActivity : BaseActivity<ActivityWebsocketBinding>() {
 
     //    TODO Echo test地址：http://www.websocket.org/echo.html
     private var url: String = "ws://echo.websocket.org"
-
-    override fun getContentView() = R.layout.activity_websocket
 
     override fun initView() {
         title = "WebSocket"
@@ -27,10 +25,10 @@ class WebsocketActivity : BaseActivity() {
 
     override fun initListener() {
 
-        val disposable = btnSend.clicks()
+        val disposable = binding.btnSend.clicks()
 //            .compose(RxLifecycle.with(this).bindToLifecycle())
             .subscribe {
-                val str = msgSend.text.toString()
+                val str = binding.msgSend.text.toString()
                 sendThrowWebSocket(msg = str)
             }
     }
@@ -38,7 +36,7 @@ class WebsocketActivity : BaseActivity() {
     override fun initData() {
 
 //        Schedulers.io().createWorker().schedule { this.initLocalServerWebsocket() }
-        msgBack.text = "创建本地Websocket服务:$url\n"
+        binding.msgBack.text = "创建本地Websocket服务:$url\n"
         RxWebSocket.Instance.keepOnline()
     }
 
@@ -61,7 +59,7 @@ class WebsocketActivity : BaseActivity() {
 //
 //            }
 
-            msgBack.append("${it.result as String}\n")
+            binding.msgBack.append("${it.result as String}\n")
             scrollToBottom()
         }
     }
@@ -70,8 +68,8 @@ class WebsocketActivity : BaseActivity() {
      *
      */
     private fun scrollToBottom() {
-        msgBack.post {
-            scrollView.fullScroll(ScrollView.FOCUS_DOWN)
+        binding.msgBack.post {
+            binding.scrollView.fullScroll(ScrollView.FOCUS_DOWN)
         }
     }
 

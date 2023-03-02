@@ -3,15 +3,15 @@ package com.soli.newframeapp.pubu
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.util.RxJavaUtil
 import com.soli.newframeapp.R
+import com.soli.newframeapp.databinding.PullRefreshLayoutBinding
 import com.soli.pullupdownrefresh.PullRefreshLayout
 import com.taihe.libCommon.view.recyclerview.decoration.SpacingDecoration
-import kotlinx.android.synthetic.main.pull_refresh_layout.*
 
 /*
  * @author soli
  * @Time 2018/12/28 23:18
  */
-class PubuTestActivity : BaseActivity() {
+class PubuTestActivity : BaseActivity<PullRefreshLayoutBinding>() {
 
     private val list = mutableListOf<String>().apply {
         add("https://dev-img01-joker.taihe.com/0208/M00/89/8D/ChR47FwYkYKAAW79AABN7tsd56o502.jpg?_width=640&_height=356")
@@ -32,9 +32,6 @@ class PubuTestActivity : BaseActivity() {
         add("https://dev-img01-joker.taihe.com/0208/M00/89/8D/ChR47FwYkXKAHNS2AAB5ydlY7NY398.jpg?_width=598&_height=374")
     }
     private val adapter by lazy { PhotoAdapter(ctx) }
-
-    override fun getContentView() = R.layout.pull_refresh_layout
-
     override fun initView() {
         title = "瀑布流"
 
@@ -42,34 +39,35 @@ class PubuTestActivity : BaseActivity() {
             2,
             androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
         )
-        manager.gapStrategy = androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
+        manager.gapStrategy =
+            androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
 
-        itemList.setHasFixedSize(true)
+        binding.itemList.setHasFixedSize(true)
 
-        refreshLayout.setPageSize(20)
+        binding.refreshLayout.setPageSize(20)
 
-        itemList.layoutManager = manager
-        itemList.adapter = adapter
-        itemList.markIsStaggeredGridLayoutManager()
+        binding.itemList.layoutManager = manager
+        binding.itemList.adapter = adapter
+        binding.itemList.markIsStaggeredGridLayoutManager()
 
         val space = resources.getDimensionPixelOffset(R.dimen.dimen_sw_15dp)
         val decoration = SpacingDecoration(space, space, true)
-        itemList.addItemDecoration(decoration)
+        binding.itemList.addItemDecoration(decoration)
     }
 
     override fun initListener() {
 
-        refreshLayout.setRefreshListener(object : PullRefreshLayout.onRefrshListener {
+        binding.refreshLayout.setRefreshListener(object : PullRefreshLayout.onRefrshListener {
             override fun onPullupRefresh(actionFromClick: Boolean) {
                 RxJavaUtil.delayAction(1000) {
-                    refreshLayout.onRefreshComplete()
+                    binding.refreshLayout.onRefreshComplete()
                     adapter.addAll_Range(list)
                 }
             }
 
             override fun onPullDownRefresh() {
                 RxJavaUtil.delayAction(1000) {
-                    refreshLayout.onRefreshComplete()
+                    binding.refreshLayout.onRefreshComplete()
                     adapter.removeAll()
                     adapter.addAll_Range(list)
                 }

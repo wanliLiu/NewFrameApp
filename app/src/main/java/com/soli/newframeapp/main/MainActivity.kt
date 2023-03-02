@@ -5,17 +5,15 @@ import com.soli.libcommon.base.BaseMultiFragmentActivity
 import com.soli.libcommon.util.SecurityUtil
 import com.soli.libcommon.util.ToastUtils
 import com.soli.newframeapp.R
+import com.soli.newframeapp.databinding.ActivityMainBinding
 
-class MainActivity : BaseMultiFragmentActivity() {
+class MainActivity : BaseMultiFragmentActivity<ActivityMainBinding>() {
 
     // 再点一次退出程序时间设置
     private val WAIT_TIME = 2000L
     private var TOUCH_TIME: Long = 0
 
     override fun needSliderActivity() = false
-
-    override fun getContentView() = R.layout.activity_main
-
     override fun initView() {
         val homeFragment = findFragment(MainFragment::class.java)
         if (homeFragment == null) {

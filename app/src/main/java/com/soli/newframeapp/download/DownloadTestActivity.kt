@@ -15,17 +15,16 @@ import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.net.download.FileProgressListener
 import com.soli.libcommon.util.FileUtil
 import com.soli.libcommon.util.ToastUtils
-import com.soli.newframeapp.R
+import com.soli.newframeapp.databinding.ActivityDownloadTestBinding
 import com.soli.newframeapp.util.InstallUtil
 import io.reactivex.Observable
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
-import kotlinx.android.synthetic.main.activity_download_test.*
 import java.util.concurrent.TimeUnit
 
 
-class DownloadTestActivity : BaseActivity() {
+class DownloadTestActivity : BaseActivity<ActivityDownloadTestBinding>() {
 
     private val downloadPath =
         "https://f0220b0248704674105d14e374bf3884.dd.cdntips.com/wxz.myapp.com/16891/apk/70A7E22BD825EF31297FDEDEC73E155B.apk?mkey=5db6ab89da59f8e1&f=8935&fsname=com.showstartfans.activity_4.4.3_20190918.apk&hsr=4d5s&cip=218.89.222.20&proto=https"
@@ -61,24 +60,21 @@ class DownloadTestActivity : BaseActivity() {
 
     }
 
-
-    override fun getContentView() = R.layout.activity_download_test
-
     override fun initView() {
         title = "下载测试"
     }
 
     override fun initListener() {
 
-        customDownload.setOnClickListener { fileDownload() }
+        binding.customDownload.setOnClickListener { fileDownload() }
 
-        systDownload.setOnClickListener {
+        binding.systDownload.setOnClickListener {
             val intent = Intent(ctx, DownloadService::class.java)
             ContextCompat.startForegroundService(ctx, intent)
             bindService(intent, connection, Context.BIND_AUTO_CREATE)
         }
 
-        webViewDownload.setOnClickListener {
+        binding.webViewDownload.setOnClickListener {
             val intent = Intent(Intent.ACTION_VIEW)
             intent.addCategory(Intent.CATEGORY_BROWSABLE)
             intent.data = Uri.parse(downloadPath)
@@ -88,8 +84,8 @@ class DownloadTestActivity : BaseActivity() {
 
     override fun initData() {
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P)
-            systDownload.visibility = View.GONE
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) binding.systDownload.visibility =
+            View.GONE
     }
 
     /**
@@ -107,19 +103,13 @@ class DownloadTestActivity : BaseActivity() {
             saveFile = savePath
         }.downloadFile({ result ->
             dialog.dismiss()
-            if (result.isSuccess && result.result != null)
-                if (result.result!!.exists()) {
-                    ToastUtils.showLongToast("文件下载成功！：${result.fullData}")
-                    InstallUtil.install(ctx, result.result!!)
-                } else
-                    ToastUtils.showShortToast(result.errormsg)
+            if (result.isSuccess && result.result != null) if (result.result!!.exists()) {
+                ToastUtils.showLongToast("文件下载成功！：${result.fullData}")
+                InstallUtil.install(ctx, result.result!!)
+            } else ToastUtils.showShortToast(result.errormsg)
         }, object : FileProgressListener {
             override fun progress(
-                progress: Int,
-                bytesRead: Long,
-                updateBytes: Long,
-                fileSize: Long,
-                isDone: Boolean
+                progress: Int, bytesRead: Long, updateBytes: Long, fileSize: Long, isDone: Boolean
             ) {
                 dialog.max = (fileSize / 1024).toInt()
                 dialog.progress = (bytesRead / 1024).toInt()
@@ -136,16 +126,13 @@ class DownloadTestActivity : BaseActivity() {
                 .map { downloadBinder?.getProgress(downloadId) }//获得下载进度
                 .takeUntil { it >= 100 }//返回true就停止了,当进度>=100就是下载完成了
                 .distinct()//去重复
-                .subscribeOn(Schedulers.io())
-                .doOnSubscribe {
+                .subscribeOn(Schedulers.io()).doOnSubscribe {
                     dialog.setProgressNumberFormat("%1d/%2d")
                     dialog.show()
                     dialog.progress = 0
                     dialog.max = 100
-                }
-                .subscribeOn(AndroidSchedulers.mainThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({
+                }.subscribeOn(AndroidSchedulers.mainThread())
+                .observeOn(AndroidSchedulers.mainThread()).subscribe({
                     dialog.progress = it!!
                 }, {
                     it.printStackTrace()

@@ -4,25 +4,22 @@ import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.net.DataType
 import com.soli.libcommon.util.ViewUtil
-import com.soli.newframeapp.R
+import com.soli.newframeapp.databinding.PullRefreshLayoutBinding
 import com.soli.newframeapp.model.StoryList
 import com.soli.pullupdownrefresh.PullRefreshLayout
-import kotlinx.android.synthetic.main.pull_refresh_layout.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class NetWorkTestActivity : BaseActivity() {
+class NetWorkTestActivity : BaseActivity<PullRefreshLayoutBinding>() {
 
     private val mAadapter: NewsAdapter by lazy { NewsAdapter(ctx) }
     private var index = 0
-    override fun getContentView() = R.layout.pull_refresh_layout
-
     override fun initView() {
         title = "网络测试"
 
-        refreshLayout.setPageSize(20)
+        binding.refreshLayout.setPageSize(20)
 
-        itemList.apply {
+        binding.itemList.apply {
             layoutManager = androidx.recyclerview.widget.LinearLayoutManager(ctx)
             adapter = mAadapter
         }
@@ -31,7 +28,7 @@ class NetWorkTestActivity : BaseActivity() {
 
     override fun initListener() {
 
-        refreshLayout.setRefreshListener(object : PullRefreshLayout.onRefrshListener {
+        binding.refreshLayout.setRefreshListener(object : PullRefreshLayout.onRefrshListener {
             override fun onPullupRefresh(actionFromClick: Boolean) {
                 index++
                 getNewsDate()
@@ -68,7 +65,7 @@ class NetWorkTestActivity : BaseActivity() {
         }.get<StoryList> { result ->
 
             ViewUtil.setNoDataEmptyView(context = ctx,
-                listview = itemList,
+                listview = binding.itemList,
                 message = "没有数据哦,测试RecyclerView加载没有数据的空视图显示!",
                 listener = {
                     index = 0
@@ -76,7 +73,7 @@ class NetWorkTestActivity : BaseActivity() {
                 })
 
             dismissProgress()
-            refreshLayout.onRefreshComplete()
+            binding.refreshLayout.onRefreshComplete()
             if (result.isSuccess && result.result != null) {
 
                 if (index == 0)

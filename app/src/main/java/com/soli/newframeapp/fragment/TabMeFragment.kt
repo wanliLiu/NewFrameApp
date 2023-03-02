@@ -1,23 +1,20 @@
 package com.soli.newframeapp.fragment
 
 import androidx.core.os.bundleOf
+import com.soli.newframeapp.databinding.FragmentMeViewBinding
 import com.soli.newframeapp.event.openFragment
-import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.fragment_me_view.*
 
 /**
  *
  * @author Soli
  * @Time 2020/4/21 10:13
  */
-class TabMeFragment : BaseTabHomeFragment() {
-    override fun getContentView() = R.layout.fragment_me_view
-
+class TabMeFragment : BaseTabHomeFragment<FragmentMeViewBinding>() {
     override fun initView() {
     }
 
     override fun initListener() {
-        displayText.setOnClickListener {
+        binding.displayText.setOnClickListener {
             openFragment(TestFragment().apply {
                 arguments = bundleOf("title" to "第一个", "content" to "我是第一个内容")
             })

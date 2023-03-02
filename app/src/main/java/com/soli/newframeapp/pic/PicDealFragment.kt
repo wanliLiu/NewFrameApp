@@ -10,8 +10,8 @@ import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.MLog
 import com.soli.newframeapp.R
+import com.soli.newframeapp.databinding.ActivityPicDealBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
-import kotlinx.android.synthetic.main.activity_pic_deal.*
 
 
 /**
@@ -19,7 +19,7 @@ import kotlinx.android.synthetic.main.activity_pic_deal.*
  * @author Soli
  * @Time 2018/11/12 09:38
  */
-class PicDealFragment : BaseToolbarFragment() {
+class PicDealFragment : BaseToolbarFragment<ActivityPicDealBinding>() {
 
     private val MAX_VALUE = 255
     private val MID_VALUE = 127
@@ -30,33 +30,30 @@ class PicDealFragment : BaseToolbarFragment() {
 
     private var bitmap: Bitmap? = null
 
-    override fun getContentView() = R.layout.activity_pic_deal
-
-
     override fun initView() {
 
         setTitle("ColorMatrix")
 
-        seek1.max = MAX_VALUE
-        seek1.progress = MID_VALUE
-        seek1.setOnSeekBarChangeListener(onSeekChange)
+        binding.seek1.max = MAX_VALUE
+        binding.seek1.progress = MID_VALUE
+        binding.seek1.setOnSeekBarChangeListener(onSeekChange)
 
-        seek2.max = MAX_VALUE
-        seek2.progress = MID_VALUE
-        seek2.setOnSeekBarChangeListener(onSeekChange)
+        binding.seek2.max = MAX_VALUE
+        binding.seek2.progress = MID_VALUE
+        binding.seek2.setOnSeekBarChangeListener(onSeekChange)
 
 
-        seek3.max = MAX_VALUE
-        seek3.progress = MID_VALUE
-        seek3.setOnSeekBarChangeListener(onSeekChange)
+        binding.seek3.max = MAX_VALUE
+        binding.seek3.progress = MID_VALUE
+        binding.seek3.setOnSeekBarChangeListener(onSeekChange)
 
-        seek4.max = MAX_VALUE
-        seek4.progress = MAX_VALUE
-        blurCover.imageAlpha = 0
-        seek4.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+        binding.seek4.max = MAX_VALUE
+        binding.seek4.progress = MAX_VALUE
+        binding.blurCover.imageAlpha = 0
+        binding.seek4.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                blurCover.imageAlpha = MAX_VALUE - progress
-                desc.text = "毛玻璃效果"
+                binding.blurCover.imageAlpha = MAX_VALUE - progress
+                binding.desc.text = "毛玻璃效果"
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {
@@ -78,19 +75,19 @@ class PicDealFragment : BaseToolbarFragment() {
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe { mb ->
                     bitmap = mb
-                    imageview.setImageBitmap(bitmap)
+                    binding.imageview.setImageBitmap(bitmap)
 
-                    blurCover.setImageBitmap(bitmap)
-                    blurImageview.setImageBitmap(blur(bitmap!!, 25f))
+                    binding.blurCover.setImageBitmap(bitmap)
+                    binding.blurImageview.setImageBitmap(blur(bitmap!!, 25f))
                 }
 
 //        ImageLoader.loadResPic(headImage1, R.mipmap.icon_avatar_default)
-        headImage.loadImage("https://nim.nosdn.127.net/MTAxMTAwMg==/bmltYV81NDU5MjM4ODk3XzE1Mzk2ODIxMjg3NzBfOWY3YmZhYTYtNzczYy00YjBhLTg0MWEtYjYzMjVmMTIxZDhj?")
+        binding.headImage.loadImage("https://nim.nosdn.127.net/MTAxMTAwMg==/bmltYV81NDU5MjM4ODk3XzE1Mzk2ODIxMjg3NzBfOWY3YmZhYTYtNzczYy00YjBhLTg0MWEtYjYzMjVmMTIxZDhj?")
     }
 
     private val onSeekChange = object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-            desc.text = when (seekBar?.id) {
+            binding.desc.text = when (seekBar?.id) {
                 R.id.seek1 -> {
                     mHue = (progress - MID_VALUE) * 1.0f / MID_VALUE * 180
                     "色相-------$mHue"
@@ -107,9 +104,9 @@ class PicDealFragment : BaseToolbarFragment() {
                     "错误"
                 }
             }
-            MLog.e("调整", desc.text.toString())
+            MLog.e("调整", binding.desc.text.toString())
 
-            imageview.setImageBitmap(handleImageEffect(bitmap!!, mHue, mSaturation, mLum))
+            binding.imageview.setImageBitmap(handleImageEffect(bitmap!!, mHue, mSaturation, mLum))
         }
 
         override fun onStartTrackingTouch(seekBar: SeekBar?) {

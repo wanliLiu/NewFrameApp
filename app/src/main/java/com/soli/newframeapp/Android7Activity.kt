@@ -19,8 +19,8 @@ import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.download.FileDownloadProcess
 import com.soli.libcommon.util.*
 import com.soli.libcommon.view.loading.LoadingType
+import com.soli.newframeapp.databinding.ActivityAndroid7Binding
 import com.soli.permissions.RxPermissions
-import kotlinx.android.synthetic.main.activity_android7.*
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -30,7 +30,7 @@ import java.io.FileNotFoundException
  * @author Soli
  * @Time 2018/8/29 09:47
  */
-class Android7Activity : BaseActivity() {
+class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
 
     private val requestSelectFileCode = 32
     private val requestOpenCamera = 33
@@ -40,16 +40,14 @@ class Android7Activity : BaseActivity() {
 
     private val rxPermissions by lazy { RxPermissions(ctx) }
 
-    override fun getContentView() = R.layout.activity_android7
-
     override fun initView() {
         title = "Android >=23 Android Q测试"
     }
 
     override fun initListener() {
-        camerText.setOnClickListener { checkPermission() }
+        binding.camerText.setOnClickListener { checkPermission() }
 
-        openDocumentPicker.setOnClickListener {
+        binding.openDocumentPicker.setOnClickListener {
             val intent = Intent(Intent.ACTION_OPEN_DOCUMENT)
             intent.type = "image/*"
 
@@ -60,10 +58,10 @@ class Android7Activity : BaseActivity() {
             startActivityForResult(intent, requestSelectFileCode)
         }
 
-        tartgetQ.setOnClickListener {
+        binding.tartgetQ.setOnClickListener {
             downloadPicAndSaveInPublicStorage()
         }
-        mediaTarget.setOnClickListener {
+        binding.mediaTarget.setOnClickListener {
             isSet = false
             RxJavaUtil.runOnThread { scanSystemMedia() }
 
@@ -104,7 +102,7 @@ class Android7Activity : BaseActivity() {
                 if (isAndroidQFileExists(this, path)) {
                     if (!isSet) {
                         isSet = true
-                        RxJavaUtil.runOnUiThread { pickImageFresco.setImageURI(path, ctx) }
+                        RxJavaUtil.runOnUiThread { binding.pickImageFresco.setImageURI(path, ctx) }
                     }
                 }
             } else {
@@ -288,27 +286,27 @@ class Android7Activity : BaseActivity() {
                 requestOpenCamera -> {
                     if (FileUtil.isAndroidQorAbove) {
                         Log.e("imageUrl", cameraUri?.toString() ?: "Android 10上图片")
-                        pickImageFresco.setImageURI(cameraUri, ctx)
-                        pickImage.setImageURI(cameraUri)
+                        binding.pickImageFresco.setImageURI(cameraUri, ctx)
+                        binding.pickImage.setImageURI(cameraUri)
                         copyFileToPrivateArea(cameraUri)
                         ToastUtils.showShortToast(cameraUri?.toString() ?: "Android 10上图片")
                     } else if (imagePath!!.exists()) {
                         ToastUtils.showShortToast("${imagePath!!.absolutePath} 文件存在")
-                        pickImage.setImageBitmap(BitmapFactory.decodeFile(imagePath!!.absolutePath))
-                        ImageLoader.loadImageByPath(pickImageFresco, imagePath!!.absolutePath)
+                        binding.pickImage.setImageBitmap(BitmapFactory.decodeFile(imagePath!!.absolutePath))
+                        ImageLoader.loadImageByPath(binding.pickImageFresco, imagePath!!.absolutePath)
                     }
                 }
                 requestSelectFileCode -> {
                     try {
                         Log.e("path", Uri.decode(data!!.data!!.toString()))
                         if (FileUtil.isAndroidQorAbove) {
-                            pickImageFresco.setImageURI(data.data, ctx)
-                            pickImage.setImageURI(data.data)
+                            binding.pickImageFresco.setImageURI(data.data, ctx)
+                            binding.pickImage.setImageURI(data.data)
                             copyFileToPrivateArea(data.data)
                         } else {
                             getRealPathFromURI(data.data!!)?.apply {
-                                pickImage.setImageBitmap(BitmapFactory.decodeFile(this))
-                                ImageLoader.loadImageByPath(pickImageFresco, this)
+                                binding.pickImage.setImageBitmap(BitmapFactory.decodeFile(this))
+                                ImageLoader.loadImageByPath(binding.pickImageFresco, this)
                             }
                         }
                     } catch (e: Exception) {
@@ -334,7 +332,7 @@ class Android7Activity : BaseActivity() {
         )
 
         if (destFile != null && destFile.exists()) {
-            ImageLoader.loadImageByPath(dispImageInner, destFile.absolutePath)
+            ImageLoader.loadImageByPath(binding.dispImageInner, destFile.absolutePath)
         }
     }
 }

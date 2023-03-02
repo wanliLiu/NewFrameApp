@@ -6,16 +6,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.soli.libcommon.base.BaseFragment
 import com.soli.libcommon.base.BaseRecycleAdapter
 import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.fragment_test.*
+import com.soli.newframeapp.databinding.FragmentTestBinding
 
 /**
  *
  * @author Soli
  * @Time 2020/7/24 10:08
  */
-class TestFragment2 : BaseFragment() {
-    override fun getContentView(): Int = R.layout.fragment_test
-
+class TestFragment2 : BaseFragment<FragmentTestBinding>() {
     override fun initView() {
     }
 
@@ -23,7 +21,7 @@ class TestFragment2 : BaseFragment() {
     }
 
     override fun initData() {
-        artDetailList.adapter = object : BaseRecycleAdapter<String>(ctx!!) {
+        binding.artDetailList.adapter = object : BaseRecycleAdapter<String>(ctx!!) {
 
             override fun getItemCount(): Int = 1000
 

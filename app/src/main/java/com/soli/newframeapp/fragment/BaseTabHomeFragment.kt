@@ -1,5 +1,6 @@
 package com.soli.newframeapp.fragment
 
+import androidx.viewbinding.ViewBinding
 import com.soli.libcommon.base.BaseFragment
 
 /*
@@ -7,7 +8,8 @@ import com.soli.libcommon.base.BaseFragment
  * @Time 2020/4/21 21:57
  */
 
-abstract class BaseTabHomeFragment : BaseFragment(),OnDoubleClickListener {
+abstract class BaseTabHomeFragment<Binding : ViewBinding> : BaseFragment<Binding>(),
+    OnDoubleClickListener {
 
     override fun onDoubleClickHappen() {
     }

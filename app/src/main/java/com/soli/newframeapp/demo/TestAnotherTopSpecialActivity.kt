@@ -5,39 +5,35 @@ import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.flyco.tablayout.listener.CustomTabEntity
 import com.flyco.tablayout.listener.OnTabSelectListener
-import com.google.android.material.appbar.AppBarLayout
 import com.soli.libcommon.base.BaseTopSpecialActivity
 import com.soli.libcommon.util.ImageLoader
 import com.soli.libcommon.util.MLog
 import com.soli.libcommon.util.StatusBarUtil
 import com.soli.libcommon.util.noOpDelegate
+import com.soli.libcommon.view.HeadImageView
 import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.activity_for_another_top_special_model.*
-import kotlinx.android.synthetic.main.activity_for_top_special_model.appBarLayout
-import kotlinx.android.synthetic.main.activity_for_top_special_model.zoom_image
-import kotlinx.android.synthetic.main.content_layout.*
+import com.soli.newframeapp.databinding.ActivityForAnotherTopSpecialModelBinding
 
 /**
  *
  * @author Soli
  * @Time 2018/11/15 11:17
  */
-class TestAnotherTopSpecialActivity : BaseTopSpecialActivity() {
+class TestAnotherTopSpecialActivity :
+    BaseTopSpecialActivity<ActivityForAnotherTopSpecialModelBinding>() {
 
     private val tabFragment = ArrayList<Fragment>()
-
-    override fun getContentView() = R.layout.activity_for_another_top_special_model
 
     override fun initView() {
         super.initView()
         title = "符合真实的一种情况测试"
 
-        artViewPager2.offscreenPageLimit = 2
+        binding.artViewPager2.offscreenPageLimit = 2
     }
 
     override fun initListener() {
 
-        appBarLayout.addOnOffsetChangedListener(AppBarLayout.OnOffsetChangedListener { layout, verticalOffset ->
+        binding.appBarLayout.addOnOffsetChangedListener { layout, verticalOffset ->
             val scrollRangle = layout.totalScrollRange
             val alpha = Math.abs(verticalOffset) * 1.0 / scrollRangle * 1.0
             MLog.e("verticalOffset", alpha.toString())
@@ -47,17 +43,18 @@ class TestAnotherTopSpecialActivity : BaseTopSpecialActivity() {
                     ctx.resources.getColor(com.soli.libcommon.R.color.B2)
                 )
             )
-        })
+        }
 
-        tabLayout.setOnTabSelectListener(object : OnTabSelectListener by noOpDelegate() {
+        binding.tabLayout.setOnTabSelectListener(object : OnTabSelectListener by noOpDelegate() {
             override fun onTabSelect(position: Int) {
-                artViewPager2.currentItem = position
+                binding.artViewPager2.currentItem = position
             }
         })
 
-        artViewPager2.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
+        binding.artViewPager2.registerOnPageChangeCallback(object :
+            ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
-                tabLayout.currentTab = position
+                binding.tabLayout.currentTab = position
             }
         })
     }
@@ -71,11 +68,14 @@ class TestAnotherTopSpecialActivity : BaseTopSpecialActivity() {
     override fun initData() {
 
         ImageLoader.loadImage(
-            zoom_image,
+            binding.zoomImage,
             "https://dev-img01-joker.taihe.com/0209/M00/58/27/ChR47Fw9QpWABNZ4AALxJ3a2MZ8350.jpg"
         )
 
-        ImageLoader.loadImage(avator,"http://img01-joker.taihe.com/0209/M00/59/55/ChR47FycdmuAThMwAAtdi0_Ss5A481.png")
+        ImageLoader.loadImage(
+            binding.root.findViewById<HeadImageView>(R.id.avator),
+            "http://img01-joker.taihe.com/0209/M00/59/55/ChR47FycdmuAThMwAAtdi0_Ss5A481.png"
+        )
 
         setContentListData()
     }
@@ -91,15 +91,15 @@ class TestAnotherTopSpecialActivity : BaseTopSpecialActivity() {
         tabFragment.add(TestFragment())
         tabFragment.add(TestFragment2())
 
-        tabLayout.setTabData(tabList as ArrayList<CustomTabEntity>)
+        binding.tabLayout.setTabData(tabList as ArrayList<CustomTabEntity>)
 
-        artViewPager2.adapter = object : FragmentStateAdapter(this) {
+        binding.artViewPager2.adapter = object : FragmentStateAdapter(this) {
             override fun getItemCount() = tabFragment.size
 
             override fun createFragment(position: Int): Fragment = tabFragment[position]
 
         }
 
-        artViewPager2.currentItem = 0
+        binding.artViewPager2.currentItem = 0
     }
 }

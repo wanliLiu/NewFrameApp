@@ -8,7 +8,7 @@ import com.soli.libcommon.base.BaseFragment
 import com.soli.libcommon.util.ViewListener
 import com.soli.libcommon.view.SvgImageView
 import com.soli.newframeapp.R
-import kotlinx.android.synthetic.main.main_entrance_view.*
+import com.soli.newframeapp.databinding.MainEntranceViewBinding
 import me.yokeyword.fragmentation.ISupportFragment
 
 /**
@@ -16,7 +16,7 @@ import me.yokeyword.fragmentation.ISupportFragment
  * @author Soli
  * @Time 2020/4/21 16:43
  */
-class HomeFragment : BaseFragment() {
+class HomeFragment : BaseFragment<MainEntranceViewBinding>() {
 
     private var index = 0
     private var lastIndex = -1
@@ -42,8 +42,6 @@ class HomeFragment : BaseFragment() {
         }
     }
 
-    override fun getContentView() = R.layout.main_entrance_view
-
     override fun initView() {
         val firstFragment = findChildFragment(TabHomeFragment::class.java)
         if (firstFragment == null) {
@@ -58,8 +56,8 @@ class HomeFragment : BaseFragment() {
 
 
     override fun initListener() {
-        registerDoubleClickListener(tabHome)
-        registerDoubleClickListener(tabMe)
+        registerDoubleClickListener(binding.tabHome)
+        registerDoubleClickListener(binding.tabMe)
     }
 
     override fun initData() {
@@ -72,15 +70,14 @@ class HomeFragment : BaseFragment() {
      */
     private fun onViewClick(v: View, isDoubleClick: Boolean = false) {
         when (v) {
-            tabHome -> index = 0
-            tabMe -> index = 1
+            binding.tabHome -> index = 0
+            binding.tabMe -> index = 1
         }
         if (!isDoubleClick) {
             checkItem()
         } else {
             tabFragments[index]?.apply {
-                if (this is OnDoubleClickListener)
-                    (this as OnDoubleClickListener).onDoubleClickHappen()
+                if (this is OnDoubleClickListener) (this as OnDoubleClickListener).onDoubleClickHappen()
             }
         }
     }
@@ -90,8 +87,7 @@ class HomeFragment : BaseFragment() {
      */
     private fun registerDoubleClickListener(clickView: View) {
         ViewListener.registerSelectDoubleClickListener(clickView, { view, isInCheckDoubleClick ->
-            if (!isInCheckDoubleClick)
-                onViewClick(view)
+            if (!isInCheckDoubleClick) onViewClick(view)
         }, { view ->
             onViewClick(view, true)
         })
@@ -112,9 +108,9 @@ class HomeFragment : BaseFragment() {
      */
     private fun checkItem() {
 
-        selectTab(tabHomeIcon, tabHomeText, index == 0)
+        selectTab(binding.tabHomeIcon, binding.tabHomeText, index == 0)
 
-        selectTab(tabMeIcon, tabMeText, index == 1)
+        selectTab(binding.tabMeIcon, binding.tabMeText, index == 1)
 
         if (lastIndex != index) {
             showHideFragment(

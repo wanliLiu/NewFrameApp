@@ -1,6 +1,7 @@
 package com.soli.libcommon.base
 
 import android.view.View
+import androidx.viewbinding.ViewBinding
 
 
 /**
@@ -8,7 +9,7 @@ import android.view.View
  * @author Soli
  * @Time 2020/4/20 14:33
  */
-abstract class BaseToolbarFragment : BaseSwipeBackFragment() {
+abstract class BaseToolbarFragment<Binding : ViewBinding> : BaseSwipeBackFragment<Binding>() {
     override fun needTopToolbar() = true
 
     override fun setContentViews(view: View) {

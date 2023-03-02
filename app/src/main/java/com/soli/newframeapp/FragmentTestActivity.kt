@@ -4,9 +4,9 @@ import android.os.Handler
 import android.view.View
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.util.TabFragmentManager
-import kotlinx.android.synthetic.main.activity_fragment_test.*
+import com.soli.newframeapp.databinding.ActivityFragmentTestBinding
 
-class FragmentTestActivity : BaseActivity(), View.OnClickListener {
+class FragmentTestActivity : BaseActivity<ActivityFragmentTestBinding>(), View.OnClickListener {
 
     private val inputStr = "我是输入的文字，到最后，还是\n这样看到了是打开塑料袋上看到了上来的就是多了"
 
@@ -14,17 +14,15 @@ class FragmentTestActivity : BaseActivity(), View.OnClickListener {
         TabFragmentManager(ctx, R.id.container)
     }
 
-    override fun getContentView() = R.layout.activity_fragment_test
-
     override fun initView() {
         title = "Framgent Test"
-        rootView.justyProgressAreaContentTo(container)
+        rootView.justyProgressAreaContentTo(binding.container)
     }
 
     override fun initListener() {
-        activityTest.setOnClickListener(this)
-        fragementTest1.setOnClickListener(this)
-        fragementTest2.setOnClickListener(this)
+        binding.activityTest.setOnClickListener(this)
+        binding.fragementTest1.setOnClickListener(this)
+        binding.fragementTest2.setOnClickListener(this)
     }
 
     override fun initData() {
@@ -42,9 +40,10 @@ class FragmentTestActivity : BaseActivity(), View.OnClickListener {
     }
 
     private fun FragemntTest() {
-        supportFragmentManager.beginTransaction().replace(R.id.container, TestFragment.getInstance(inputStr)).commit()
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, TestFragment.getInstance(inputStr)).commit()
         //just make difference
-        Handler().postDelayed({ rootView.justyProgressAreaContentTo(container) }, 500)
+        Handler().postDelayed({ rootView.justyProgressAreaContentTo(binding.container) }, 500)
     }
 
     override fun onClick(v: View?) {

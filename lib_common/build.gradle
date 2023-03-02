@@ -31,6 +31,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -123,7 +127,6 @@ dependencies {
 //    api files('libs/fragmentation_core-1.0.3.aar')
 //    api files('libs/fragmentation_swipeback-1.0.3.aar')
     api("com.orhanobut:logger:2.2.0")
-
 //    debugApi 'com.soli.flutter_module:flutter_debug:1.1.2'
 //    releaseApi 'com.soli.flutter_module:flutter_release:1.1.2'
 }

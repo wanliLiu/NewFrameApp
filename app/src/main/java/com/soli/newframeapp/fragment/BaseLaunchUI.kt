@@ -1,6 +1,7 @@
 package com.soli.newframeapp.fragment
 
 import android.os.Bundle
+import androidx.viewbinding.ViewBinding
 import com.soli.libcommon.base.BaseMultiFragmentActivity
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
@@ -12,7 +13,7 @@ import org.greenrobot.eventbus.EventBus
  * @author Soli
  * @Time 2020/4/20 13:55
  */
-abstract class BaseLaunchUI : BaseMultiFragmentActivity() {
+abstract class BaseLaunchUI<Binding : ViewBinding> : BaseMultiFragmentActivity<Binding>() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         GlobalScope.launch { EventBus.getDefault().register(ctx) }

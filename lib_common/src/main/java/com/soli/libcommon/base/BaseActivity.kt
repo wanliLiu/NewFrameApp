@@ -1,21 +1,25 @@
 package com.soli.libcommon.base
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import androidx.viewbinding.ViewBinding
 import com.soli.libcommon.R
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.util.ToastUtils
 import com.soli.libcommon.view.loading.LoadingType
 import com.soli.libcommon.view.root.RootView
+import java.lang.reflect.ParameterizedType
 
 /**
  * @author Soli
  * @Time 18-5-15 下午3:25
  */
-abstract class BaseActivity : BaseFunctionActivity() {
+abstract class BaseActivity<Binding : ViewBinding> : BaseFunctionActivity() {
 
     open var defaultLoadingType = LoadingType.TypeInside
     private var loadingType = defaultLoadingType
     protected lateinit var rootView: RootView
+    protected lateinit var binding: Binding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -35,14 +39,17 @@ abstract class BaseActivity : BaseFunctionActivity() {
      */
     private fun setContentViews() {
         setContentView(R.layout.activity_root_view)
-        rootView = RootView(this, getContentView(), needTopToolbar())
+        binding = initBindView()
+        rootView = RootView(this, binding.root, needTopToolbar())
         setStatusBarColor()
     }
 
-    /**
-     * 获取内容视图
-     */
-    protected abstract fun getContentView(): Int
+    private fun initBindView(): Binding {
+        val type = javaClass.genericSuperclass as ParameterizedType
+        val aClass = type.actualTypeArguments[0] as Class<*>
+        val method = aClass.getDeclaredMethod("inflate", LayoutInflater::class.java)
+        return method.invoke(null, layoutInflater) as Binding
+    }
 
     protected abstract fun initView()
     protected abstract fun initListener()
@@ -52,8 +59,7 @@ abstract class BaseActivity : BaseFunctionActivity() {
 
         if (!show) return
 
-        if (isFinishing)
-            return
+        if (isFinishing) return
 
         loadingType = type
 
@@ -115,10 +121,12 @@ abstract class BaseActivity : BaseFunctionActivity() {
      *
      */
     fun <T> errorHappen(pageNo: Int = 1, result: ApiResult<T>, listener: () -> Unit) {
-        if (pageNo == 1)
-            rootView.errorHappen(listener, R.layout.error_trouble_layout, R.id.btnRetry)
-        else
-            ToastUtils.showShortToast(result.errormsg)
+        if (pageNo == 1) rootView.errorHappen(
+            listener,
+            R.layout.error_trouble_layout,
+            R.id.btnRetry
+        )
+        else ToastUtils.showShortToast(result.errormsg)
     }
 
     /**

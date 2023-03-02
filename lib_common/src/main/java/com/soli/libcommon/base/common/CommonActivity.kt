@@ -4,6 +4,7 @@ import android.content.Context
 import android.os.Bundle
 import com.soli.libcommon.R
 import com.soli.libcommon.base.BaseMultiFragmentActivity
+import com.soli.libcommon.databinding.ActivityCommonBinding
 import com.soli.libcommon.util.openActivity
 import me.yokeyword.fragmentation.SupportFragment
 
@@ -12,7 +13,7 @@ import me.yokeyword.fragmentation.SupportFragment
  * @author Soli
  * @Time 2020/5/20 14:23
  */
-class CommonActivity : BaseMultiFragmentActivity() {
+class CommonActivity : BaseMultiFragmentActivity<ActivityCommonBinding>() {
 
 
     companion object {
@@ -36,9 +37,6 @@ class CommonActivity : BaseMultiFragmentActivity() {
             arguments = params
         } as SupportFragment
     }
-
-    override fun getContentView() = R.layout.activity_common
-
 
     override fun onBackPressedSupport() {
         if (fragment.onBackPressedSupport()) {

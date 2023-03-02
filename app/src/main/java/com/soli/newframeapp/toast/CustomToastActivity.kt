@@ -9,7 +9,7 @@ import android.widget.TextView
 import android.widget.Toast
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.util.ToastUtils
-import kotlinx.android.synthetic.main.activity_toast.*
+import com.soli.newframeapp.databinding.ActivityToastBinding
 
 
 /**
@@ -17,22 +17,19 @@ import kotlinx.android.synthetic.main.activity_toast.*
  * @author Soli
  * @Time 2019/1/9 15:31w
  */
-class CustomToastActivity : BaseActivity() {
+class CustomToastActivity : BaseActivity<ActivityToastBinding>() {
 
     var index = 0
 
     private val mwindowManager by lazy { ctx.getSystemService(Context.WINDOW_SERVICE) as WindowManager }
 //    private val rxPermission by lazy { RxPermissions(ctx) }
-
-    override fun getContentView() = com.soli.newframeapp.R.layout.activity_toast
-
     override fun initView() {
         title = "自定义toast"
     }
 
     override fun initListener() {
 
-        toast.setOnClickListener {
+        binding.toast.setOnClickListener {
             ToastUtils.showShortToast("我长度但是看到了斯柯达了SDK类似都开始来得快熟练度说的了${++index}")
 //            ToastUtils.showLongToast("我长度但是看到了斯柯达了SDK类似都开始来得快熟练度说的了${++index}")
 //            Toast.makeText(ctx,"我长度但是看到了斯柯达了SDK类似都开始来得快熟练度说的了${++index}",Toast.LENGTH_SHORT).show()

@@ -11,9 +11,9 @@ import androidx.core.view.isInvisible
 import androidx.core.view.isVisible
 import com.soli.libcommon.base.BaseSwipeBackFragment
 import com.soli.newframeapp.R
+import com.soli.newframeapp.databinding.HomeEntranceBinding
 import com.soli.newframeapp.event.OpenFragmentEvent
 import com.soli.newframeapp.event.ShowMiniBarEvent
-import kotlinx.android.synthetic.main.home_entrance.*
 import me.yokeyword.fragmentation.ISupportFragment
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
@@ -23,7 +23,7 @@ import org.greenrobot.eventbus.ThreadMode
  * @author Soli
  * @Time 2020/4/20 14:27
  */
-class LaunchUIHome : BaseLaunchUI() {
+class LaunchUIHome : BaseLaunchUI<HomeEntranceBinding>() {
 
     // 再点一次退出程序时间设置
     private val WAIT_TIME = 2000L
@@ -39,8 +39,6 @@ class LaunchUIHome : BaseLaunchUI() {
         }
         super.onCreate(savedInstanceState)
     }
-
-    override fun getContentView() = R.layout.home_entrance
 
     override fun initView() {
         val frag = findFragment(HomeFragment::class.java)
@@ -102,7 +100,7 @@ class LaunchUIHome : BaseLaunchUI() {
      */
     private fun whenOpenNewTakeSomething(toFragment: ISupportFragment?) {
         animationMiniBar(false)
-        if (!isFirstSwipe && toFragment is BaseSwipeBackFragment) {
+        if (!isFirstSwipe && toFragment is BaseSwipeBackFragment<*>) {
             if (toFragment.needSwipeBack()) {
                 isFirstSwipe = true
                 toFragment.dragStateCallBack = { done, progress ->
@@ -118,7 +116,7 @@ class LaunchUIHome : BaseLaunchUI() {
      */
     private fun swipeAnimationMiniBar(proress: Float) {
 
-        if (showTabBar || minibar.isInvisible) return
+        if (showTabBar || binding.minibar.isInvisible) return
 
         if (proress >= 1f)
             showTabBar = true
@@ -130,8 +128,8 @@ class LaunchUIHome : BaseLaunchUI() {
         val tabBarHeight =
             ctx.resources.getDimensionPixelOffset(R.dimen.home_tab_bar_height)
         val value = (tabBarHeight * proress).toInt()
-        emptySpace.layoutParams.height = value
-        minibar.requestLayout()
+        binding.emptySpace.layoutParams.height = value
+        binding.minibar.requestLayout()
     }
 
     /**
@@ -154,8 +152,8 @@ class LaunchUIHome : BaseLaunchUI() {
                 val tabBarHeight =
                     ctx.resources.getDimensionPixelOffset(R.dimen.home_tab_bar_height)
                 val value = (tabBarHeight * it.animatedValue as Float).toInt()
-                emptySpace.layoutParams.height = if (show) value else tabBarHeight - value
-                minibar.requestLayout()
+                binding.emptySpace.layoutParams.height = if (show) value else tabBarHeight - value
+                binding.minibar.requestLayout()
             }
             start()
         }
@@ -173,16 +171,16 @@ class LaunchUIHome : BaseLaunchUI() {
      *
      */
     private fun takeActionToMiniBar(show: Boolean) {
-        if ((show && minibar.isVisible) || (!show && !minibar.isVisible)) return
+        if ((show && binding.minibar.isVisible) || (!show && !binding.minibar.isVisible)) return
 
-        minibar.visibility = View.VISIBLE
-        minibar.alpha = if (show) 0.0f else 1.0f
+        binding.minibar.visibility = View.VISIBLE
+        binding.minibar.alpha = if (show) 0.0f else 1.0f
 
-        minibar.animate().alpha(1.0f - minibar.alpha)
+        binding.minibar.animate().alpha(1.0f - binding.minibar.alpha)
             .setListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator) {
                     super.onAnimationEnd(animation)
-                    if (!show) minibar.visibility = View.GONE
+                    if (!show) binding.minibar.visibility = View.GONE
                 }
             }).start()
     }

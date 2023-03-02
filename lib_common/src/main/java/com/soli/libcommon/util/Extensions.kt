@@ -2,16 +2,12 @@ package com.soli.libcommon.util
 
 import android.app.Activity
 import android.app.ActivityManager
-import android.content.ClipData
-import android.content.ClipboardManager
 import android.content.Context
 import android.content.Intent
 import android.os.Parcel
 import android.text.TextUtils
 import android.util.TypedValue
-import android.view.Gravity
 import android.view.View
-import android.widget.TextView
 import android.widget.Toast
 import com.google.gson.Gson
 import java.lang.reflect.InvocationHandler
@@ -127,7 +123,7 @@ inline val Context.isAppOnForeground: Boolean
             false
         }
 
-        MLog.d(MLog.DEFAULT_LOG_TAG,"app运行在前台：$value")
+        MLog.d(MLog.DEFAULT_LOG_TAG, "app运行在前台：$value")
 
         return value
     }
