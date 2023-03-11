@@ -2,17 +2,13 @@ package com.soli.newframeapp.palette
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.recyclerview.widget.RecyclerView
-import com.facebook.drawee.view.SimpleDraweeView
+import androidx.palette.graphics.Palette
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.base.BaseRecycleAdapter
 import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.ImageLoader
-import com.soli.newframeapp.R
 import com.soli.newframeapp.databinding.ActivityPaletteBinding
+import com.soli.newframeapp.databinding.ItemPaletteBinding
 import io.reactivex.android.schedulers.AndroidSchedulers
 
 /**
@@ -60,15 +56,11 @@ class PaletteActivity : BaseActivity<ActivityPaletteBinding>() {
 
 
     private class paletteAdapter(ctx: Context, list: ArrayList<String>) :
-        BaseRecycleAdapter<String>(ctx, list) {
-
-        override fun onCreateView(parent: ViewGroup?, viewType: Int): RecyclerView.ViewHolder {
-            return ViewHolder(inflater.inflate(R.layout.item_palette, parent, false))
-        }
+        BaseRecycleAdapter<String, ItemPaletteBinding>(ctx, list) {
 
         @SuppressLint("CheckResult")
         override fun onBindView(
-            mholder: RecyclerView.ViewHolder?,
+            binding: ItemPaletteBinding,
             itemType: Int,
             originalPosition: Int,
             realPosition: Int,
@@ -76,37 +68,26 @@ class PaletteActivity : BaseActivity<ActivityPaletteBinding>() {
         ) {
             val path = getItemData(realPosition) ?: return
 
-            (mholder as ViewHolder).apply {
+            ImageLoader.loadImage(binding.palette, path)
+            FrescoUtil.fetchBitmap(path)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe {
+                    Palette.from(it).generate { palette ->
+                        palette?.apply {
+                            var vibrant = palette.vibrantSwatch//palette.vibrantSwatch
+                            if (vibrant == null)
+                                for (temp in palette.swatches) {
+                                    vibrant = temp
+                                    break
+                                }
 
-                ImageLoader.loadImage(image, "$path@w_300")
-                FrescoUtil.fetchBitmap("$path@w_300")
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe {
-                        androidx.palette.graphics.Palette.from(it).generate { palette ->
-                            palette?.apply {
-                                var vibrant = palette.vibrantSwatch//palette.vibrantSwatch
-                                if (vibrant == null)
-                                    for (temp in palette.swatches) {
-                                        vibrant = temp
-                                        break
-                                    }
-
-                                itemView.setBackgroundColor(vibrant!!.rgb)
-                                title.setTextColor(vibrant.titleTextColor)
-                                content.setTextColor(vibrant.bodyTextColor)
-                            }
-
+                            binding.root.setBackgroundColor(vibrant!!.rgb)
+                            binding.tv1.setTextColor(vibrant.titleTextColor)
+                            binding.tv2.setTextColor(vibrant.bodyTextColor)
                         }
+
                     }
-            }
-        }
-
-
-        class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val image = view.findViewById<SimpleDraweeView>(R.id.palette)!!
-            val title = view.findViewById<TextView>(R.id.tv1)!!
-            val content = view.findViewById<TextView>(R.id.tv2)!!
-
+                }
         }
     }
 }

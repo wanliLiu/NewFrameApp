@@ -5,15 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewbinding.ViewBinding
 import com.soli.libcommon.util.clickView
+import java.lang.reflect.ParameterizedType
 
 /**
  *
  * @author Soli
  * @Time 2020/4/24 13:42
  */
-abstract class BaseRecycleAdapter<T>(context: Context, list: MutableList<T>?) :
-    RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+abstract class BaseRecycleAdapter<T, Binding : ViewBinding>(
+    context: Context, list: MutableList<T>?
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     constructor(context: Context) : this(context, null)
 
@@ -36,29 +39,39 @@ abstract class BaseRecycleAdapter<T>(context: Context, list: MutableList<T>?) :
     //item的点击事件
     var onItemClickListener: ((view: View, position: Int, data: T?) -> Unit)? = null
 
+
+    /***
+     *
+     */
+    private fun initBindView(): Binding {
+        val type = javaClass.genericSuperclass as ParameterizedType
+        val aClass = type.actualTypeArguments[1] as Class<*>
+        val method = aClass.getDeclaredMethod("inflate", LayoutInflater::class.java)
+        return method.invoke(null, inflater) as Binding
+    }
+
+
     override fun onCreateViewHolder(
-        viewGroup: ViewGroup,
-        viewType: Int
+        viewGroup: ViewGroup, viewType: Int
     ): RecyclerView.ViewHolder {
         return onCreateView(viewGroup, viewType)
     }
 
     override fun onBindViewHolder(
-        mholder: RecyclerView.ViewHolder,
-        position: Int
+        mholder: RecyclerView.ViewHolder, position: Int
     ) {
         onBindViewHolder(mholder, position, arrayListOf())
     }
 
     override fun onBindViewHolder(
-        mholder: RecyclerView.ViewHolder,
-        position: Int,
-        payloads: MutableList<Any>
+        mholder: RecyclerView.ViewHolder, position: Int, payloads: MutableList<Any>
     ) {
         val type = getItemViewType(position)
         val realPosition = getRealItemPosition(position)
         if (ITEM_TYPE_NORMAL == type) {
-            onBindView(mholder, type, position, realPosition, payloads)
+            onBindView(
+                (mholder as BaseViewHolder<Binding>).binding, type, position, realPosition, payloads
+            )
             //注意如果 onBindView里面也设置了点击时间，并且这里不为空，那么onBindView里面设置的就会不管用
             if (onItemClickListener != null) {
                 mholder.itemView.clickView {
@@ -68,10 +81,11 @@ abstract class BaseRecycleAdapter<T>(context: Context, list: MutableList<T>?) :
         }
     }
 
-    protected abstract fun onCreateView(
-        parent: ViewGroup?,
-        viewType: Int
-    ): RecyclerView.ViewHolder
+    open fun onCreateView(
+        parent: ViewGroup?, viewType: Int
+    ): RecyclerView.ViewHolder {
+        return BaseViewHolder(initBindView())
+    }
 
     /**
      * 加了header后，position会有所不同,以下是说明
@@ -81,7 +95,7 @@ abstract class BaseRecycleAdapter<T>(context: Context, list: MutableList<T>?) :
      * @param real_position     真正的position，
      */
     protected abstract fun onBindView(
-        mholder: RecyclerView.ViewHolder?,
+        binding: Binding,
         itemType: Int,
         originalPosition: Int,
         realPosition: Int,
@@ -179,8 +193,7 @@ abstract class BaseRecycleAdapter<T>(context: Context, list: MutableList<T>?) :
         if (useHaveAnimationRefresh) {
             notifyItemInserted(position + headerCount)
             notifyItemRangeChanged(
-                position + headerCount,
-                itemCount - position - headerCount
+                position + headerCount, itemCount - position - headerCount
             )
         } else notifyDataSetChanged()
     }
@@ -208,8 +221,7 @@ abstract class BaseRecycleAdapter<T>(context: Context, list: MutableList<T>?) :
         if (useHaveAnimationRefresh) {
             notifyItemRangeInserted(position + headerCount, newData.size)
             notifyItemRangeChanged(
-                position + headerCount,
-                itemCount - position - headerCount
+                position + headerCount, itemCount - position - headerCount
             )
         } else notifyDataSetChanged()
     }
@@ -228,8 +240,7 @@ abstract class BaseRecycleAdapter<T>(context: Context, list: MutableList<T>?) :
         if (useHaveAnimationRefresh) {
             notifyItemInserted(position + headerCount)
             notifyItemRangeChanged(
-                position + headerCount,
-                itemCount - position - headerCount
+                position + headerCount, itemCount - position - headerCount
             )
         } else notifyDataSetChanged()
     }
@@ -256,8 +267,7 @@ abstract class BaseRecycleAdapter<T>(context: Context, list: MutableList<T>?) :
                     if (useHaveAnimationRefresh) {
                         notifyItemRemoved(position + headerCount)
                         notifyItemRangeChanged(
-                            position + headerCount,
-                            itemCount - position - headerCount
+                            position + headerCount, itemCount - position - headerCount
                         )
                     } else notifyDataSetChanged()
                 }
@@ -279,8 +289,7 @@ abstract class BaseRecycleAdapter<T>(context: Context, list: MutableList<T>?) :
                     if (useHaveAnimationRefresh) {
                         notifyItemRemoved(position + headerCount)
                         notifyItemRangeChanged(
-                            position + headerCount,
-                            itemCount - position - headerCount
+                            position + headerCount, itemCount - position - headerCount
                         )
                     } else notifyDataSetChanged()
                 }
