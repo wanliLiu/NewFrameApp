@@ -73,7 +73,7 @@ deps.kotlin = kotlin
 
 //view
 deps.constraint_layout = 'androidx.constraintlayout:constraintlayout:2.+'
-deps.corektx = 'androidx.core:core-ktx:1.+'
+deps.corektx = 'androidx.core:core-ktx:1.9.0'
 deps.fragmentktx = 'androidx.fragment:fragment-ktx:1.+'
 
 deps.android_gradle_plugin = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
