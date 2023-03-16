@@ -120,12 +120,6 @@ dependencies {
 //    api deps.fragmentationx_swipeback
 //    api deps.fragmentationx_eventbus
 
-    api project(":libfragment")
-    api project(":libfragment_core")
-    api project(":libfragment_swipe")
-//    api files('libs/fragmentation-1.0.3.aar')
-//    api files('libs/fragmentation_core-1.0.3.aar')
-//    api files('libs/fragmentation_swipeback-1.0.3.aar')
     api("com.orhanobut:logger:2.2.0")
 //    debugApi 'com.soli.flutter_module:flutter_debug:1.1.2'
 //    releaseApi 'com.soli.flutter_module:flutter_release:1.1.2'
