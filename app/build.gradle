@@ -58,10 +58,12 @@ android {
     buildFeatures {
         viewBinding true
     }
-
     packagingOptions {
-        pickFirst "META-INF/versions/9/previous-compilation-data.bin"
+        resources {
+            pickFirsts += ['META-INF/versions/9/previous-compilation-data.bin']
+        }
     }
+
 
 //    productFlavors {
 //        _28Target {}
