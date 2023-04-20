@@ -1,6 +1,7 @@
 package com.soli.newframeapp.pubu
 
 import android.content.Context
+import android.view.ViewGroup
 import com.soli.libcommon.base.BaseRecycleAdapter
 import com.soli.libcommon.util.ImageLoader
 import com.soli.libcommon.util.Utils
@@ -33,9 +34,11 @@ class PhotoAdapter(context: Context) : BaseRecycleAdapter<String, ItemJokerPhoto
             0.5
         }
 
-        val params = binding.photo.layoutParams
-        params.height = (itemWidth * rat).toInt()
-        binding.photo.layoutParams = params
+        val params = binding.photo.layoutParams ?: ViewGroup.LayoutParams(itemWidth, 0)
+        params.apply {
+            params.height = (itemWidth * rat).toInt()
+            binding.photo.layoutParams = params
+        }
 
         ImageLoader.loadImage(binding.photo, bean, itemWidth, itemWidth)
     }

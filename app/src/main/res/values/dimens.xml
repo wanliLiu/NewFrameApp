@@ -1,6 +1,6 @@
 <resources>
     <dimen name="fab_margin">16dp</dimen>
-    <dimen name="dimen_sw_15dp">15dp</dimen>
+    <dimen name="dimen_sw_15dp">10dp</dimen>
 
     <dimen name="home_tab_bar_height">50dp</dimen>
 

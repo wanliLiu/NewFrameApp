@@ -1,4 +1,4 @@
-package com.taihe.libCommon.view.recyclerview.decoration
+package com.soli.libcommon.view.recyclerview.decoration
 
 import android.graphics.Rect
 import android.view.View

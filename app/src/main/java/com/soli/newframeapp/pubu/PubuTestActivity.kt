@@ -1,11 +1,12 @@
 package com.soli.newframeapp.pubu
 
+import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.util.RxJavaUtil
+import com.soli.libcommon.view.recyclerview.decoration.SpacingDecoration
 import com.soli.newframeapp.R
 import com.soli.newframeapp.databinding.PullRefreshLayoutBinding
 import com.soli.pullupdownrefresh.PullRefreshLayout
-import com.taihe.libCommon.view.recyclerview.decoration.SpacingDecoration
 
 /*
  * @author soli
@@ -35,12 +36,12 @@ class PubuTestActivity : BaseActivity<PullRefreshLayoutBinding>() {
     override fun initView() {
         title = "瀑布流"
 
-        val manager = androidx.recyclerview.widget.StaggeredGridLayoutManager(
+        val manager = StaggeredGridLayoutManager(
             2,
-            androidx.recyclerview.widget.StaggeredGridLayoutManager.VERTICAL
+            StaggeredGridLayoutManager.VERTICAL
         )
         manager.gapStrategy =
-            androidx.recyclerview.widget.StaggeredGridLayoutManager.GAP_HANDLING_NONE
+            StaggeredGridLayoutManager.GAP_HANDLING_NONE
 
         binding.itemList.setHasFixedSize(true)
 
