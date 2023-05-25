@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
     <!-- 适配全面屏手机 -->
     <meta-data
@@ -85,6 +85,8 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility" />
         </service>
+
+        <activity android:name=".audio.AudioRecordTest"/>
     </application>
 
 </manifest>

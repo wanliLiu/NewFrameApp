@@ -19,10 +19,28 @@ import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
-import com.soli.libcommon.util.*
+import com.soli.libcommon.util.MLog
+import com.soli.libcommon.util.NetworkUtil
+import com.soli.libcommon.util.RSAUtils
+import com.soli.libcommon.util.RxJavaUtil
+import com.soli.libcommon.util.ToastUtils
+import com.soli.libcommon.util.clickView
+import com.soli.libcommon.util.md5String
+import com.soli.libcommon.util.openActivity
 import com.soli.libcommon.view.loading.LoadingType
-import com.soli.newframeapp.*
-import com.soli.newframeapp.access.*
+import com.soli.newframeapp.Android7Activity
+import com.soli.newframeapp.FragmentTestActivity
+import com.soli.newframeapp.R
+import com.soli.newframeapp.SecondAcitivity
+import com.soli.newframeapp.WebsocketActivity
+import com.soli.newframeapp.access.AccessibilityUtil
+import com.soli.newframeapp.access.AutoClickByHierachryObservable
+import com.soli.newframeapp.access.AutoClickObservable
+import com.soli.newframeapp.access.KiwiAccessibilityService
+import com.soli.newframeapp.access.PauseControl
+import com.soli.newframeapp.access.ViewStateListenerAdapter
+import com.soli.newframeapp.access.registerEvent
+import com.soli.newframeapp.audio.AudioRecordTest
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.databinding.FragmentMainBinding
@@ -151,6 +169,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
                 ).show()
                 else start(ScanFileFagment())
             }
+
             R.id.autoClick -> autoClickTest()
             R.id.dragTest -> start(DragFragment())
 //            R.id.flutterIn -> openActivity<FlutterEntranceActivity>(
@@ -158,6 +177,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
 //                "background_mode" to "opaque",
 //                "destroy_engine_with_activity" to true
 //            )
+            R.id.audioRecored -> openActivity<AudioRecordTest>()
             else -> Toast.makeText(ctx, "没有需要点击打开的", Toast.LENGTH_SHORT).show()
         }
     }

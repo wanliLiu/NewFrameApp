@@ -163,4 +163,10 @@
     <!--        android:layout_height="wrap_content"-->
     <!--        android:text="Flutter模块" />-->
 
+    <Button
+        android:id="@+id/audioRecored"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="音频录制" />
+
 </com.google.android.flexbox.FlexboxLayout>
