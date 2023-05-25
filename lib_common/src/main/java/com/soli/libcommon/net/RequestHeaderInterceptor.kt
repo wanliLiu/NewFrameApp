@@ -14,9 +14,9 @@ class RequestHeaderInterceptor : Interceptor {
 
         val newRequest = chain.request().newBuilder()
 //            .header("client_v", MyTools.getVersionStr(Constant.getContext()))
-            .header("platform", "android")
-            .header("platform_v", android.os.Build.VERSION.RELEASE)
-            .header("model", android.os.Build.MODEL)
+//            .header("platform", "android")
+//            .header("platform_v", android.os.Build.VERSION.RELEASE)
+//            .header("model", android.os.Build.MODEL)
 //            .header("device_id", Utils.getPhoneUUID(Constant.getContext()))
 //            .header("token", AuthInfo.getToken())
             //有些图片出现的403 Forbidden

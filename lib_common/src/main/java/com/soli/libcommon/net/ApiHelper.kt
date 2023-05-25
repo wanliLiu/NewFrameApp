@@ -309,10 +309,10 @@ class ApiHelper private constructor(private val builder: Builder) {
                 callBack?.invoke(ApiResult(ResultCode.NETWORK_TROBLE, "----没有网络啦---"))
                 true
             }
-            SecurityUtil.dealNetSecurityCheck() -> {
-                callBack?.invoke(ApiResult(ResultCode.NETWORK_TROBLE, "网络异常"))
-                true
-            }
+//            SecurityUtil.dealNetSecurityCheck() -> {
+//                callBack?.invoke(ApiResult(ResultCode.NETWORK_TROBLE, "网络异常"))
+//                true
+//            }
             else -> false
         }
     }

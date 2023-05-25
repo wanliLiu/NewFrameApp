@@ -17,6 +17,7 @@
         android:resizeableActivity="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning"
         tools:targetApi="n">
@@ -86,7 +87,6 @@
                 android:resource="@xml/accessibility" />
         </service>
 
-        <activity android:name=".audio.AudioRecordActivity"/>
     </application>
 
 </manifest>
