@@ -24,7 +24,7 @@ private const val REQUEST_RECORD_AUDIO_PERMISSION = 200
  * @author liuwanli
  * @Time 2023/5/25 14:03
  */
-class AudioRecordTest : AppCompatActivity() {
+class AudioRecordActivity : AppCompatActivity() {
 
     private var fileName: String = ""
 

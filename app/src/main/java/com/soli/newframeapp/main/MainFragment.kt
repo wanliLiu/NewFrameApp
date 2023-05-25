@@ -40,7 +40,7 @@ import com.soli.newframeapp.access.KiwiAccessibilityService
 import com.soli.newframeapp.access.PauseControl
 import com.soli.newframeapp.access.ViewStateListenerAdapter
 import com.soli.newframeapp.access.registerEvent
-import com.soli.newframeapp.audio.AudioRecordTest
+import com.soli.newframeapp.audio.AudioRecordActivity
 import com.soli.newframeapp.autowrap.AutoWrapLayoutTestActivity
 import com.soli.newframeapp.bottomsheet.BottomSheetTestActivity
 import com.soli.newframeapp.databinding.FragmentMainBinding
@@ -177,7 +177,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
 //                "background_mode" to "opaque",
 //                "destroy_engine_with_activity" to true
 //            )
-            R.id.audioRecored -> openActivity<AudioRecordTest>()
+            R.id.audioRecored -> openActivity<AudioRecordActivity>()
             else -> Toast.makeText(ctx, "没有需要点击打开的", Toast.LENGTH_SHORT).show()
         }
     }

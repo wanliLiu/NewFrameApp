@@ -86,7 +86,7 @@
                 android:resource="@xml/accessibility" />
         </service>
 
-        <activity android:name=".audio.AudioRecordTest"/>
+        <activity android:name=".audio.AudioRecordActivity"/>
     </application>
 
 </manifest>
