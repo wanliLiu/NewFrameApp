@@ -125,10 +125,6 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
     }
 
     override fun initView() {
-        ActivityCompat.requestPermissions(
-            requireActivity(), permissions, REQUEST_RECORD_AUDIO_PERMISSION
-        )
-
         binding.videoView.hideController()
         requireActivity().volumeControlStream = AudioManager.STREAM_MUSIC
         createMediaSession()
@@ -207,6 +203,7 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
                 val question = jsonObject.optString("question")
                 val answer = jsonObject.optString("answer")
                 val task = jsonObject.optString("task")
+                binding.answerText.text = answer
                 startPlayer(task)
             }
         }, object : FileProgressListener {
@@ -225,14 +222,23 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
 
     override fun onResume() {
         super.onResume()
-        getInitData()
-        binding.videoView.onResume()
+        if (ActivityCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission.RECORD_AUDIO
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            getInitData()
+            binding.videoView.onResume()
+        } else {
+            ActivityCompat.requestPermissions(
+                requireActivity(), permissions, REQUEST_RECORD_AUDIO_PERMISSION
+            )
+        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         releasePlayer()
-
     }
 
     // MediaSession related functions.
