@@ -69,7 +69,7 @@ dependencies {
     api deps.rxlifecycle
 
     //network
-    implementation deps.loggingInterceptor
+    api deps.loggingInterceptor
     implementation deps.retrofit.runtime
     api deps.okhttp
 //    api deps.retrofit.gson

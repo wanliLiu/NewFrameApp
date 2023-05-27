@@ -11,8 +11,8 @@ import okhttp3.Response
 class RequestHeaderInterceptor : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
-
-        val newRequest = chain.request().newBuilder()
+        val old_request = chain.request()
+        val newRequest = old_request.newBuilder()
 //            .header("client_v", MyTools.getVersionStr(Constant.getContext()))
 //            .header("platform", "android")
 //            .header("platform_v", android.os.Build.VERSION.RELEASE)

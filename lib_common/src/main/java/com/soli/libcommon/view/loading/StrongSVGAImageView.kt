@@ -10,7 +10,6 @@ import com.opensource.svgaplayer.SVGAParser.Companion.shareParser
 import com.opensource.svgaplayer.SVGAParser.ParseCompletion
 import com.opensource.svgaplayer.SVGAVideoEntity
 import com.soli.libcommon.base.Constant
-import com.soli.libcommon.util.MLog
 
 /**
  * Created by Android Studio.
@@ -55,10 +54,10 @@ open class StrongSVGAImageView : SVGAImageView {
                 override fun onRepeat() = Unit
 
                 override fun onStep(frame: Int, percentage: Double) {
-                    MLog.e(
-                        Tag,
-                        "onStep-$currentAnimationPath frame-->$frame----->$percentage"
-                    )
+//                    MLog.e(
+//                        Tag,
+//                        "onStep-$currentAnimationPath frame-->$frame----->$percentage"
+//                    )
                 }
             }
         }
@@ -72,7 +71,7 @@ open class StrongSVGAImageView : SVGAImageView {
         callback: (success: Boolean, mvideoItem: SVGAVideoEntity?) -> Unit
     ) {
         currentAnimationPath = name
-        MLog.d(Tag, "savga加载地址：$currentAnimationPath")
+//        MLog.d(Tag, "savga加载地址：$currentAnimationPath")
         val item = videoEntity[name]
         if (item != null) {
             log("缓存有，直接用")
@@ -100,7 +99,7 @@ open class StrongSVGAImageView : SVGAImageView {
     }
 
     private fun log(msg: String) {
-        MLog.d(Tag, "savga加载地址：$currentAnimationPath  $msg")
+//        MLog.d(Tag, "savga加载地址：$currentAnimationPath  $msg")
     }
 
     /**

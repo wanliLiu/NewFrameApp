@@ -1,7 +1,6 @@
 package com.soli.libcommon.net
 
 import android.text.TextUtils
-import android.webkit.MimeTypeMap
 import com.alibaba.fastjson.JSON
 import com.soli.libcommon.base.Constant
 import com.soli.libcommon.net.cookie.https.HttpsUtils
@@ -22,7 +21,6 @@ import kotlinx.coroutines.withContext
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.asRequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.logging.HttpLoggingInterceptor
 import okhttp3.logging.LoggingEventListener
 import retrofit2.Call
@@ -431,29 +429,13 @@ class ApiHelper private constructor(private val builder: Builder) {
 
         val file = File(builder.fileUrl)
         require(file.exists()) { "上传的文件不存在--->" + file.absolutePath }
-        //
-//        progressListener = listener;
+//        val mimetype = MimeTypeMap.getSingleton().getMimeTypeFromExtension("3gp")
         val filebody = ProgressRequestBody(
-            file.asRequestBody("multipart/form-data".toMediaTypeOrNull()),
+            file.asRequestBody(),
             listener
         )
         val filePart = MultipartBody.Part.createFormData("file", file.name, filebody)
-        var fileExt = MimeTypeMap.getFileExtensionFromUrl(file.absolutePath)
-        if (TextUtils.isEmpty(fileExt)) fileExt = "jpg"
-        val fileMode = FileUtil.getFileUploadType(fileExt)
-        val safe = "1"
-        val cache = "1"
-        val key = MD5(fileMode.toString() + fileExt + safe + getFileMD5(file) + "taiheUp@#")
-        val secureKey = StringBuffer()
-        //        String mapFrom = "0123456789abcdef";
-        val mapTo = "f7c8d0e1a9b53426"
-        for (i in key.indices) {
-            val tst = key.substring(i, i + 1).toInt(16)
-            secureKey.append(mapTo.substring(tst, tst + 1))
-        }
-        val url =
-            "/?upload=1&fileMode=$fileMode&fileExt=$fileExt&safe=$safe&cache=$cache&mode=upload&secureKey=$secureKey"
-        val mCall = retrofit!!.create(ApiService::class.java).uploadFile(url, filePart)
+        val mCall = retrofit!!.create(ApiService::class.java).uploadFile(builder.url, filePart)
 
         startRequest(callBack, mCall)
     }
@@ -487,22 +469,17 @@ class ApiHelper private constructor(private val builder: Builder) {
             secureKey.append(mapTo.substring(tst, tst + 1))
         }
         val fileUploadParams: MutableMap<String, RequestBody> = HashMap()
-        fileUploadParams["fileMode"] = fileMode.toString().toRequestBody()
-        //(mov count是从视频中抽取的图片数量 0表示不抽取 仅当fileMode是2的时候生效.)
-        fileUploadParams["movImgCount"] = "0".toRequestBody()
-        fileUploadParams["fileExt"] = fileExt.toRequestBody()
         try {
-            fileUploadParams["file\"; filename=\"" + URLEncoder.encode(file.name, "UTF-8") + " "] =
-                filebody
+            fileUploadParams["file"] =filebody
         } catch (e: Exception) {
             e.printStackTrace()
             fileUploadParams["file\"; filename=\"" + URLEncoder.encode(file.name) + " "] = filebody
         }
-        fileUploadParams["safe"] = safe.toRequestBody()
-        fileUploadParams["cache"] = cache.toRequestBody()
-        fileUploadParams["secureKey"] = secureKey.toString().toRequestBody()
-        //        fileUploadParams.put("action", RequestBody.create(builder.url.replace(Constant.apiHead, ""), null));
-        fileUploadParams["mode"] = "upload".toRequestBody()
+//        fileUploadParams["safe"] = safe.toRequestBody()
+//        fileUploadParams["cache"] = cache.toRequestBody()
+//        fileUploadParams["secureKey"] = secureKey.toString().toRequestBody()
+//        //        fileUploadParams.put("action", RequestBody.create(builder.url.replace(Constant.apiHead, ""), null));
+//        fileUploadParams["mode"] = "upload".toRequestBody()
 
 //        Call<ResponseBody> mCall = retrofit.create(ApiService.class).uploadFileNew(builder.url.replace(Constant.apiHead, ""), fileUploadParams);
         var mCall =

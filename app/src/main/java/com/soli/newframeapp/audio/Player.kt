@@ -48,6 +48,13 @@ class PlayerHolder(
 ) : AnkoLogger {
     val audioFocusPlayer: ExoPlayer
 
+    private var isPlayForAnswer = false
+
+    private var isFirsPlay = false
+    private var playUrl = ""
+    var prologue = ""
+    var scene = ""
+
     // Create the player instance.
     init {
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
@@ -59,7 +66,7 @@ class PlayerHolder(
         audioFocusPlayer = AudioFocusWrapper(audioAttributes,
             audioManager,
             ExoPlayer.Builder(context).build().also {
-                it.repeatMode = Player.REPEAT_MODE_ALL
+//                it.repeatMode = Player.REPEAT_MODE_ALL
                 playerView.player = it
             })
         info { "SimpleExoPlayer created" }
@@ -79,6 +86,15 @@ class PlayerHolder(
     }
 
     private fun getMediaSource(url: String) = createExtractorMediaSource(Uri.parse(url))
+
+
+    private fun getSceneMediaSource() = getMediaSource(scene)
+    fun fristPlay(url: String = prologue) {
+        stop()
+        isFirsPlay = true
+        playUrl = prologue
+        start(url)
+    }
 
     // Prepare playback.
     fun start(url: String? = null) {
@@ -147,8 +163,19 @@ class PlayerHolder(
             override fun onPlaybackStateChanged(playbackState: Int) {
                 super.onPlaybackStateChanged(playbackState)
                 info { "playerStateChanged: ${getStateString(playbackState)}" }
-                if (playbackState == Player.STATE_READY)
+                if (playbackState == Player.STATE_READY) {
                     audioFocusPlayer.play()
+                    playerView.hideController()
+                } else if (playbackState == Player.STATE_ENDED) {
+                    playerView.hideController()
+//                    if (isFirsPlay) {
+//                        if (playUrl == prologue) {
+//                            fristPlay(scene)
+//                        } else if (playUrl == scene) {
+//
+//                        }
+//                    }
+                }
             }
 
             override fun onPlayerError(error: PlaybackException) {

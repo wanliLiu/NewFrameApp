@@ -9,6 +9,7 @@ import android.support.v4.media.MediaDescriptionCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.text.TextUtils
 import android.util.Log
+import android.view.View
 import androidx.core.app.ActivityCompat
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.ext.mediasession.MediaSessionConnector
@@ -16,6 +17,8 @@ import com.google.android.exoplayer2.ext.mediasession.TimelineQueueNavigator
 import com.soli.libcommon.base.BaseFragment
 import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.net.DataType
+import com.soli.libcommon.net.download.FileProgressListener
+import com.soli.libcommon.view.loading.LoadingType
 import com.soli.newframeapp.databinding.ActivityVoiceInputBinding
 import org.jetbrains.anko.AnkoLogger
 import org.json.JSONObject
@@ -94,18 +97,20 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
     }
 
     private fun startRecording() {
+//        fileName =
+//            "${ctx!!.externalCacheDir!!.absolutePath}/audio_teset" + ".3gp"
+        fileName =
+            "${ctx!!.externalCacheDir!!.absolutePath}/audio_" + System.currentTimeMillis() + ".3gp"
         recorder = MediaRecorder().apply {
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             setOutputFile(fileName)
             setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB)
-
             try {
                 prepare()
             } catch (e: IOException) {
                 Log.e(LOG_TAG, "prepare() failed")
             }
-
             start()
         }
     }
@@ -114,12 +119,12 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
         recorder?.apply {
             stop()
             release()
+            uploadFile(fileName)
         }
         recorder = null
     }
 
     override fun initView() {
-        fileName = "${ctx!!.externalCacheDir!!.absolutePath}/audiorecordtest.3gp"
         ActivityCompat.requestPermissions(
             requireActivity(), permissions, REQUEST_RECORD_AUDIO_PERMISSION
         )
@@ -131,6 +136,7 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
     }
 
     override fun initListener() {
+        binding.startPlaying.visibility = View.GONE
         binding.startPlaying.text = "Start playing"
         binding.startPlaying.setOnClickListener {
             onPlay(mStartPlaying)
@@ -153,7 +159,6 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
     }
 
     override fun initData() {
-
     }
 
     override fun onPause() {
@@ -179,11 +184,43 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
             val result = it.fullData
             if (!TextUtils.isEmpty(result)) {
                 val jsonObject = JSONObject(result)
-                val prologue = jsonObject.optString("prologue")
-                val scene = jsonObject.optString("scene")
-                startPlayer(prologue)
+                playerHolder.prologue = jsonObject.optString("prologue")
+                playerHolder.scene = jsonObject.optString("scene")
+                firstPlay()
             }
         }
+    }
+
+    private fun uploadFile(file: String) {
+        showProgress(type = LoadingType.TypeDialog)
+        ApiHelper.build {
+            baseUrl = serverUrl
+            bodyType = DataType.STRING
+            fileUrl = file
+            url = "api/task"
+        }.uploadFile({
+            dismissProgress()
+            val result = it.fullData
+            Log.d("uploadFile", result)
+            if (!TextUtils.isEmpty(result)) {
+                val jsonObject = JSONObject(result)
+                val question = jsonObject.optString("question")
+                val answer = jsonObject.optString("answer")
+                val task = jsonObject.optString("task")
+                startPlayer(task)
+            }
+        }, object : FileProgressListener {
+            override fun progress(
+                progress: Int,
+                bytes: Long,
+                updateBytes: Long,
+                fileSize: Long,
+                isDone: Boolean
+            ) {
+                Log.d("uploadFile", "progress $progress  isDone $isDone")
+            }
+        })
+
     }
 
     override fun onResume() {
@@ -237,6 +274,11 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
     // ExoPlayer related functions.
     private fun createPlayer() {
         playerHolder = PlayerHolder(requireActivity(), playerState, binding.videoView)
+    }
+
+    private fun firstPlay() {
+        playerHolder.fristPlay()
+        activateMediaSession()
     }
 
     private fun startPlayer(url: String?) {

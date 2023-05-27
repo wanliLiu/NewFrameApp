@@ -5,6 +5,7 @@ import com.soli.libcommon.base.BaseMultiFragmentActivity
 import com.soli.libcommon.util.SecurityUtil
 import com.soli.libcommon.util.ToastUtils
 import com.soli.newframeapp.R
+import com.soli.newframeapp.audio.AudioRecordFragment
 import com.soli.newframeapp.databinding.ActivityMainBinding
 
 class MainActivity : BaseMultiFragmentActivity<ActivityMainBinding>() {
@@ -15,9 +16,9 @@ class MainActivity : BaseMultiFragmentActivity<ActivityMainBinding>() {
 
     override fun needSliderActivity() = false
     override fun initView() {
-        val homeFragment = findFragment(MainFragment::class.java)
+        val homeFragment = findFragment(AudioRecordFragment::class.java)
         if (homeFragment == null) {
-            loadRootFragment(R.id.home_container, MainFragment())
+            loadRootFragment(R.id.home_container, AudioRecordFragment())
         }
     }
 
