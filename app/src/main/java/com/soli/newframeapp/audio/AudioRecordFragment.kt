@@ -204,6 +204,7 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
                 val answer = jsonObject.optString("answer")
                 val task = jsonObject.optString("task")
                 binding.answerText.text = answer
+                binding.questionText.text = question
                 startPlayer(task)
             }
         }, object : FileProgressListener {

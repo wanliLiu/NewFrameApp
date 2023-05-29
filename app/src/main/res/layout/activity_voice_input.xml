@@ -19,8 +19,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
-        android:textColor="@color/color_white"
         android:gravity="start"
+        android:textColor="@color/color_white"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="@id/videoView"
         app:layout_constraintEnd_toEndOf="@id/videoView"
@@ -32,6 +32,19 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/startPlaying"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/videoView" />
+
+    <TextView
+        android:id="@+id/questionText"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_margin="10dp"
+        android:gravity="start|top"
+        android:textColor="@color/A2"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/videoView" />
 
