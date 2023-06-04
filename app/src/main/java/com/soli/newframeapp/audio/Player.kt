@@ -51,9 +51,10 @@ class PlayerHolder(
     private var isPlayForAnswer = false
 
     private var isFirsPlay = false
-    private var playUrl = ""
     var prologue = ""
     var scene = ""
+
+    private var isPlayingForScene = false
 
     // Create the player instance.
     init {
@@ -92,12 +93,12 @@ class PlayerHolder(
     fun fristPlay(url: String = prologue) {
         stop()
         isFirsPlay = true
-        playUrl = prologue
+        isPlayingForScene = false
         start(url)
     }
 
     // Prepare playback.
-    fun start(url: String? = null) {
+    private fun start(url: String? = null) {
         // Load media.
         audioFocusPlayer.prepare(if (!TextUtils.isEmpty(url)) getMediaSource(url!!) else buildMediaSource())
         // Restore state (after onResume()/onStart())
@@ -168,13 +169,13 @@ class PlayerHolder(
                     playerView.hideController()
                 } else if (playbackState == Player.STATE_ENDED) {
                     playerView.hideController()
-//                    if (isFirsPlay) {
-//                        if (playUrl == prologue) {
-//                            fristPlay(scene)
-//                        } else if (playUrl == scene) {
-//
-//                        }
-//                    }
+                    if (isFirsPlay) {
+                        isFirsPlay = false
+                        isPlayingForScene = true
+                    }
+                    if (isPlayingForScene) {
+                        start(scene)
+                    }
                 }
             }
 

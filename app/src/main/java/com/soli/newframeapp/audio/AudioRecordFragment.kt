@@ -289,7 +289,7 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
     }
 
     private fun startPlayer(url: String?) {
-        playerHolder.start(url)
+        playerHolder.fristPlay(url!!)
         activateMediaSession()
     }
 
