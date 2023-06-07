@@ -102,6 +102,7 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
         fileName =
             "${ctx!!.externalCacheDir!!.absolutePath}/audio_" + System.currentTimeMillis() + ".3gp"
         recorder = MediaRecorder().apply {
+            setAudioSamplingRate(16000)
             setAudioSource(MediaRecorder.AudioSource.MIC)
             setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP)
             setOutputFile(fileName)
@@ -147,11 +148,21 @@ class AudioRecordFragment : BaseFragment<ActivityVoiceInputBinding>(), AnkoLogge
         binding.startRecord.setOnClickListener {
             onRecord(mStartRecording)
             binding.startRecord.text = when (mStartRecording) {
-                true -> "Stop recording"
+                true -> {
+                    clearToGo()
+                    "Stop recording"
+                }
+
                 false -> "Start recording"
             }
             mStartRecording = !mStartRecording
         }
+    }
+
+    private fun clearToGo() {
+        binding.answerText.text = ""
+        binding.questionText.text = ""
+        playerHolder?.playScene()
     }
 
     override fun initData() {

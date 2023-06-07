@@ -46,9 +46,7 @@ class PlayerHolder(
     private val playerState: PlayerState,
     private val playerView: PlayerView
 ) : AnkoLogger {
-    val audioFocusPlayer: ExoPlayer
-
-    private var isPlayForAnswer = false
+    var audioFocusPlayer: ExoPlayer? = null
 
     private var isFirsPlay = false
     var prologue = ""
@@ -58,6 +56,12 @@ class PlayerHolder(
 
     // Create the player instance.
     init {
+        getPlayer()
+        info { "SimpleExoPlayer created" }
+    }
+
+    private fun getPlayer(isRepeat: Boolean = false) {
+        stop()
         val audioManager = context.getSystemService(Context.AUDIO_SERVICE) as AudioManager
         val audioAttributes =
             AudioAttributesCompat.Builder().setContentType(AudioAttributesCompat.CONTENT_TYPE_MUSIC)
@@ -67,11 +71,18 @@ class PlayerHolder(
         audioFocusPlayer = AudioFocusWrapper(audioAttributes,
             audioManager,
             ExoPlayer.Builder(context).build().also {
-//                it.repeatMode = Player.REPEAT_MODE_ALL
+                it.repeatMode = Player.REPEAT_MODE_ALL
                 playerView.player = it
             })
-        info { "SimpleExoPlayer created" }
+        audioFocusPlayer = AudioFocusWrapper(audioAttributes,
+            audioManager,
+            ExoPlayer.Builder(context).build().also {
+                if (isRepeat)
+                    it.repeatMode = Player.REPEAT_MODE_ALL
+                playerView.player = it
+            })
     }
+
 
     private fun buildMediaSource(): MediaSource {
         val uriList = mutableListOf<MediaSource>()
@@ -92,30 +103,41 @@ class PlayerHolder(
     private fun getSceneMediaSource() = getMediaSource(scene)
     fun fristPlay(url: String = prologue) {
         stop()
+        getPlayer()
         isFirsPlay = true
         isPlayingForScene = false
         start(url)
     }
 
+    fun playScene() {
+        if (isFirsPlay) {
+            isFirsPlay = false
+            getPlayer(true)
+            start(scene)
+        }
+    }
+
     // Prepare playback.
     private fun start(url: String? = null) {
+        audioFocusPlayer ?: return
         // Load media.
-        audioFocusPlayer.prepare(if (!TextUtils.isEmpty(url)) getMediaSource(url!!) else buildMediaSource())
+        audioFocusPlayer!!.prepare(if (!TextUtils.isEmpty(url)) getMediaSource(url!!) else buildMediaSource())
         // Restore state (after onResume()/onStart())
         with(playerState) {
             // Start playback when media has buffered enough
             // (whenReady is true by default).
-            audioFocusPlayer.playWhenReady = whenReady
-            audioFocusPlayer.seekTo(window, position)
+            audioFocusPlayer!!.playWhenReady = whenReady
+            audioFocusPlayer!!.seekTo(window, position)
             // Add logging.
-            attachLogging(audioFocusPlayer)
+            attachLogging(audioFocusPlayer!!)
         }
         info { "SimpleExoPlayer is started" }
     }
 
     // Stop playback and release resources, but re-use the player instance.
     fun stop() {
-        with(audioFocusPlayer) {
+        audioFocusPlayer ?: return
+        with(audioFocusPlayer!!) {
             // Save state
             with(playerState) {
                 position = currentPosition
@@ -130,7 +152,8 @@ class PlayerHolder(
 
     // Destroy the player instance.
     fun release() {
-        audioFocusPlayer.release() // player instance can't be used again.
+        audioFocusPlayer ?: return
+        audioFocusPlayer!!.release() // player instance can't be used again.
         info { "SimpleExoPlayer is released" }
     }
 
@@ -165,17 +188,11 @@ class PlayerHolder(
                 super.onPlaybackStateChanged(playbackState)
                 info { "playerStateChanged: ${getStateString(playbackState)}" }
                 if (playbackState == Player.STATE_READY) {
-                    audioFocusPlayer.play()
+                    audioFocusPlayer!!.play()
                     playerView.hideController()
                 } else if (playbackState == Player.STATE_ENDED) {
                     playerView.hideController()
-                    if (isFirsPlay) {
-                        isFirsPlay = false
-                        isPlayingForScene = true
-                    }
-                    if (isPlayingForScene) {
-                        start(scene)
-                    }
+                    playScene()
                 }
             }
 
