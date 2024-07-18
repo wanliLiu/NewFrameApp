@@ -155,7 +155,7 @@ deps.flycoTab = "com.taihe.tablayout:flycotablayout:2.+"
 
 deps.toolargetool = "com.gu.android:toolargetool:0.2.1@aar"
 
-deps.svga = 'com.github.yyued:SVGAPlayer-Android:2.5.11'
+deps.svga = 'com.github.yyued:SVGAPlayer-Android:2.5.12'
 
 ext.deps = deps
 
