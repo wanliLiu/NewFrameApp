@@ -45,8 +45,8 @@ android {
 }
 
 dependencies {
-    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
-
+//    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
+    compileOnly(project(":aars"))
 // Kotlin support
 //    implementation(libs.kotlinx.coroutines.core)
 //    implementation(libs.kotlinx.coroutines.android)

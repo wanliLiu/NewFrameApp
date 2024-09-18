@@ -5,6 +5,7 @@ compileSdk = "34"
 floatwindow = "1.0.9"
 minSdk = "21"
 palette = "1.0.0"
+rxlifecycle2 = "1.5"
 targetSdk = "34"
 agp = "8.6.1"
 kotlin = "1.9.22"
@@ -64,6 +65,7 @@ fresco = { group = "com.facebook.fresco", name = "fresco", version.ref = "fresco
 fresco-animatedgif = { group = "com.facebook.fresco", name = "animated-gif", version.ref = "fresco" }
 fresco-okhttp3 = { group = "com.facebook.fresco", name = "imagepipeline-okhttp3", version.ref = "fresco" }
 
+rxlifecycle2 = { module = "com.dhh:rxlifecycle2", version.ref = "rxlifecycle2" }
 scaleimage = { group = "com.davemorrissey.labs", name = "subsampling-scale-image-view", version.ref = "scaleImageView" }
 nineoldandroids = { group = "com.nineoldandroids", name = "library", version.ref = "nine_old" }
 stetho = { group = "com.facebook.stetho", name = "stetho", version.ref = "stetho" }

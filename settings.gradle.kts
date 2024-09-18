@@ -28,3 +28,4 @@ dependencyResolutionManagement {
 rootProject.name = "NewFrameApp"
 include(":app")
 include(":lib_common")
+include(":aars")

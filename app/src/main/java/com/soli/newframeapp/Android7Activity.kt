@@ -20,7 +20,7 @@ import com.soli.libcommon.net.download.FileDownloadProcess
 import com.soli.libcommon.util.*
 import com.soli.libcommon.view.loading.LoadingType
 import com.soli.newframeapp.databinding.ActivityAndroid7Binding
-import com.soli.permissions.RxPermissions
+import com.tbruyelle.rxpermissions3.RxPermissions
 import java.io.File
 import java.io.FileNotFoundException
 

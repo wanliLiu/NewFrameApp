@@ -17,10 +17,10 @@ import com.soli.libcommon.util.FileUtil
 import com.soli.libcommon.util.ToastUtils
 import com.soli.newframeapp.databinding.ActivityDownloadTestBinding
 import com.soli.newframeapp.util.InstallUtil
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.util.concurrent.TimeUnit
 
 
@@ -123,7 +123,7 @@ class DownloadTestActivity : BaseActivity<ActivityDownloadTestBinding>() {
         mDisposable =
             Observable.interval(10, 20, TimeUnit.MILLISECONDS, Schedulers.io())//无限轮询,准备查询进度,在io线程执行
                 .filter { downloadBinder != null }
-                .map { downloadBinder?.getProgress(downloadId) }//获得下载进度
+                .map { downloadBinder?.getProgress(downloadId)!! }//获得下载进度
                 .takeUntil { it >= 100 }//返回true就停止了,当进度>=100就是下载完成了
                 .distinct()//去重复
                 .subscribeOn(Schedulers.io()).doOnSubscribe {

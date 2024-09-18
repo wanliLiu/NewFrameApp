@@ -45,10 +45,12 @@ android {
 }
 
 dependencies {
-    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
+//    implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
+    implementation(project(":aars"))
     implementation(project(":lib_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
     implementation(libs.floatwindow)
     implementation(libs.androidx.palette)
+    implementation(libs.rxlifecycle2)
 }

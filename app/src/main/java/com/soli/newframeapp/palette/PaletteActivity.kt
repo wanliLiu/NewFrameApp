@@ -9,7 +9,7 @@ import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.ImageLoader
 import com.soli.newframeapp.databinding.ActivityPaletteBinding
 import com.soli.newframeapp.databinding.ItemPaletteBinding
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
 /**
  *

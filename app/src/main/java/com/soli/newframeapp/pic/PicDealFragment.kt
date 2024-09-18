@@ -11,7 +11,7 @@ import com.soli.libcommon.util.FrescoUtil
 import com.soli.libcommon.util.MLog
 import com.soli.newframeapp.R
 import com.soli.newframeapp.databinding.ActivityPicDealBinding
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 
 
 /**

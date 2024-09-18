@@ -13,6 +13,7 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.forEach
+import androidx.fragment.app.FragmentActivity
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.dhh.rxlifecycle2.RxLifecycle
@@ -58,7 +59,7 @@ import com.soli.newframeapp.pubu.PubuTestActivity
 import com.soli.newframeapp.scanfile.ScanFileFagment
 import com.soli.newframeapp.span.SpecialSpanFragment
 import com.soli.newframeapp.toast.CustomToastActivity
-import com.soli.permissions.RxPermissions
+import com.tbruyelle.rxpermissions3.RxPermissions
 import com.yhao.floatwindow.FloatWindow
 import com.yhao.floatwindow.Screen
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
@@ -75,7 +76,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
 
     private val retryIndex: Int = 1
     private var retry: Int = 0
-    private val rxPermissions by lazy { RxPermissions(this) }
+    private val rxPermissions by lazy { RxPermissions(this as FragmentActivity) }
     private val pauseControl = PauseControl()
 
     override fun needSwipeBack() = false
