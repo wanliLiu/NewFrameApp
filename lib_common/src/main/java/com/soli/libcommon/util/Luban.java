@@ -5,16 +5,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
+
 import androidx.annotation.NonNull;
 import androidx.core.util.Preconditions;
-import io.reactivex.Observable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.schedulers.Schedulers;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 
 public class Luban {
@@ -53,7 +55,7 @@ public class Luban {
                     .doOnError(throwable -> {
                         if (compressListener != null) compressListener.onError(throwable);
                     })
-                    .onErrorResumeNext(Observable.empty())
+//                    .onErrorResumeNext(Observable.empty())
                     .filter(file -> file != null)
                     .subscribe(file -> {
                         if (compressListener != null) compressListener.onSuccess(file);
@@ -66,7 +68,7 @@ public class Luban {
                     .doOnError(throwable -> {
                         if (compressListener != null) compressListener.onError(throwable);
                     })
-                    .onErrorResumeNext(Observable.<File>empty())
+//                    .onErrorResumeNext(Observable.<File>empty())
                     .filter(file -> file != null)
                     .subscribe(file -> {
                         if (compressListener != null) compressListener.onSuccess(file);

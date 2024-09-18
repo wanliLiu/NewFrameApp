@@ -2,13 +2,14 @@ package com.soli.libcommon.net.websocket
 
 import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.util.MLog
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import io.reactivex.ObservableOnSubscribe
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.functions.Function
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableEmitter
+import io.reactivex.rxjava3.core.ObservableOnSubscribe
+import io.reactivex.rxjava3.core.SingleSource
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.functions.Function
+import io.reactivex.rxjava3.schedulers.Schedulers
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.WebSocket
@@ -59,7 +60,7 @@ class RxWebSocket private constructor() {
                 .observeOn(AndroidSchedulers.mainThread())
         } else {
             webSocketClient?.apply {
-                observableWe = observableWe!!.startWith(WebSocketInfo(this))
+                observableWe = observableWe!!.startWith(SingleSource { WebSocketInfo(this) })
             }
         }
         return observableWe!!.observeOn(AndroidSchedulers.mainThread())
@@ -72,7 +73,7 @@ class RxWebSocket private constructor() {
     private val webSocket: Observable<WebSocket>
         get() = getWebSocketInfoObservable()
             .filter { webSocketInfo -> webSocketInfo.webSocket != null }
-            .map { webSocketInfo -> webSocketInfo.webSocket }
+            .map { webSocketInfo -> webSocketInfo.webSocket!! }
 
 
     /**

@@ -4,15 +4,17 @@ import android.annotation.SuppressLint;
 import android.os.Looper;
 import android.view.View;
 import android.view.ViewConfiguration;
+
 import com.jakewharton.rxbinding4.view.RxView;
-import io.reactivex.Observable;
-import io.reactivex.Scheduler;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
 
 import java.util.concurrent.TimeUnit;
+
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.functions.Action;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Created by Soli on 2016/10/24.
@@ -78,7 +80,7 @@ public class RxJavaUtil {
             try {
                 if (action != null)
                     action.run();
-            } catch (Exception e) {
+            } catch (Throwable e) {
                 e.printStackTrace();
             }
         } else {

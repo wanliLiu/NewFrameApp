@@ -4,10 +4,10 @@ import com.soli.libcommon.base.Constant
 import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.util.FileUtil
 import com.soli.libcommon.util.MLog
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 
 /**
@@ -91,7 +91,7 @@ class FileDownloadProcess(
                 MLog.e("文件下载", it.message)
                 callback?.invoke(false, info)
             }
-            .onErrorResumeNext(Observable.empty())
+//            .onErrorResumeNext(Observable.empty())
             .subscribe {
 
                 val data = DownloadInfo(url, it)

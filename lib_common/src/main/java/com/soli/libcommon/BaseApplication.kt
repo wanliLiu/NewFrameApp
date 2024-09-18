@@ -1,40 +1,31 @@
 package com.soli.libcommon
 
+//import com.gu.toolargetool.TooLargeTool
+//import io.flutter.app.FlutterApplication
 import android.os.Build
 import android.webkit.WebView
 import androidx.appcompat.app.AppCompatDelegate
-import com.bytedance.boost_multidex.BoostMultiDexApplication
+import androidx.multidex.MultiDexApplication
 import com.facebook.stetho.Stetho
 import com.orhanobut.logger.AndroidLogAdapter
 import com.orhanobut.logger.FormatStrategy
 import com.orhanobut.logger.Logger
 import com.orhanobut.logger.PrettyFormatStrategy
-//import com.gu.toolargetool.TooLargeTool
 import com.soli.libcommon.base.Constant
-import com.soli.libcommon.util.*
-//import io.flutter.app.FlutterApplication
-import io.reactivex.plugins.RxJavaPlugins
+import com.soli.libcommon.util.ActivityStackRecord
+import com.soli.libcommon.util.FrescoUtil
+import com.soli.libcommon.util.MLog
+import com.soli.libcommon.util.ProcessName
+import com.soli.libcommon.util.setCustomDensity
+import io.reactivex.rxjava3.plugins.RxJavaPlugins
 import me.yokeyword.fragmentation.Fragmentation
 
-/**
- *
- */
-open class InnerBoostMultiDexApplication : BoostMultiDexApplication(){//FlutterApplication()
-
-    // TODO: 2020/11/12  参考 BoostMultiDexApplication 
-//    override fun attachBaseContext(base: Context?) {
-//        super.attachBaseContext(base)
-//        if (BoostMultiDex.isOptimizeProcess(Utility.getCurProcessName(base))) {
-//            BoostMultiDex.install(base)
-//        }
-//    }
-}
 
 /**
  * @author Soli
  * @Time 18-5-15 上午11:07
  */
-abstract class BaseApplication : InnerBoostMultiDexApplication() {
+abstract class BaseApplication : MultiDexApplication() {
 
     protected abstract fun beforeLaunch()
 

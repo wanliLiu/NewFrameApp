@@ -8,12 +8,16 @@ import com.soli.libcommon.net.ApiCallBack
 import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.download.FileProgressListener
-import com.soli.libcommon.util.*
-import io.reactivex.Observable
-import io.reactivex.ObservableEmitter
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
+import com.soli.libcommon.util.FileSizeUtil
+import com.soli.libcommon.util.FileUtil
+import com.soli.libcommon.util.ImageDeal
+import com.soli.libcommon.util.Luban
+import com.soli.libcommon.util.MLog
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.core.Observable
+import io.reactivex.rxjava3.core.ObservableEmitter
+import io.reactivex.rxjava3.disposables.Disposable
+import io.reactivex.rxjava3.schedulers.Schedulers
 import java.io.File
 
 /**
@@ -211,7 +215,7 @@ class FileUploadProcess(
                     dialog.dismiss()
                 callBack?.invoke(false, info)
             }
-            .onErrorResumeNext(Observable.empty())
+//            .onErrorResumeNext(Observable.empty())
             .subscribe {
                 if (it.isDone) {
                     haveUpload += FileSizeUtil.getFileSize(File(it.originPath))

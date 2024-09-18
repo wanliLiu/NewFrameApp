@@ -1,10 +1,14 @@
 package com.soli.libcommon.util;
 
+import static com.facebook.drawee.backends.pipeline.Fresco.getImagePipeline;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.text.TextUtils;
+
 import androidx.annotation.Nullable;
+
 import com.facebook.binaryresource.BinaryResource;
 import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
@@ -28,17 +32,16 @@ import com.facebook.imagepipeline.listener.RequestLoggingListener;
 import com.facebook.imagepipeline.request.ImageRequest;
 import com.facebook.imagepipeline.request.ImageRequestBuilder;
 import com.soli.libcommon.net.ApiHelper;
-import io.reactivex.Observable;
-import io.reactivex.ObservableEmitter;
-import io.reactivex.ObservableOnSubscribe;
-import io.reactivex.annotations.NonNull;
-import io.reactivex.schedulers.Schedulers;
 
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.facebook.drawee.backends.pipeline.Fresco.getImagePipeline;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.core.ObservableEmitter;
+import io.reactivex.rxjava3.core.ObservableOnSubscribe;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 /**
  * Created by Soli on 2016/8/17.

@@ -14,7 +14,7 @@ import com.soli.libcommon.net.websocket.WebSocketData
 import com.soli.libcommon.util.*
 import com.soli.libcommon.util.Utils.MD5
 import com.soli.libcommon.util.Utils.getFileMD5
-import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch

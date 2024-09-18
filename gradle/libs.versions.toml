@@ -1,0 +1,98 @@
+[versions]
+# @keep
+cardview = "1.0.0"
+compileSdk = "34"
+floatwindow = "1.0.9"
+minSdk = "21"
+palette = "1.0.0"
+targetSdk = "34"
+agp = "8.6.0"
+kotlin = "1.9.22"
+logger = "2.2.0"
+recyclerview = "1.3.2"
+rxpermissions = "0.12"
+multidex = "2.0.1"
+rxjava3 = "3.+"
+rx_android = "3.+"
+rxBinding = "4.+"
+retrofit = "2.+"
+material = "1.12.0"
+event_bus = "3.+"
+okhttp = "4.+"
+gson = "2.+"
+fastjson = "1.1.71.android"
+fresco = "2.+"
+stetho = "1.5.0"
+scaleImageView = "3.+"
+nine_old = "2.4.0"
+mterialprogress = "1.7"
+flexbox = "3.0.0"
+skin_support = "1.+"
+fragmentation = "1.0.2"
+jsoup = "1.+"
+coreKtx = "1.13.1"
+appcompat = "1.7.0"
+constraintlayout = "2.1.4"
+vectordrawable = "1.2.0"
+
+
+[libraries]
+androidx-cardview = { module = "androidx.cardview:cardview", version.ref = "cardview" }
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+androidx-palette = { module = "androidx.palette:palette", version.ref = "palette" }
+androidx-vectordrawable = { module = "androidx.vectordrawable:vectordrawable", version.ref = "vectordrawable" }
+floatwindow = { module = "com.github.yhaolpz:FloatWindow", version.ref = "floatwindow" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
+logger = { module = "com.orhanobut:logger", version.ref = "logger" }
+retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
+
+androidx-fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version = "1.6.0" }
+
+rxjava3 = { group = "io.reactivex.rxjava3", name = "rxjava", version.ref = "rxjava3" }
+rxandroid = { group = "io.reactivex.rxjava3", name = "rxandroid", version.ref = "rx_android" }
+rxbinding = { group = "com.jakewharton.rxbinding4", name = "rxbinding", version.ref = "rxBinding" }
+
+okhttp-logging-interceptor = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "okhttp" }
+okhttp = { group = "com.squareup.okhttp3", name = "okhttp", version.ref = "okhttp" }
+
+fresco = { group = "com.facebook.fresco", name = "fresco", version.ref = "fresco" }
+fresco-animatedgif = { group = "com.facebook.fresco", name = "animated-gif", version.ref = "fresco" }
+fresco-okhttp3 = { group = "com.facebook.fresco", name = "imagepipeline-okhttp3", version.ref = "fresco" }
+
+scaleimage = { group = "com.davemorrissey.labs", name = "subsampling-scale-image-view", version.ref = "scaleImageView" }
+nineoldandroids = { group = "com.nineoldandroids", name = "library", version.ref = "nine_old" }
+stetho = { group = "com.facebook.stetho", name = "stetho", version.ref = "stetho" }
+
+eventbus = { group = "org.greenrobot", name = "eventbus", version.ref = "event_bus" }
+gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+jsoup = { group = "org.jsoup", name = "jsoup", version.ref = "jsoup" }
+fastjson = { group = "com.alibaba", name = "fastjson", version.ref = "fastjson" }
+
+
+materialish-progress = { group = "com.pnikosis", name = "materialish-progress", version.ref = "mterialprogress" }
+flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
+
+rxpermissions = { module = "com.github.tbruyelle:rxpermissions", version.ref = "rxpermissions"}
+swipelayout = { group = "com.daimajia.swipelayout", name = "library", version = "1.2.0" }
+
+fragmentationx = { group = "me.yokeyword", name = "fragmentationx", version.ref = "fragmentation" }
+fragmentationx-core = { group = "me.yokeyword", name = "fragmentationx-core", version.ref = "fragmentation" }
+fragmentationx-swipeback = { group = "me.yokeyword", name = "fragmentationx-swipeback", version.ref = "fragmentation" }
+fragmentationx-eventbus = { group = "me.yokeyword", name = "eventbus-activity-scope", version = "1.1.0" }
+
+skin-support = { group = "skin.android.support", name = "skin-support", version.ref = "skin_support" }
+skin-support-appcompat = { group = "skin.android.support", name = "skin-support-appcompat", version.ref = "skin_support" }
+skin-support-cardview = { group = "skin.android.support", name = "skin-support-cardview", version.ref = "skin_support" }
+skin-support-constraintlayout = { group = "skin.android.support", name = "skin-support-constraint-layout", version.ref = "skin_support" }
+skin-support-design = { group = "skin.android.support", name = "skin-support-design", version.ref = "skin_support" }
+
+svga = { group = "com.github.yyued", name = "SVGAPlayer-Android", version = "2.5.12" }
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
