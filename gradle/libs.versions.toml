@@ -6,7 +6,7 @@ floatwindow = "1.0.9"
 minSdk = "21"
 palette = "1.0.0"
 targetSdk = "34"
-agp = "8.6.0"
+agp = "8.6.1"
 kotlin = "1.9.22"
 logger = "2.2.0"
 recyclerview = "1.3.2"
@@ -96,3 +96,4 @@ svga = { group = "com.github.yyued", name = "SVGAPlayer-Android", version = "2.5
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+android-library = { id = "com.android.library", version.ref = "agp" }

@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    alias(libs.plugins.android.library)
     alias(libs.plugins.kotlin.android)
 }
 
@@ -10,11 +10,10 @@ android {
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
         targetSdk = libs.versions.targetSdk.get().toInt()
-        versionCode = 1
-        versionName = "1.0"
 
         //vectorDrawable 使用android.support库支持，支持低版本，默认是使用系统的
         vectorDrawables.useSupportLibrary = true
+        consumerProguardFiles("consumer-rules.pro")
     }
 
     kotlinOptions {
@@ -53,55 +52,55 @@ dependencies {
 //    implementation(libs.kotlinx.coroutines.android)
 
 // Android support
-    implementation(libs.androidx.multidex)
+    api(libs.androidx.multidex)
 
-    implementation(libs.androidx.appcompat)
-    implementation(libs.androidx.recyclerview)
-    implementation(libs.material)
-    implementation(libs.androidx.cardview)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.fragment.ktx)
+    api(libs.androidx.appcompat)
+    api(libs.androidx.recyclerview)
+    api(libs.material)
+    api(libs.androidx.cardview)
+    api(libs.androidx.constraintlayout)
+    api(libs.androidx.core.ktx)
+    api(libs.androidx.fragment.ktx)
 
-    implementation(libs.flexbox)
+    api(libs.flexbox)
 
 // Vector drawable
-    implementation(libs.androidx.vectordrawable)
+    api(libs.androidx.vectordrawable)
 //    implementation(libs.androidx.vectordrawable.animated)
 
 // RxJava
-    implementation(libs.rxandroid)
-    implementation(libs.rxbinding)
-    implementation(libs.rxjava3)
+    api(libs.rxandroid)
+    api(libs.rxbinding)
+    api(libs.rxjava3)
 //    implementation(libs.rxlifecycle)
 
 // Network
-    implementation(libs.okhttp.logging.interceptor)
-    implementation(libs.retrofit)
-    implementation(libs.okhttp)
+    api(libs.okhttp.logging.interceptor)
+    api(libs.retrofit)
+    api(libs.okhttp)
 
-    implementation(libs.svga)
+    api(libs.svga)
 
 // Image loading
-    implementation(libs.fresco)
-    implementation(libs.fresco.okhttp3)
-    implementation(libs.fresco.animatedgif)
+    api(libs.fresco)
+    api(libs.fresco.okhttp3)
+    api(libs.fresco.animatedgif)
 
 // Debug tools
-    implementation(libs.stetho)
+    api(libs.stetho)
 
 // Third-party libraries
-    implementation(libs.fastjson)
-    implementation(libs.gson)
-    implementation(libs.jsoup)
+    api(libs.fastjson)
+    api(libs.gson)
+    api(libs.jsoup)
 
-    implementation(libs.eventbus)
-    implementation(libs.rxpermissions)
-    implementation(libs.materialish.progress)
+    api(libs.eventbus)
+    api(libs.rxpermissions)
+    api(libs.materialish.progress)
 //    implementation(libs.pullupdown)
 
 // Old android libraries
-    implementation(libs.nineoldandroids)
+    api(libs.nineoldandroids)
 
 // Skin support (commented out)
 // implementation(libs.skin.support)
@@ -111,13 +110,13 @@ dependencies {
 // implementation(libs.skin.support.design)
 
 // Image subsampling
-    implementation(libs.scaleimage)
+    api(libs.scaleimage)
 
 // Swipe layout
-    implementation(libs.swipelayout)
+    api(libs.swipelayout)
 
 // Logger
-    implementation(libs.logger)
+    api(libs.logger)
 
 // Flutter (commented out for debug/release builds)
 // debugImplementation 'com.soli.flutter_module:flutter_debug:1.1.2'
