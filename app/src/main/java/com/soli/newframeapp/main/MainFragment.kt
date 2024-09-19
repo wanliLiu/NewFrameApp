@@ -16,7 +16,6 @@ import androidx.core.view.forEach
 import androidx.fragment.app.FragmentActivity
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
-import com.dhh.rxlifecycle2.RxLifecycle
 import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
@@ -235,7 +234,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
             } else if (!rxPermissions.isGranted(Manifest.permission.SYSTEM_ALERT_WINDOW)) {
                 val diapose = rxPermissions.request(
                     Manifest.permission.SYSTEM_ALERT_WINDOW,
-                ).compose(RxLifecycle.with(this).bindToLifecycle()).subscribe { pass ->
+                ).subscribe { pass ->
                 }
             }
         }
@@ -404,7 +403,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
     private fun checkStorePermission(callBack: () -> Unit) {
         val diapose = rxPermissions.request(
             Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE
-        ).compose(RxLifecycle.with(this).bindToLifecycle()).subscribe { pass ->
+        ).subscribe { pass ->
             if (pass) callBack()
             else {
                 ToastUtils.showShortToast("需要文件读写权限")
