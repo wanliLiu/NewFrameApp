@@ -43,7 +43,7 @@ class SpecialSpanFragment : BaseToolbarFragment<FragmentSpanBinding>() {
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
             if (holder.itemView is SpecialTextView)
-                holder.itemView.anotherTest()
+                (holder.itemView as SpecialTextView).anotherTest()
         }
 
 
