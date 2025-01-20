@@ -148,7 +148,7 @@ inline fun Context.appVersion(): String {
     return try {
         val manager = this.packageManager
         val info = manager.getPackageInfo(this.packageName, 0)
-        info.versionName
+        info.versionName ?: ""
     } catch (e: Exception) {
         "0.0"
     }
