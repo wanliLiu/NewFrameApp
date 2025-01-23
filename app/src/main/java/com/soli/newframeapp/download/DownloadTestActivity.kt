@@ -14,9 +14,9 @@ import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.ApiHelper
 import com.soli.libcommon.net.download.FileProgressListener
 import com.soli.libcommon.util.FileUtil
+import com.soli.libcommon.util.MLog
 import com.soli.libcommon.util.ToastUtils
 import com.soli.newframeapp.databinding.ActivityDownloadTestBinding
-import com.soli.newframeapp.util.InstallUtil
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.core.Observable
 import io.reactivex.rxjava3.disposables.Disposable
@@ -29,7 +29,8 @@ class DownloadTestActivity : BaseActivity<ActivityDownloadTestBinding>() {
     private val downloadPath =
         "http://img02-xusong.taihe.com/100016_2744ef0477aacf3360de229a61ae4c0c_[720_1280_4865].mp4"
     private val savePath by lazy {
-        FileUtil.getFile(ctx, "download", "showstart_4.4.3.apk", false)
+//        FileUtil.getFile(ctx, "download", "showstart_4.4.3.apk", false)
+        FileUtil.getFile(ctx, "download", "100016_2744ef0477aacf3360de229a61ae4c0c_.4.3.mp4", false)
     }
 
     private var mDisposable: Disposable? = null//可以取消观察者
@@ -104,8 +105,9 @@ class DownloadTestActivity : BaseActivity<ActivityDownloadTestBinding>() {
         }.downloadFile({ result ->
             dialog.dismiss()
             if (result.isSuccess && result.result != null) if (result.result!!.exists()) {
+                MLog.d("fileDownload", result.fullData)
                 ToastUtils.showLongToast("文件下载成功！：${result.fullData}")
-                InstallUtil.install(ctx, result.result!!)
+//                InstallUtil.install(ctx, result.result!!)
             } else ToastUtils.showShortToast(result.errormsg)
         }, object : FileProgressListener {
             override fun progress(
