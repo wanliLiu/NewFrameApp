@@ -3,6 +3,7 @@
 cardview = "1.0.0"
 compileSdk = "35"
 floatwindow = "1.0.9"
+lottie = "6.6.2"
 minSdk = "21"
 palette = "1.0.0"
 targetSdk = "35"
@@ -43,6 +44,7 @@ androidx-palette = { module = "androidx.palette:palette", version.ref = "palette
 androidx-vectordrawable = { module = "androidx.vectordrawable:vectordrawable", version.ref = "vectordrawable" }
 floatwindow = { module = "com.github.yhaolpz:FloatWindow", version.ref = "floatwindow" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+lottie = { module = "com.airbnb.android:lottie", version.ref = "lottie" }
 material = { group = "com.google.android.material", name = "material", version.ref = "material" }
 androidx-multidex = { group = "androidx.multidex", name = "multidex", version.ref = "multidex" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }

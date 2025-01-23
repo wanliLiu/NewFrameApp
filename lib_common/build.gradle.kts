@@ -46,13 +46,14 @@ android {
 
 dependencies {
 //    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
-    api(project(":aars", configuration = "libcommon"))
+    api(project(":aars:flycotablayout", configuration = "aars"))
+    api(project(":aars:fragmentation", configuration = "aars"))
+    api(project(":aars:fragmentation_core", configuration = "aars"))
+    api(project(":aars:fragmentation_swipeback", configuration = "aars"))
+    api(project(":aars:pullupdownrefresh", configuration = "aars"))
 
-// Kotlin support
-//    implementation(libs.kotlinx.coroutines.core)
-//    implementation(libs.kotlinx.coroutines.android)
 
-// Android support
+
     api(libs.androidx.multidex)
 
     api(libs.androidx.appcompat)
@@ -65,32 +66,24 @@ dependencies {
 
     api(libs.flexbox)
 
-// Vector drawable
     api(libs.androidx.vectordrawable)
-//    implementation(libs.androidx.vectordrawable.animated)
 
-// RxJava
     api(libs.rxandroid)
     api(libs.rxbinding)
     api(libs.rxjava3)
-//    implementation(libs.rxlifecycle)
 
-// Network
     api(libs.okhttp.logging.interceptor)
     api(libs.retrofit)
     api(libs.okhttp)
 
     api(libs.svga)
 
-// Image loading
     api(libs.fresco)
     api(libs.fresco.okhttp3)
     api(libs.fresco.animatedgif)
 
-// Debug tools
     api(libs.stetho)
 
-// Third-party libraries
     api(libs.fastjson)
     api(libs.gson)
     api(libs.jsoup)
