@@ -13,7 +13,6 @@ import android.view.accessibility.AccessibilityNodeInfo
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.core.view.forEach
-import androidx.fragment.app.FragmentActivity
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.soli.libcommon.base.BaseToolbarFragment
@@ -75,7 +74,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
 
     private val retryIndex: Int = 1
     private var retry: Int = 0
-    private val rxPermissions by lazy { RxPermissions(this as FragmentActivity) }
+    private val rxPermissions by lazy { RxPermissions(this) }
     private val pauseControl = PauseControl()
 
     override fun needSwipeBack() = false
@@ -146,7 +145,8 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
             R.id.LauchActivity -> openActivity<SecondAcitivity>()
             R.id.fragmentTest -> openActivity<FragmentTestActivity>()
             R.id.netWorkTest -> openActivity<NetWorkTestActivity>()
-            R.id.fileDownload -> checkStorePermission { openActivity<DownloadTestActivity>() }
+//            R.id.fileDownload -> checkStorePermission { openActivity<DownloadTestActivity>() }
+            R.id.fileDownload -> openActivity<DownloadTestActivity>()
             R.id.webViewTest -> openActivity<WebviewActivity>()
             R.id.Test23 -> openActivity<Android7Activity>()
             R.id.websocket -> openActivity<WebsocketActivity>()

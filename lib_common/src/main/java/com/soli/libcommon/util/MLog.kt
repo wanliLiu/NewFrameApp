@@ -43,7 +43,7 @@ object MLog {
         if (Debug) {
 //            Log.i(TAG, getMessage(msg))
 //            Logger.i("[$TAG] ${getMessage(msg)}")
-            Logger.i(msg)
+            Logger.t(TAG).i(msg)
         }
     }
 
@@ -52,7 +52,7 @@ object MLog {
         if (Debug) {
 //            Log.e(TAG, getMessage(msg))
 //            Logger.e("[$TAG] ${getMessage(msg)}")
-            Logger.e(msg)
+            Logger.t(TAG).e(msg)
         }
     }
 
@@ -62,7 +62,7 @@ object MLog {
         if (Debug) {
 //            Log.d(TAG, getMessage(msg))
 //            Logger.d("[$TAG] ${getMessage(msg)}")
-            Logger.d(msg)
+            Logger.t(TAG).d(msg)
         }
     }
 
@@ -71,7 +71,7 @@ object MLog {
         if (Debug) {
 //            Log.v(TAG, getMessage(msg))
 //            Logger.v("[$TAG] ${getMessage(msg)}")
-            Logger.v(msg)
+            Logger.t(TAG).v(msg)
         }
     }
 
@@ -80,7 +80,7 @@ object MLog {
         if (Debug) {
 //            Log.w(TAG, getMessage(msg))
 //            Logger.w("[$TAG] ${getMessage(msg)}")
-            Logger.w(msg)
+            Logger.t(TAG).w(msg)
         }
     }
 }

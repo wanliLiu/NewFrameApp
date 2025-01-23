@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit
 class DownloadTestActivity : BaseActivity<ActivityDownloadTestBinding>() {
 
     private val downloadPath =
-        "https://f0220b0248704674105d14e374bf3884.dd.cdntips.com/wxz.myapp.com/16891/apk/70A7E22BD825EF31297FDEDEC73E155B.apk?mkey=5db6ab89da59f8e1&f=8935&fsname=com.showstartfans.activity_4.4.3_20190918.apk&hsr=4d5s&cip=218.89.222.20&proto=https"
+        "http://img02-xusong.taihe.com/100016_2744ef0477aacf3360de229a61ae4c0c_[720_1280_4865].mp4"
     private val savePath by lazy {
         FileUtil.getFile(ctx, "download", "showstart_4.4.3.apk", false)
     }

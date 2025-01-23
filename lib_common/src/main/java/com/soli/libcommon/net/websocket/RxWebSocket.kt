@@ -156,7 +156,7 @@ class RxWebSocket private constructor() {
          * @param emitter
          */
         private fun initWebSocket(emitter: ObservableEmitter<WebSocketInfo>) {
-            creatWebSocket("ws://echo.websocket.org", emitter)
+            creatWebSocket("wss://echo.websocket.org/.ws", emitter)
 //            val params = ApiParams()
 //            params["token"] = AuthInfo.getToken()
 //            ApiHelper.Builder()
@@ -191,9 +191,9 @@ class RxWebSocket private constructor() {
                     //FIXME 服务端主动下发处理，估计到时候根据token特定值来做 这里没有处理服务器主动下发的数据
                     MLog.e(logTag, "$result")
 
-                    if (!ApiHelper.dealWebSocketResult(result)) {
+//                    if (!ApiHelper.dealWebSocketResult(result)) {
                         //数据没有被处理
-                    }
+//                    }
 //                    JSON.parseObject(result)?.apply {
 //                        val token = getString("token")
 //                        val code = getString("code")

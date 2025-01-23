@@ -3,8 +3,6 @@ package com.soli.newframeapp
 import android.widget.ScrollView
 import com.jakewharton.rxbinding4.view.clicks
 import com.soli.libcommon.base.BaseActivity
-import com.soli.libcommon.net.ApiHelper
-import com.soli.libcommon.net.apiParamsOf
 import com.soli.libcommon.net.websocket.RxWebSocket
 import com.soli.newframeapp.databinding.ActivityWebsocketBinding
 
@@ -48,20 +46,20 @@ class WebsocketActivity : BaseActivity<ActivityWebsocketBinding>() {
 //            put("param", "速度速度上来看到了的抗衰老的 -----索德罗斯；的是生理上的历史速度速度上来看到了的抗衰老的 -----索德罗斯")
 //            getWebSocketParams("/security/check")
 //        }
-//        RxWebSocket.Instance.asyncSend(params.jsonParams)
+        RxWebSocket.Instance.asyncSend(msg)
 
-        ApiHelper.build {
-            url = "/security/check"
-            params = apiParamsOf("param" to msg)
-            isWebSocketRequest = isWebSocket
-        }.request<String> {
-//            if (it.isSuccess){
+//        ApiHelper.build {
+//            url = "/security/check"
+//            params = apiParamsOf("param" to msg)
+//            isWebSocketRequest = isWebSocket
+//        }.request<String> {
+////            if (it.isSuccess){
+////
+////            }
 //
-//            }
-
-            binding.msgBack.append("${it.result as String}\n")
-            scrollToBottom()
-        }
+//            binding.msgBack.append("${it.result as String}\n")
+//            scrollToBottom()
+//        }
     }
 
     /**
