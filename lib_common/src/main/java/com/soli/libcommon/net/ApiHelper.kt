@@ -95,7 +95,7 @@ class ApiHelper private constructor(private val builder: Builder) {
                     addInterceptor(HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
                     eventListenerFactory(LoggingEventListener.Factory())
                     //for stetho 在网页调试页看网络日志
-//            addNetworkInterceptor(new StethoInterceptor());
+                    addNetworkInterceptor(StethoInterceptor())
                 }
 
                 //支持https访问  Android 5.0以下 TLSV1.1和TLSV1.2是关闭的，要自己打开，Android 5.0以上是打开的

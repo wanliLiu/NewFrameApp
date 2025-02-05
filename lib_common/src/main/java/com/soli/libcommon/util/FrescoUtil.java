@@ -14,6 +14,8 @@ import com.facebook.binaryresource.FileBinaryResource;
 import com.facebook.cache.common.CacheKey;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.executors.UiThreadImmediateExecutorService;
+import com.facebook.common.logging.FLog;
+import com.facebook.common.logging.FLogDefaultLoggingDelegate;
 import com.facebook.common.memory.MemoryTrimType;
 import com.facebook.common.memory.NoOpMemoryTrimmableRegistry;
 import com.facebook.common.references.CloseableReference;
@@ -62,6 +64,8 @@ public class FrescoUtil {
     public static void Init(Context ctx) {
         try {
             Fresco.initialize(ctx, getImagePipelineConfig(ctx));
+            FLogDefaultLoggingDelegate.getInstance().setApplicationTag("FrescoLog");
+            FLog.setMinimumLoggingLevel(FLog.VERBOSE);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,7 +88,7 @@ public class FrescoUtil {
                 final double suggestedTrimRatio = trimType.getSuggestedTrimRatio();
 
                 if (MemoryTrimType.OnCloseToDalvikHeapLimit.getSuggestedTrimRatio() == suggestedTrimRatio
-                        || MemoryTrimType.OnSystemLowMemoryWhileAppInBackground.getSuggestedTrimRatio() == suggestedTrimRatio
+                        || MemoryTrimType.OnSystemLowMemoryWhileAppInBackgroundLowSeverity.getSuggestedTrimRatio() == suggestedTrimRatio
                         || MemoryTrimType.OnSystemLowMemoryWhileAppInForeground.getSuggestedTrimRatio() == suggestedTrimRatio
                 ) {
                     ImagePipelineFactory.getInstance().getImagePipeline().clearMemoryCaches();
@@ -160,7 +164,7 @@ public class FrescoUtil {
         ImageRequestBuilder imageRequestBuilder = ImageRequestBuilder.newBuilderWithSource(Uri.parse(loadUri));
         imageRequestBuilder.setLowestPermittedRequestLevel(ImageRequest.RequestLevel.DISK_CACHE);
         CacheKey cacheKey = MyCacheKeyFactory.getInstance().getEncodedCacheKey(imageRequestBuilder.build(), null);
-        BinaryResource resource = ImagePipelineFactory.getInstance().getMainFileCache().getResource(cacheKey);
+        BinaryResource resource = ImagePipelineFactory.getInstance().getDiskCachesStoreSupplier().get().getMainFileCache().getResource(cacheKey);
         if (resource != null) {
             return ((FileBinaryResource) resource).getFile();
         }
