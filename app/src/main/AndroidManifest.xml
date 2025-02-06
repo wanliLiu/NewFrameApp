@@ -21,6 +21,7 @@
         tools:ignore="GoogleAppIndexingWarning"
         android:requestLegacyExternalStorage="true"
         tools:targetApi="n">
+        <profileable android:shell="true"/>
         <activity
             android:name=".main.MainActivity"
             android:exported="true">
