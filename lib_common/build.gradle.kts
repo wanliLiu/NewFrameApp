@@ -45,14 +45,7 @@ android {
 }
 
 dependencies {
-//    api(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar", "*.jar"))))
-    api(project(":aars:flycotablayout", configuration = "aars"))
-    api(project(":aars:fragmentation", configuration = "aars"))
-    api(project(":aars:fragmentation_core", configuration = "aars"))
-    api(project(":aars:fragmentation_swipeback", configuration = "aars"))
-    api(project(":aars:pullupdownrefresh", configuration = "aars"))
-
-
+    compileOnly(fileTree(mapOf("dir" to "../aars", "include" to listOf("*.aar", "*.jar"))))
 
     api(libs.androidx.multidex)
 

@@ -28,8 +28,3 @@ dependencyResolutionManagement {
 rootProject.name = "NewFrameApp"
 include(":app")
 include(":lib_common")
-include(":aars:flycotablayout")
-include(":aars:fragmentation")
-include(":aars:fragmentation_core")
-include(":aars:fragmentation_swipeback")
-include(":aars:pullupdownrefresh")
