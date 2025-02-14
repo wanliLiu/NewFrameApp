@@ -53,7 +53,7 @@ class ScanFileCountUtil(
                 for ((key, value) in mCategorySuffix) {
                     //获取文件后缀
 //                    val suffix = FileUtil.getFileExtension(file.absolutePath)
-                    val suffix = file.name.substring(file.name.indexOf(".") + 1).toLowerCase()
+                    val suffix = file.name.substring(file.name.indexOf(".") + 1).lowercase()
                     //找到了
                     if (value.contains(suffix)) {
                         var temp = mCountResult[key]
@@ -116,7 +116,7 @@ class ScanFileCountUtil(
                     for ((key, value) in mCategorySuffix) {
                         //获取文件后缀
 //                        val suffix = FileUtil.getFileExtension(f.absolutePath)
-                        val suffix = f.name.substring(f.name.indexOf(".") + 1).toLowerCase()
+                        val suffix = f.name.substring(f.name.indexOf(".") + 1).lowercase()
                         //找到了
                         if (value.contains(suffix)) {
                             var temp = mCountResult[key]

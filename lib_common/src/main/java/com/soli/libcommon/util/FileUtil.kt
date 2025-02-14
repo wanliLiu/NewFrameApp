@@ -283,7 +283,7 @@ object FileUtil {
 
             index = url.lastIndexOf(".")
 
-            return (if (index != -1) url.substring(index + 1) else "").toLowerCase()
+            return (if (index != -1) url.substring(index + 1) else "").lowercase()
         } catch (e: Exception) {
         }
 
@@ -310,7 +310,7 @@ object FileUtil {
                     val mimeType = options.outMimeType
                     Log.d("mimeType", "  二进制：$mimeType")
                     if (mimeType.contains("image/"))
-                        extension = mimeType.replace("image/", "").toLowerCase()
+                        extension = mimeType.replace("image/", "").lowercase()
                 }
             } catch (e: Exception) {
             }
@@ -320,7 +320,7 @@ object FileUtil {
 
         val temp = MimeTypeMap.getFileExtensionFromUrl(url)
         extension = if (!TextUtils.isEmpty(temp))
-            temp.toLowerCase()
+            temp.lowercase()
         else
             ""
 
@@ -353,7 +353,7 @@ object FileUtil {
             "wav",
             "m4a",
             "ogg"
-        ).indexOf(extension?.toLowerCase() ?: "") != -1
+        ).indexOf(extension?.lowercase() ?: "") != -1
     }
 
     /**
@@ -369,7 +369,7 @@ object FileUtil {
         if (TextUtils.isEmpty(extension)) return false
 
         return arrayOf("mp4", "m3u8", "3gp", "avi", "rm", "rmvb", "mkv", "mov", "m4v").indexOf(
-            extension?.toLowerCase() ?: ""
+            extension?.lowercase() ?: ""
         ) != -1
     }
 
@@ -393,7 +393,7 @@ object FileUtil {
             "apng",
             "gif",
             "bmp"
-        ).indexOf(extension?.toLowerCase() ?: "") != -1
+        ).indexOf(extension?.lowercase() ?: "") != -1
     }
 
 

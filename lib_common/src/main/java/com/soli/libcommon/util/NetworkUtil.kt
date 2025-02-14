@@ -265,7 +265,7 @@ object NetworkUtil {
                         } else {
                             if (!isIPv4) {
                                 val index = hostAddress.indexOf('%')
-                                return if (index < 0) hostAddress.toUpperCase() else hostAddress.substring(0, index).toUpperCase()
+                                return if (index < 0) hostAddress.uppercase() else hostAddress.substring(0, index).lowercase()
                             }
                         }
                     }
