@@ -103,7 +103,7 @@ object ShellUtils {
         } catch (e: Exception) {
             e.printStackTrace()
         } finally {
-            CloseUtils.closeIO(os as Any, successResult as Any, errorResult as Any)
+            CloseUtils.closeIO(os as? Any, successResult as? Any, errorResult as? Any)
             process?.destroy()
         }
         return CommandResult(

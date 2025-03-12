@@ -13,7 +13,7 @@ object CloseUtils {
      *
      * @param closeables closeable
      */
-    fun closeIO(vararg closeables: Any) {
+    fun closeIO(vararg closeables: Any?) {
         for (closeable in closeables) {
             try {
                 (closeable as? Closeable)?.close()
