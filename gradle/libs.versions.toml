@@ -11,7 +11,6 @@ agp = "8.9.0"
 kotlin = "2.1.10"
 logger = "2.2.0"
 recyclerview = "1.4.0"
-rxpermissions = "0.12"
 multidex = "2.0.1"
 rxjava3 = "3.+"
 rx_android = "3.+"
@@ -79,7 +78,6 @@ fastjson = { group = "com.alibaba", name = "fastjson", version.ref = "fastjson" 
 materialish-progress = { group = "com.pnikosis", name = "materialish-progress", version.ref = "mterialprogress" }
 flexbox = { module = "com.google.android.flexbox:flexbox", version.ref = "flexbox" }
 
-rxpermissions = { module = "com.github.tbruyelle:rxpermissions", version.ref = "rxpermissions"}
 swipelayout = { group = "com.daimajia.swipelayout", name = "library", version = "1.2.0" }
 
 fragmentationx = { group = "me.yokeyword", name = "fragmentationx", version.ref = "fragmentation" }

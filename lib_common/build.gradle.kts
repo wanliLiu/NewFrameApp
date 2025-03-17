@@ -82,7 +82,7 @@ dependencies {
     api(libs.jsoup)
 
     api(libs.eventbus)
-    api(libs.rxpermissions)
+//    api(libs.rxpermissions)
     api(libs.materialish.progress)
 //    implementation(libs.pullupdown)
 
