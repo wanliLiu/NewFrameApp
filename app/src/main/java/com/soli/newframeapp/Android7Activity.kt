@@ -233,6 +233,10 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
     }
 
     private fun havePermission(): Boolean {
+        val targetSdk = this.packageManager.getPackageInfo(packageName, 0).applicationInfo?.targetSdkVersion ?: 0
+        ToastUtils.showShortToast("target sdk Version $targetSdk")
+        if (targetSdk < 33)
+            return true
         return if (
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
             (
