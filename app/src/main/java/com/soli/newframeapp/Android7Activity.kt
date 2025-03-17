@@ -2,9 +2,13 @@ package com.soli.newframeapp
 
 import android.Manifest
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.ContentResolver
+import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.content.res.AssetFileDescriptor
 import android.database.Cursor
 import android.graphics.BitmapFactory
@@ -12,15 +16,23 @@ import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import android.provider.MediaStore.Images
 import android.provider.MediaStore.Images.ImageColumns
+import android.provider.Settings
 import android.util.Log
+import androidx.activity.result.contract.ActivityResultContracts.RequestMultiplePermissions
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.lifecycle.lifecycleScope
 import com.soli.libcommon.base.BaseActivity
 import com.soli.libcommon.net.download.FileDownloadProcess
 import com.soli.libcommon.util.*
 import com.soli.libcommon.view.loading.LoadingType
 import com.soli.newframeapp.databinding.ActivityAndroid7Binding
 import com.tbruyelle.rxpermissions3.RxPermissions
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 import java.io.FileNotFoundException
 
@@ -37,6 +49,16 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
 
     private var imagePath: File? = null
     private var cameraUri: Uri? = null
+
+    // Register ActivityResult handler
+    private val requestPermissions =
+        registerForActivityResult(RequestMultiplePermissions()) { results ->
+            // Handle permission requests results
+            // See the permission example in the Android platform samples: https://github.com/android/platform-samples
+            results.forEach {
+                MLog.d("results", "${it.key} ==== ${it.value}")
+            }
+        }
 
     private val rxPermissions by lazy { RxPermissions(ctx) }
 
@@ -66,9 +88,183 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
             RxJavaUtil.runOnThread { scanSystemMedia() }
 
         }
+
+        binding.premissionTest.setOnClickListener {
+            premissionTest()
+        }
     }
 
     override fun initData() {
+    }
+
+
+    /**
+     *
+     */
+    private fun premissionTest() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (!Environment.isExternalStorageManager()) {
+                try {
+                    MLog.d("premssion", "no ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION")
+                    if (ContextCompat.checkSelfPermission(
+                            ctx!!,
+                            Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION
+                        ) != PackageManager.PERMISSION_GRANTED
+                    ) {
+                        MLog.d(
+                            "premssion",
+                            "request--->ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION"
+                        )
+                        val intent =
+                            Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION).apply {
+                                data = Uri.parse("package:${ctx!!.packageName}")
+                            }
+                        startActivityForResult(intent, 32)
+                    } else {
+                        ToastUtils.showShortToast("已经有权限了")
+                    }
+                } catch (e: ActivityNotFoundException) {
+                    e.printStackTrace()
+                }
+            } else {
+                MLog.d("premssion", "有--->ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION")
+                if (!havePermission()) {
+                    requestRermission()
+                } else {
+                    MLog.d("premssion", "有权限，获取数据")
+                    lifecycleScope.launch {
+                        val images = getImages(contentResolver)
+                        images.forEach { image ->
+                            MLog.d("Image", "URI: ${image.uri}, Name: ${image.name}, Size: ${image.size}")
+                        }
+                        withContext(Dispatchers.Main) {
+                            binding.pickImageFresco.setImageURI(images.random().uri)
+                            binding.pickImage.setImageURI(images.random().uri)
+                            copyFileToPrivateArea(images.random().uri)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    data class Media(
+        val uri: Uri,
+        val name: String,
+        val size: Long,
+        val mimeType: String,
+    )
+
+    // Run the querying logic in a coroutine outside of the main thread to keep the app responsive.
+// Keep in mind that this code snippet is querying only images of the shared storage.
+    suspend fun getImages(contentResolver: ContentResolver): List<Media> = withContext(Dispatchers.IO) {
+        val projection = arrayOf(
+            Images.Media._ID,
+            Images.Media.DISPLAY_NAME,
+            Images.Media.SIZE,
+            Images.Media.MIME_TYPE,
+        )
+
+        val collectionUri = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            // Query all the device storage volumes instead of the primary only
+            Images.Media.getContentUri(MediaStore.VOLUME_EXTERNAL)
+        } else {
+            Images.Media.EXTERNAL_CONTENT_URI
+        }
+
+        val images = mutableListOf<Media>()
+
+        contentResolver.query(
+            collectionUri,
+            projection,
+            null,
+            null,
+            "${Images.Media.DATE_ADDED} DESC"
+        )?.use { cursor ->
+            val idColumn = cursor.getColumnIndexOrThrow(Images.Media._ID)
+            val displayNameColumn = cursor.getColumnIndexOrThrow(Images.Media.DISPLAY_NAME)
+            val sizeColumn = cursor.getColumnIndexOrThrow(Images.Media.SIZE)
+            val mimeTypeColumn = cursor.getColumnIndexOrThrow(Images.Media.MIME_TYPE)
+
+            while (cursor.moveToNext()) {
+                val uri = ContentUris.withAppendedId(collectionUri, cursor.getLong(idColumn))
+                val name = cursor.getString(displayNameColumn)
+                val size = cursor.getLong(sizeColumn)
+                val mimeType = cursor.getString(mimeTypeColumn)
+
+                val image = Media(uri, name, size, mimeType)
+                images.add(image)
+            }
+        }
+
+        return@withContext images
+    }
+
+    private fun requestRermission() {
+        // Permission request logic
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
+            requestPermissions.launch(
+                arrayOf(
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO,
+                    Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+                )
+            )
+            MLog.d(
+                "premssion", "request--->Manifest.permission.READ_MEDIA_IMAGES,\n" +
+                        "                            Manifest.permission.READ_MEDIA_VIDEO,\n" +
+                        "                            Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED"
+            )
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            requestPermissions.launch(
+                arrayOf(
+                    Manifest.permission.READ_MEDIA_IMAGES,
+                    Manifest.permission.READ_MEDIA_VIDEO
+                )
+            )
+            MLog.d(
+                "premssion", "request--->Manifest.permission.READ_MEDIA_IMAGES,\n" +
+                        "                            Manifest.permission.READ_MEDIA_VIDEO,\n"
+            )
+        } else {
+            requestPermissions.launch(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE))
+            MLog.d("premssion", "request--->Manifest.permission.READ_EXTERNAL_STORAGE")
+        }
+    }
+
+    private fun havePermission(): Boolean {
+        return if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+            (
+                    ContextCompat.checkSelfPermission(ctx,
+                        Manifest.permission.READ_MEDIA_IMAGES
+                    ) == PackageManager.PERMISSION_GRANTED ||
+                            ContextCompat.checkSelfPermission(ctx,
+                                Manifest.permission.READ_MEDIA_VIDEO
+                            ) == PackageManager.PERMISSION_GRANTED
+                    )
+        ) {
+            MLog.d("havePermission", "Full access on Android 13 (API level 33) or higher")
+            true
+        } else if (
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE &&
+            ContextCompat.checkSelfPermission(ctx,
+                Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            MLog.d("havePermission", "Partial access on Android 14 (API level 34) or higher")
+            true
+        } else if (ContextCompat.checkSelfPermission(ctx,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
+            MLog.d("havePermission", "Full access up to Android 12 (API level 32)")
+            true
+        } else {
+            // Access denied
+            MLog.e("havePermission", "Access denied")
+            false
+        }
     }
 
     private var isSet = false
@@ -150,7 +346,8 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
         showProgress(type = LoadingType.TypeDialog, cancle = false)
         loadingDialg()?.showNumProgress()
 
-        FileDownloadProcess(downlist,
+        FileDownloadProcess(
+            downlist,
             downloadProgress = { progress -> loadingDialg()?.setProgress(progress) },
             customSavePath = { url, origin ->
                 if (!FileUtil.isAndroidQorAbove)
@@ -182,10 +379,10 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
      */
     private fun checkPermission() {
         val temp = rxPermissions.request(
-                Manifest.permission.CAMERA,
+            Manifest.permission.CAMERA,
 //                Manifest.permission.WRITE_EXTERNAL_STORAGE,
 //                Manifest.permission.READ_EXTERNAL_STORAGE
-            )
+        )
             .subscribe { pass ->
                 if (pass)
                     takePicture()
@@ -237,6 +434,7 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
 
                     cameraUri
                 }
+
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.N -> {
                     //对这个uri进行授权
                     intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
@@ -246,6 +444,7 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
                         imagePath!!
                     )
                 }
+
                 else -> Uri.fromFile(imagePath)
             }
         )
@@ -293,9 +492,13 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
                     } else if (imagePath!!.exists()) {
                         ToastUtils.showShortToast("${imagePath!!.absolutePath} 文件存在")
                         binding.pickImage.setImageBitmap(BitmapFactory.decodeFile(imagePath!!.absolutePath))
-                        ImageLoader.loadImageByPath(binding.pickImageFresco, imagePath!!.absolutePath)
+                        ImageLoader.loadImageByPath(
+                            binding.pickImageFresco,
+                            imagePath!!.absolutePath
+                        )
                     }
                 }
+
                 requestSelectFileCode -> {
                     try {
                         Log.e("path", Uri.decode(data!!.data!!.toString()))

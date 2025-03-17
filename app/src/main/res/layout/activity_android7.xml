@@ -75,6 +75,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="扫描获取系统媒体库的" />
+
+        <Button
+            android:id="@+id/premissionTest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="权限测试" />
     </com.google.android.flexbox.FlexboxLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
