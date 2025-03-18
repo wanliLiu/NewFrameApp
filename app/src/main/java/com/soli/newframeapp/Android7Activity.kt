@@ -383,8 +383,8 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
     private fun checkPermission() {
         val temp = rxPermissions.request(
             Manifest.permission.CAMERA,
-//                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-//                Manifest.permission.READ_EXTERNAL_STORAGE
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
         )
             .subscribe { pass ->
                 if (pass)
