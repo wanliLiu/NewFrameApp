@@ -381,11 +381,13 @@ class Android7Activity : BaseActivity<ActivityAndroid7Binding>() {
      *
      */
     private fun checkPermission() {
-        val temp = rxPermissions.request(
-            Manifest.permission.CAMERA,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                Manifest.permission.READ_EXTERNAL_STORAGE
-        )
+        val permission = mutableListOf( Manifest.permission.CAMERA)
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.P) {
+//            Android 10以上就丢弃了
+            permission.add(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+            permission.add(Manifest.permission.READ_EXTERNAL_STORAGE)
+        }
+        val temp = rxPermissions.request(*permission.toTypedArray())
             .subscribe { pass ->
                 if (pass)
                     takePicture()
