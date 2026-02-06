@@ -1,3 +1,5 @@
+import com.android.build.api.dsl.ApplicationBuildType
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
@@ -22,15 +24,35 @@ android {
         setProperty("archivesBaseName", "NewFrame")
     }
 
+    signingConfigs {
+        create("release") {
+            storeFile = file("./platform.keystore")
+            storePassword = "android"
+            keyAlias = "platform"
+            keyPassword = "android"
+        }
+    }
+
+    flavorDimensions.add("dev")
+    productFlavors {
+        create("Rom")
+        create("App")
+    }
+
     buildTypes {
-        release {
+        val action = Action<ApplicationBuildType> {
             isMinifyEnabled = false
+            signingConfig = signingConfigs.getByName("release")
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
         }
+        getByName("release", action)
+        getByName("debug", action)
     }
+
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
