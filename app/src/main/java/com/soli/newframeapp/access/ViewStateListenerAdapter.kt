@@ -1,7 +1,8 @@
 package com.soli.newframeapp.access
 
-import com.yhao.floatwindow.FloatWindow
-import com.yhao.floatwindow.ViewStateListener
+import com.kiwisec.floatwindow.FloatWindow
+import com.kiwisec.floatwindow.ViewStateListener
+
 
 /**
  *

@@ -73,7 +73,7 @@ abstract class BaseApplication : MultiDexApplication() {
         initFragmentation()
 
         //Rxjava error handler  捕获Rxjava抛出的异常
-        setRxJavaErrorHandler()
+//        setRxJavaErrorHandler()
 
         initLogger()
     }

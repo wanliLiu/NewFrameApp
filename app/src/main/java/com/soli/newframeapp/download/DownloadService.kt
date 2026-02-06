@@ -1,7 +1,11 @@
 package com.soli.newframeapp.download
 
 import android.annotation.TargetApi
-import android.app.*
+import android.app.DownloadManager
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.Service
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -14,6 +18,7 @@ import android.os.Build
 import android.os.IBinder
 import android.text.TextUtils
 import android.util.Log
+import androidx.core.content.ContextCompat
 import com.soli.libcommon.util.ShellUtils
 import com.soli.newframeapp.R
 import com.soli.newframeapp.util.InstallUtil
@@ -39,7 +44,7 @@ class DownloadService : Service() {
         mApkPaths = androidx.collection.LongSparseArray()
         //注册下载完成的广播
         mReceiver = DownloadFinishReceiver()
-        registerReceiver(mReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE))
+        ContextCompat.registerReceiver( applicationContext, mReceiver, IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE), ContextCompat.RECEIVER_EXPORTED)
 
         //Android 8.0 以上  服务需要特殊处理一下，注册自己的notification
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {

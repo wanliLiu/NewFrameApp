@@ -15,6 +15,8 @@ import android.widget.Toast
 import androidx.core.view.forEach
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
+import com.kiwisec.floatwindow.FloatWindow
+import com.kiwisec.floatwindow.Screen
 import com.soli.libcommon.base.BaseToolbarFragment
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
@@ -58,8 +60,6 @@ import com.soli.newframeapp.scanfile.ScanFileFagment
 import com.soli.newframeapp.span.SpecialSpanFragment
 import com.soli.newframeapp.toast.CustomToastActivity
 import com.tbruyelle.rxpermissions3.RxPermissions
-import com.yhao.floatwindow.FloatWindow
-import com.yhao.floatwindow.Screen
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
 import io.reactivex.rxjava3.disposables.Disposable
 import io.reactivex.rxjava3.schedulers.Schedulers

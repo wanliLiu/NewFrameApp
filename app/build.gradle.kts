@@ -76,7 +76,6 @@ dependencies {
     implementation(project(":lib_common"))
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.floatwindow)
     implementation(libs.androidx.palette)
     implementation(libs.lottie)
 }
