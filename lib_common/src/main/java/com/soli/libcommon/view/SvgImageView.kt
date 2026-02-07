@@ -8,7 +8,6 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.soli.libcommon.R
-import okhttp3.internal.toHexString
 
 /**
  *

@@ -2,7 +2,6 @@ import com.android.build.api.dsl.ApplicationBuildType
 
 plugins {
     alias(libs.plugins.android.application)
-    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -21,7 +20,7 @@ android {
         vectorDrawables.useSupportLibrary = true
 
         //apk开头名称
-        setProperty("archivesBaseName", "NewFrame")
+//        setProperty("archivesBaseName", "NewFrame")
     }
 
     signingConfigs {
@@ -54,12 +53,12 @@ android {
 
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+//    kotlinOptions {
+//        jvmTarget = "17"
+//    }
     buildFeatures {
         viewBinding = true
         buildConfig = true

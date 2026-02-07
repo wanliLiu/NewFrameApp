@@ -1,6 +1,5 @@
 plugins {
     alias(libs.plugins.android.library)
-    alias(libs.plugins.kotlin.android)
 }
 
 android {
@@ -9,16 +8,16 @@ android {
 
     defaultConfig {
         minSdk = libs.versions.minSdk.get().toInt()
-        targetSdk = libs.versions.targetSdk.get().toInt()
+//        targetSdk = libs.versions.targetSdk.get().toInt()
 
         //vectorDrawable 使用android.support库支持，支持低版本，默认是使用系统的
         vectorDrawables.useSupportLibrary = true
         consumerProguardFiles("consumer-rules.pro")
     }
 
-    kotlinOptions {
-        jvmTarget = "17"
-    }
+//    kotlinOptions {
+//        jvmTarget = "17"
+//    }
 
     buildTypes {
         release {
@@ -31,16 +30,12 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
+        sourceCompatibility = JavaVersion.VERSION_21
+        targetCompatibility = JavaVersion.VERSION_21
     }
 
     buildFeatures {
         viewBinding = true
-    }
-
-    kotlinOptions {
-        jvmTarget = "17"
     }
 }
 
