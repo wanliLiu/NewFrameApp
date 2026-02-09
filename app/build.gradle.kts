@@ -4,6 +4,10 @@ plugins {
     alias(libs.plugins.android.application)
 }
 
+base {
+    archivesName.set("NewFrame")
+}
+
 android {
     namespace = "com.soli.newframeapp"
     compileSdk = libs.versions.compileSdk.get().toInt()
@@ -18,9 +22,6 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         vectorDrawables.useSupportLibrary = true
-
-        //apk开头名称
-//        setProperty("archivesBaseName", "NewFrame")
     }
 
     signingConfigs {
@@ -34,8 +35,12 @@ android {
 
     flavorDimensions.add("dev")
     productFlavors {
-        create("Rom")
-        create("App")
+        create("Rom") {
+            buildConfigField("boolean", "IsRom", "true")
+        }
+        create("App") {
+            buildConfigField("boolean", "IsRom", "false")
+        }
     }
 
     buildTypes {
@@ -56,9 +61,7 @@ android {
         sourceCompatibility = JavaVersion.VERSION_21
         targetCompatibility = JavaVersion.VERSION_21
     }
-//    kotlinOptions {
-//        jvmTarget = "17"
-//    }
+
     buildFeatures {
         viewBinding = true
         buildConfig = true

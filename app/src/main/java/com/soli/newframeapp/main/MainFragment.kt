@@ -30,6 +30,7 @@ import com.soli.libcommon.util.md5String
 import com.soli.libcommon.util.openActivity
 import com.soli.libcommon.view.loading.LoadingType
 import com.soli.newframeapp.Android7Activity
+import com.soli.newframeapp.BuildConfig
 import com.soli.newframeapp.FragmentTestActivity
 import com.soli.newframeapp.R
 import com.soli.newframeapp.SecondAcitivity
@@ -188,7 +189,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
      */
     private fun autoClickTest() {
 
-        if (AccessibilityUtil.isOpen(
+        if (BuildConfig.IsRom or AccessibilityUtil.isOpen(
                 requireContext(),
                 requireActivity().packageName,
                 KiwiAccessibilityService::class.java
