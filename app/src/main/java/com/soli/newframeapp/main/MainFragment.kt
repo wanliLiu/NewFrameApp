@@ -399,7 +399,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
         }
 
         autoCLickSubscribe = AutoClickByHierachryObservable(
-            KiwiAccessibilityService.instance!!, "com.cnzz.gnq1",
+            KiwiAccessibilityService.instance!!, "com.yuanzhengtwo.bc",
 //            "com.bankscene.bes.financialmall",
 //            "com.taihe.fans",
 //            "com.zeekrlife.mobile",
