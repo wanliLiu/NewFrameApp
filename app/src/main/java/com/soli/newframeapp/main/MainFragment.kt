@@ -16,14 +16,16 @@ import androidx.core.view.forEach
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.kiwisec.floatwindow.FloatWindow
-import com.kiwisec.floatwindow.Screen
 import com.soli.libcommon.base.BaseToolbarFragment
+import com.soli.libcommon.base.Constant
 import com.soli.libcommon.net.ApiResult
 import com.soli.libcommon.net.ResultCode
 import com.soli.libcommon.util.MLog
 import com.soli.libcommon.util.NetworkUtil
 import com.soli.libcommon.util.RSAUtils
 import com.soli.libcommon.util.RxJavaUtil
+import com.soli.libcommon.util.ScreenHeight
+import com.soli.libcommon.util.ScreenWidth
 import com.soli.libcommon.util.ToastUtils
 import com.soli.libcommon.util.clickView
 import com.soli.libcommon.util.md5String
@@ -251,10 +253,16 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
         var paused = true
         pauseControl.change(paused)
         controlImageView!!.setImageResource(if (paused) R.drawable.start else R.drawable.pause)
-        FloatWindow.with(requireActivity().application).setTag("control")
-            .setView(controlImageView!!).setWidth(Screen.width, 0.10f) //设置悬浮控件宽高
-            .setHeight(Screen.width, 0.10f).setY(Screen.height, 0.4f).setDesktopShow(true)
-            .setViewStateListener(ViewStateListenerAdapter()).build()
+        FloatWindow.with(requireActivity().application)
+            .setTag("control")
+            .setView(controlImageView!!)
+            .setWidth(ViewStateListenerAdapter.viewSize)
+            .setHeight(ViewStateListenerAdapter.viewSize)
+            .setX(0)
+            .setY((requireContext().ScreenHeight * 0.4).toInt())
+            .setDesktopShow(true)
+            .setViewStateListener(ViewStateListenerAdapter("control"))
+            .build()
 
         controlImageView!!.setOnClickListener {
             autoCLickSubscribe?.dispose()
@@ -278,10 +286,16 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
     private fun showTest() {
         val imageView = ImageView(context).apply { id = R.id.id_demo }
         imageView.setImageResource(R.drawable.screenshot)
-        FloatWindow.with(requireActivity().application).setView(imageView).setTag("click")
-            .setWidth(Screen.width, 0.10f) //设置悬浮控件宽高
-            .setHeight(Screen.width, 0.10f).setX(Screen.width, 0.8f).setY(Screen.height, 0.3f)
-            .setDesktopShow(true).setViewStateListener(ViewStateListenerAdapter()).build()
+        FloatWindow.with(requireActivity().application)
+            .setView(imageView)
+            .setTag("click")
+            .setWidth(ViewStateListenerAdapter.viewSize)
+            .setHeight(ViewStateListenerAdapter.viewSize)
+            .setX(Constant.context.ScreenWidth - ViewStateListenerAdapter.viewSize)
+            .setY((Constant.context.ScreenHeight  * 0.3).toInt())
+            .setDesktopShow(true)
+            .setViewStateListener(ViewStateListenerAdapter("click"))
+            .build()
 
         imageView.clickView {
             thread {
@@ -385,7 +399,7 @@ class MainFragment : BaseToolbarFragment<FragmentMainBinding>() {
         }
 
         autoCLickSubscribe = AutoClickByHierachryObservable(
-            KiwiAccessibilityService.instance!!, requireActivity().packageName,
+            KiwiAccessibilityService.instance!!, "com.cnzz.gnq1",
 //            "com.bankscene.bes.financialmall",
 //            "com.taihe.fans",
 //            "com.zeekrlife.mobile",

@@ -36,9 +36,12 @@ android {
     flavorDimensions.add("dev")
     productFlavors {
         create("Rom") {
+            resValue("string", "app_name", "NewFrameRom")
             buildConfigField("boolean", "IsRom", "true")
         }
         create("App") {
+            applicationIdSuffix = ".app"
+            resValue("string", "app_name", "NewFrameApp")
             buildConfigField("boolean", "IsRom", "false")
         }
     }
@@ -65,6 +68,7 @@ android {
     buildFeatures {
         viewBinding = true
         buildConfig = true
+        resValues = true
     }
 
     lint {

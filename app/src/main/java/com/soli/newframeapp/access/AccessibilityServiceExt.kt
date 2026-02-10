@@ -11,7 +11,6 @@ import android.view.accessibility.AccessibilityEvent
 import android.view.accessibility.AccessibilityNodeInfo
 import androidx.annotation.RequiresApi
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat
-import java.util.*
 
 private val accEventCallBack = hashSetOf<(event: AccessibilityEvent) -> Unit>()
 
@@ -365,6 +364,21 @@ fun AccessibilityService.findNodes(
     return nodes
 }
 
+fun AccessibilityService.clickPermission(pauseControl: PauseControl) {
+    val permissionButtons = arrayOf(
+        "permission_allow_button",
+        "permission_allow_all_button",
+        "permission_allow_foreground_only_button",
+        "permission_allow_one_time_button"
+    )
+    permissionButtons.forEach { id ->
+        findNode(id)?.apply {
+            pauseControl.checkWait()
+            performClick(this)
+        }
+    }
+}
+
 fun AccessibilityNodeInfo.match(
     id: String? = null,
     text: Regex? = null,
@@ -379,7 +393,7 @@ fun AccessibilityNodeInfo.match(
     parentClassName: Regex? = null,
     childCount: Int = -1,
 ): Boolean {
-    return ((id == null) || this.viewIdResourceName == id)
+    return ((id == null) || this.viewIdResourceName != null && (this.viewIdResourceName == id || this.viewIdResourceName.contains(id)))
             && ((text == null) || this.text?.matches(text) == true)
             && ((description == null) || this.contentDescription?.matches(description) == true)
             && ((className == null) || this.className?.matches(className) == true)

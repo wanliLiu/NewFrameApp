@@ -7,9 +7,7 @@ import androidx.annotation.Keep
 import com.alibaba.fastjson.JSONArray
 import com.alibaba.fastjson.JSONObject
 import com.orhanobut.logger.Logger
-import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.md5String
-import com.soli.newframeapp.util.AppUtils
 import io.reactivex.rxjava3.core.Observable
 import kotlin.concurrent.thread
 
@@ -116,9 +114,9 @@ class AutoClickByHierachryObservable(
      * 回到正在检测的app界面
      */
     private fun backToTargetApp() {
-        if (AppUtils.getTopApp(service) != packageName) {
-            AppUtils.backToApp(Constant.context, packageName)
-        }
+//        if (AppUtils.getTopApp(service) != packageName) {
+//            AppUtils.backToApp(Constant.context, packageName)
+//        }
     }
 
     /**
@@ -346,11 +344,7 @@ class AutoClickByHierachryObservable(
             thread {
                 while (!observer.isDisposed && !isEnd() && sleep(1000)) {
                     pauseControl.checkWait()
-                    service.findNode("com.android.packageinstaller:id/permission_allow_button")
-                        ?.apply {
-                            pauseControl.checkWait()
-                            service.performClick(this)
-                        }
+                    service.clickPermission(pauseControl)
                 }
             }
         }
