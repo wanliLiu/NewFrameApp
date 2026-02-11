@@ -8,6 +8,7 @@ import android.graphics.Point
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
 import com.kiwisec.floatwindow.FloatWindow
+import com.kiwisec.floatwindow.IFloatWindow
 import com.kiwisec.floatwindow.ViewStateListener
 import com.soli.libcommon.base.Constant
 import com.soli.libcommon.util.StatusBarUtil
@@ -24,7 +25,7 @@ class ViewStateListenerAdapter(private val tag: String) : ViewStateListener {
 
     companion object {
         val viewSize by lazy {
-            Constant.context.dip2px(40)
+            Constant.context.dip2px(50)
         }
     }
 
@@ -36,6 +37,8 @@ class ViewStateListenerAdapter(private val tag: String) : ViewStateListener {
     private var yMax = 0
 
     private val statusBarHeight = StatusBarUtil.getStatusBarHeight(Constant.context)
+    private val tagView: IFloatWindow?
+        get() = FloatWindow.get(tag)
 
     private val configChangeReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -68,8 +71,7 @@ class ViewStateListenerAdapter(private val tag: String) : ViewStateListener {
                 updateY((height * 0.4f).toInt().coerceAtLeast(0))
             }
             FloatWindow.get("click")?.apply {
-                val x =
-                    if (width > height) width - viewSize - statusBarHeight else width - viewSize
+                val x = if (width > height) width - viewSize - statusBarHeight else width - viewSize
                 updateX(x.coerceAtLeast(0))
                 updateY((height * 0.3f).toInt().coerceAtLeast(0))
             }
@@ -88,7 +90,7 @@ class ViewStateListenerAdapter(private val tag: String) : ViewStateListener {
                 // 横屏
                 xMin = 0
                 yMin = 0
-                xMax = width - viewSize  - statusBarHeight
+                xMax = width - viewSize - statusBarHeight
                 yMax = height - viewSize
             } else {
                 //竖屏
@@ -103,24 +105,23 @@ class ViewStateListenerAdapter(private val tag: String) : ViewStateListener {
     private fun getScreenSize(): Point? {
         val wm = Constant.context.getSystemService(WindowManager::class.java) ?: return null
         val point = Point()
-        @Suppress("DEPRECATION")
-        wm.defaultDisplay.getSize(point)
+        @Suppress("DEPRECATION") wm.defaultDisplay.getSize(point)
         return point
     }
 
 
     override fun onPositionUpdate(x: Int, y: Int) {
         if (x < xMin) {
-            FloatWindow.get(tag)?.updateX(xMin)
+            tagView?.updateX(xMin)
         }
         if (x > xMax) {
-            FloatWindow.get(tag)?.updateX(xMax)
+            tagView?.updateX(xMax)
         }
         if (y < yMin) {
-            FloatWindow.get(tag)?.updateY(yMin)
+            tagView?.updateY(yMin)
         }
         if (y > yMax) {
-            FloatWindow.get(tag)?.updateY(yMax)
+            tagView?.updateY(yMax)
         }
     }
 
